@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="SchedulingApp.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SchedulingApp.Views"
+             xmlns:viewModel="clr-namespace:SchedulingApp.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="Transparent">
+    
+    <StackPanel HorizontalAlignment="Center" 
+                VerticalAlignment="Center">
+        <StackPanel>
+            <Label Content="{Binding LoginHeaderText}"
+                   Foreground="White"
+                   FontSize="28"/>
+        </StackPanel>
+
+        <StackPanel HorizontalAlignment="Center">
+            <StackPanel Margin="0,0,0,10">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding UsernameLabel}"
+                           Foreground="White"
+                           Padding="0,0,10,10"/>
+                    <Label Content="{Binding UsernameErrorMessage}" 
+                           Foreground="Red" 
+                           Padding="0"
+                           Visibility="{Binding UsernameErrorVisibility}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Text="{Binding UsernameTextbox, UpdateSourceTrigger=PropertyChanged}" 
+                        HorizontalAlignment="Left" 
+                        Width="200"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding PasswordLabel}"
+                        Foreground="White"
+                        Padding="0,0,10,10"/>
+                    <Label Content="{Binding PasswordErrorMessage}" 
+                        Foreground="Red" 
+                        Padding="0"
+                        Visibility="{Binding PasswordErrorVisibility}"/>
+                </StackPanel>
+
+                <PasswordBox PasswordChanged="PasswordBox_PasswordChanged"
+                                HorizontalAlignment="Left"
+                                Width="200"/>
+            </StackPanel>
+
+            <Button Content="{Binding ButtonText}"
+                Background="#615c89"
+                BorderBrush="#615c89"
+                Foreground="White"
+                Width="100"
+                Padding="5"
+                    Margin="10"
+                Command="{Binding SignInCommand}"
+                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
