@@ -210,6 +210,10 @@ namespace SchedulingApp.ViewModels
                 Debug.WriteLine($"Login information is not valid.");
                 return;
             }
+
+            // Add log to text file
+            UserLogManager.LogUserSignIn(Username);
+
             mainViewModel.CurrentView = mainViewModel.HomeViewModel;
         }
     }
