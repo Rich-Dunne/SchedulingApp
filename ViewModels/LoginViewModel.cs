@@ -1,14 +1,8 @@
 ﻿using SchedulingApp.Core;
-using System;
-using System.Collections.Generic;
+using SchedulingApp.Utilities;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace SchedulingApp.ViewModels
 {
@@ -26,15 +20,26 @@ namespace SchedulingApp.ViewModels
             }
         }
 
-        private string _usernameTextbox = "";
-        public string UsernameTextbox
+        private string _username = "";
+        public string Username
         {
-            get => _usernameTextbox;
+            get => _username;
             set
             {
-                _usernameTextbox = value;
+                _username = value;
                 OnPropertyChanged();
-                UsernameIsValid(_usernameTextbox);
+
+                HasErrors = !LoginValidator.UsernameIsValid(value, out string usernameErrorMessage);
+                if(!string.IsNullOrWhiteSpace(usernameErrorMessage))
+                {
+                    UsernameErrorMessage = usernameErrorMessage;
+                    UsernameErrorVisibility = "Visible";
+                }
+                else
+                {
+                    UsernameErrorMessage = "";
+                    UsernameErrorVisibility = "Collapsed";
+                }
             }
         }
 
@@ -46,7 +51,18 @@ namespace SchedulingApp.ViewModels
             {
                 _password = value;
                 OnPropertyChanged();
-                PasswordIsValid(_password);
+
+                HasErrors = !LoginValidator.PasswordIsValid(value, out string passwordErrorMessage);
+                if (!string.IsNullOrWhiteSpace(passwordErrorMessage))
+                {
+                    PasswordErrorMessage = passwordErrorMessage;
+                    PasswordErrorVisibility = "Visible";
+                }
+                else
+                {
+                    PasswordErrorMessage = "";
+                    PasswordErrorVisibility = "Collapsed";
+                }
             }
         }
 
@@ -82,22 +98,6 @@ namespace SchedulingApp.ViewModels
                 OnPropertyChanged();
             }
         }
-        #endregion
-
-        #region Validation Properties
-        public string USERNAME { get; } = "test";
-        public string PASSWORD { get; } = "test";
-
-        private bool _hasErrors = false;
-        public bool HasErrors
-        {
-            get => _hasErrors;
-            set
-            {
-                _hasErrors = value;
-                OnPropertyChanged();
-            }
-        }
 
         private string _usernameErrorMessage = "";
         public string UsernameErrorMessage
@@ -117,39 +117,6 @@ namespace SchedulingApp.ViewModels
             set
             {
                 _passwordErrorMessage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _requiredErrorMessage = "Required";
-        public string RequiredErrorMessage
-        {
-            get => _requiredErrorMessage;
-            set
-            {
-                _requiredErrorMessage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _wrongUsernameErrorMessage = "Username not found";
-        public string WrongUsernameErrorMessage
-        {
-            get => _wrongUsernameErrorMessage;
-            set
-            {
-                _wrongUsernameErrorMessage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _wrongPasswordErrorMessage = "Incorrect password";
-        public string WrongPasswordErrorMessage
-        {
-            get => _wrongPasswordErrorMessage;
-            set
-            {
-                _wrongPasswordErrorMessage = value;
                 OnPropertyChanged();
             }
         }
@@ -177,6 +144,19 @@ namespace SchedulingApp.ViewModels
         }
         #endregion
 
+        #region Validation Properties
+        private bool _hasErrors = false;
+        public bool HasErrors
+        {
+            get => _hasErrors;
+            set
+            {
+                _hasErrors = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
         #region Commands
         public RelayCommand SignInCommand { get; set; }
         #endregion
@@ -186,7 +166,8 @@ namespace SchedulingApp.ViewModels
             Debug.WriteLine($"Login view initialized.");
 
             SignInCommand = new RelayCommand(o => { SignIn((MainViewModel)o); });
-            if (UserIsOutsideUSA())
+            LoginValidator.UseForeignLanguage = UserIsOutsideUSA();
+            if(UserIsOutsideUSA())
             {
                 UpdateLoginLanguage();
             }
@@ -208,74 +189,28 @@ namespace SchedulingApp.ViewModels
             UsernameLabel = "Nombre de usuario";
             PasswordLabel = "Contraseña";
             ButtonText = "Iniciar sesión";
-            RequiredErrorMessage = "Requerido";
-            WrongUsernameErrorMessage = "Usuario no encontrado";
-            WrongPasswordErrorMessage = "Contraseña incorrecta";
         }
 
         private void SignIn(MainViewModel mainViewModel)
         {
-            ValidateLogin(UsernameTextbox, Password);
+            HasErrors = !LoginValidator.ValidateLogin(Username, Password, out string usernameErrorMessage, out string passwordErrorMessage);
             if (HasErrors)
             {
+                if(!string.IsNullOrWhiteSpace(usernameErrorMessage))
+                {
+                    UsernameErrorMessage = usernameErrorMessage;
+                    UsernameErrorVisibility = "Visible";
+                }
+
+                if (!string.IsNullOrWhiteSpace(passwordErrorMessage))
+                {
+                    PasswordErrorMessage = passwordErrorMessage;
+                    PasswordErrorVisibility = "Visible";
+                }
                 Debug.WriteLine($"Login information is not valid.");
                 return;
             }
             mainViewModel.CurrentView = mainViewModel.HomeViewModel;
-        }
-
-        public bool UsernameIsValid(string username)
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                UsernameErrorMessage = RequiredErrorMessage;
-                UsernameErrorVisibility = "Visible";
-                return false;
-            }
-
-            UsernameErrorVisibility = "Collapsed";
-            return true;
-        }
-
-        public bool PasswordIsValid(string password)
-        {
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                PasswordErrorMessage = RequiredErrorMessage;
-                PasswordErrorVisibility = "Visible";
-                return false;
-            }
-
-            PasswordErrorVisibility = "Collapsed";
-            return true;
-        }
-
-        public void ValidateLogin(string username, string password)
-        {
-            HasErrors = false;
-            if (!UsernameIsValid(username))
-            {
-                HasErrors = true;
-            }
-
-            if (!PasswordIsValid(password))
-            {
-                HasErrors = true;
-            }
-
-            if(username != USERNAME)
-            {
-                UsernameErrorMessage = WrongUsernameErrorMessage;
-                UsernameErrorVisibility = "Visible";
-                HasErrors = true;
-            }
-
-            if (username == USERNAME && password != PASSWORD)
-            {
-                PasswordErrorMessage = WrongPasswordErrorMessage;
-                PasswordErrorVisibility = "Visible";
-                HasErrors = true;
-            }
         }
     }
  }

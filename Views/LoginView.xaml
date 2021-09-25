@@ -30,7 +30,7 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
-                    <TextBox Text="{Binding UsernameTextbox, UpdateSourceTrigger=PropertyChanged}" 
+                    <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" 
                         HorizontalAlignment="Left" 
                         Width="200"/>
                 </StackPanel>
