@@ -175,12 +175,14 @@ namespace SchedulingApp.ViewModels
 
         private bool UserIsOutsideUSA()
         {
+            var languageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
             var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
             var geoID = (string)regKeyGeoId.GetValue("Nation");
             var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
             var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == int.Parse(geoID));
 
-            return regionInfo.DisplayName != "United States";
+
+            return regionInfo.DisplayName != "United States" || languageName != "en";
         }
 
         private void UpdateLoginLanguage()
