@@ -98,6 +98,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Utilities\DatabaseManager.cs" />
     <Compile Include="Utilities\LoginValidator.cs" />
     <Compile Include="Utilities\UserLogManager.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
@@ -128,6 +129,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Theme\MenuButtonTheme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theme\NavigationPanelTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
