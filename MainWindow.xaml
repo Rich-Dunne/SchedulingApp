@@ -19,7 +19,7 @@
     <Border Background="#272537">
         <ContentControl Grid.Row="1"
                             Grid.Column="1"
-                            Margin="10"
+                            Margin="0"
                             Content="{Binding CurrentView}"/>
         <!--<Grid>
             <Grid.ColumnDefinitions>
