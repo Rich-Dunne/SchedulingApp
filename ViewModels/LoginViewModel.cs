@@ -1,4 +1,4 @@
-﻿using SchedulingApp.Core;
+﻿using SchedulingApp.Models;
 using SchedulingApp.Utilities;
 using System.Diagnostics;
 using System.Globalization;
@@ -210,11 +210,25 @@ namespace SchedulingApp.ViewModels
                     PasswordErrorVisibility = "Visible";
                 }
                 Debug.WriteLine($"Login information is not valid.");
+
+                string errors = "";
+                if(UsernameErrorMessage != "")
+                {
+                    errors += UsernameErrorMessage;
+                }
+                if(errors != "" && PasswordErrorMessage != "")
+                {
+                    errors += $", {PasswordErrorMessage}";
+                }
+                else if (PasswordErrorMessage != "")
+                {
+                    errors += PasswordErrorMessage;
+                }
+                UserLogManager.LogInvalidSignIn(Username, errors);
                 return;
             }
 
-            // Add log to text file
-            UserLogManager.LogUserSignIn(Username);
+            UserLogManager.LogValidSignIn(Username);
 
             mainViewModel.CurrentView = mainViewModel.HomeViewModel;
         }

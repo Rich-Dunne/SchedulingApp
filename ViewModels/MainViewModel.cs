@@ -1,4 +1,4 @@
-﻿using SchedulingApp.Core;
+﻿using SchedulingApp.Models;
 using System.Diagnostics;
 
 namespace SchedulingApp.ViewModels

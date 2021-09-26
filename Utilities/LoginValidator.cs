@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace SchedulingApp.Utilities
 {
     public static class LoginValidator
@@ -12,8 +7,11 @@ namespace SchedulingApp.Utilities
         public const string PASSWORD = "test";
 
         public static bool UseForeignLanguage { get; set; } = false;
-        private static string _requiredErrorMessage { get; } = "Required";
-        private static string _altRequiredErrorMessage { get; } = "Requerido";
+        private static string _usernameRequiredErrorMessage { get; } = "Username required";
+        private static string _altUsernameRequiredErrorMessage { get; } = "Usuario requerido";
+
+        private static string _passwordRequiredErrorMessage { get; } = "Password required";
+        private static string _altPasswordRequiredErrorMessage { get; } = "Contraseña required";
 
         private static string _wrongUsernameErrorMessage { get; } = "Username not found";
         private static string _altWrongUsernameErrorMessage { get; } = "Usuario no encontrado";
@@ -26,7 +24,7 @@ namespace SchedulingApp.Utilities
             usernameErrorMessage = "";
             if (string.IsNullOrWhiteSpace(username))
             {
-                usernameErrorMessage = UseForeignLanguage ? _altRequiredErrorMessage : _requiredErrorMessage;
+                usernameErrorMessage = UseForeignLanguage ? _altUsernameRequiredErrorMessage : _usernameRequiredErrorMessage;
                 return false;
             }
 
@@ -38,7 +36,7 @@ namespace SchedulingApp.Utilities
             passwordErrorMessage = "";
             if (string.IsNullOrWhiteSpace(password))
             {
-                passwordErrorMessage = UseForeignLanguage ? _altRequiredErrorMessage : _requiredErrorMessage;
+                passwordErrorMessage = UseForeignLanguage ? _altPasswordRequiredErrorMessage : _passwordRequiredErrorMessage;
                 return false;
             }
 
