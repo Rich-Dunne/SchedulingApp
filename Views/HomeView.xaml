@@ -25,7 +25,7 @@
                 Foreground="White"
                 FontSize="22"/>
 
-            <StackPanel Grid.Row="1">
+            <StackPanel Grid.Row="1" Style="{StaticResource NavigationPanelTheme}">
                 <RadioButton Content="Home" 
                              Height="50"
                              Foreground="White"
