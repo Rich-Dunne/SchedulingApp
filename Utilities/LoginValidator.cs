@@ -3,9 +3,6 @@ namespace SchedulingApp.Utilities
 {
     public static class LoginValidator
     {
-        public const string USERNAME  = "test";
-        public const string PASSWORD = "test";
-
         public static bool UseForeignLanguage { get; set; } = false;
         private static string _usernameRequiredErrorMessage { get; } = "Username required";
         private static string _altUsernameRequiredErrorMessage { get; } = "Usuario requerido";
@@ -65,13 +62,13 @@ namespace SchedulingApp.Utilities
                 return false;
             }
 
-            if(username != USERNAME)
+            if(!DatabaseManager.FindUsername(username))
             {
                 usernameErrorMessage = UseForeignLanguage ? _altWrongUsernameErrorMessage : _wrongUsernameErrorMessage;
                 return false;
             }
 
-            if(username == USERNAME && password != PASSWORD)
+            if(!DatabaseManager.FindValidUser(username, password))
             {
                 passwordErrorMessage = UseForeignLanguage ? _altWrongPasswordErrorMessage : _wrongPasswordErrorMessage;
                 return false;
