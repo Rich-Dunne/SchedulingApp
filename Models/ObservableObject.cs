@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace SchedulingApp.Core
+namespace SchedulingApp.Models
 {
     public class ObservableObject : INotifyPropertyChanged
     {

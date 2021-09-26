@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace SchedulingApp.Core
+namespace SchedulingApp.Models
 {
     public class RelayCommand : ICommand
     {
