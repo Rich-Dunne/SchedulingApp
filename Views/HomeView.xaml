@@ -244,6 +244,13 @@
                                                Padding="10"
                                                VerticalAlignment="Center"/>
                             </Border>
+                            <Label Content="None"
+                                   Foreground="Gray"
+                                   FontSize="18"
+                                   FontStyle="Italic"
+                                   HorizontalAlignment="Center"
+                                   Visibility="{Binding NoneUpcomingVisibility}"/>
+                            
                             <TextBlock Text="{Binding UpcomingDateTime}"
                                        Foreground="White"
                                        FontSize="24"
@@ -257,21 +264,33 @@
 
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
-                                        Margin="0,50,0,0"
-                                        Visibility="{Binding UpcomingVisibility, Mode=OneWay}">
+                                        Margin="0,50,0,0">
                                 <Button Content="Cancel"
                                         Padding="10"
                                         Width="75"
                                         Margin="0,0,50,0"
                                         Background="Transparent"
                                         BorderBrush="Transparent"
-                                        Foreground="#4675d9"/>
+                                        Foreground="#4675d9"
+                                        Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
+                                
                                 <Button Content="Edit"
                                         Padding="10"
                                         Width="75"
                                         Background="#4675d9"
                                         BorderBrush="Transparent"
-                                        Foreground="White"/>
+                                        Foreground="White"
+                                        Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
+                                
+                                <Button Content="Book Appointment"
+                                        Margin="0"
+                                        Width="150"
+                                        Height="30"
+                                        FontWeight="SemiBold"
+                                        Background="Transparent"
+                                        BorderBrush="#4675d9"
+                                        Foreground="#4675d9"
+                                        Visibility="{Binding NoneUpcomingVisibility}"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -313,6 +332,13 @@
                                           FontSize="14"
                                           IsHitTestVisible="False"
                                           ItemTemplate="{StaticResource DailyAgendaListView}"/>
+
+                                <Label Content="No appointments today"
+                                   Foreground="Gray"
+                                   FontSize="18"
+                                   FontStyle="Italic"
+                                   HorizontalAlignment="Center"
+                                   Visibility="{Binding NoneTodayVisibility}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
