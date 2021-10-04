@@ -163,8 +163,6 @@ namespace SchedulingApp.ViewModels
 
         public LoginViewModel()
         {
-            Debug.WriteLine($"Login view initialized.");
-
             SignInCommand = new RelayCommand(o => { SignIn((MainViewModel)o); });
             LoginValidator.UseForeignLanguage = UserIsOutsideUSA();
             if(UserIsOutsideUSA())
@@ -230,7 +228,17 @@ namespace SchedulingApp.ViewModels
 
             UserLogManager.LogValidSignIn(Username);
 
+            mainViewModel.CurrentUser = DataAccess.SelectUser(Username);
             mainViewModel.CurrentView = mainViewModel.HomeViewModel;
+            ResetProperties();
+        }
+
+        private void ResetProperties()
+        {
+            Username = "";
+            Password = "";
+            UsernameErrorVisibility = "Collapsed";
+            PasswordErrorVisibility = "Collapsed";
         }
     }
  }
