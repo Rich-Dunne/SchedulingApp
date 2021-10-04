@@ -62,13 +62,13 @@ namespace SchedulingApp.Utilities
                 return false;
             }
 
-            if(!DatabaseManager.FindUsername(username))
+            if(!DataAccess.FindUsername(username))
             {
                 usernameErrorMessage = UseForeignLanguage ? _altWrongUsernameErrorMessage : _wrongUsernameErrorMessage;
                 return false;
             }
 
-            if(!DatabaseManager.FindValidUser(username, password))
+            if(!DataAccess.FindValidUser(username, password))
             {
                 passwordErrorMessage = UseForeignLanguage ? _altWrongPasswordErrorMessage : _wrongPasswordErrorMessage;
                 return false;
