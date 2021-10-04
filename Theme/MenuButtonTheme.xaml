@@ -14,7 +14,7 @@
                             <TextBlock Text="{TemplateBinding Property=Content}"
                                        VerticalAlignment="Center"
                                        Margin="50,0,0,0"
-                                       Foreground="#64686e"/>
+                                       Foreground="#9193a3"/> <!-- 64686e -->
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -25,7 +25,7 @@
         </Style.Setters>
         <Style.Triggers>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="#1F1E26"/>
+                <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="RadioButton">
@@ -36,7 +36,7 @@
                                 <TextBlock Text="{TemplateBinding Property=Content}"
                                        VerticalAlignment="Center"
                                        Margin="50,0,0,0"
-                                       Foreground="White"/>
+                                       Foreground="#39d6c6"/> <!-- 6871db -->
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>

@@ -2,6 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style TargetType="{x:Type StackPanel}"
             x:Key="NavigationPanelTheme">
-        <Setter Property="Background" Value="#141414"/>
+        <Setter Property="Background" Value="#1e1f25"/> <!-- 141414 -->
     </Style>
 </ResourceDictionary>
