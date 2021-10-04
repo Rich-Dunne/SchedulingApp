@@ -5,143 +5,319 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SchedulingApp.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Border Background="#272537">
+             d:DesignHeight="450" d:DesignWidth="920">
+    <Border Background="#1e1f25">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="75"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
+            <Border Grid.Row="1" 
+                    Grid.RowSpan="2"
+                    BorderBrush="#21252b"
+                    BorderThickness="0,0,1,0">
+                <StackPanel Style="{StaticResource NavigationPanelTheme}">
+                    <TextBlock Text="Schedule Manager"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Foreground="White"
+                            Padding="10"
+                            FontSize="22"/>
 
-            <TextBlock Text="Schedule Manager"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Foreground="White"
-                FontSize="22"/>
-
-            <StackPanel Grid.Row="1" Style="{StaticResource NavigationPanelTheme}">
-                <RadioButton Content="Home" 
+                    <RadioButton Content="Home" 
                              Height="50"
-                             Foreground="White"
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
                              IsChecked="True"
-                             Command="{Binding HomeViewCommand}"/>
-                <RadioButton Content="Other" 
+                             Command="{Binding HomeViewCommand}"
+                             CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                    <RadioButton Content="Calendar" 
                              Height="50"
-                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding TestViewCommand}"
+                             CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                    <RadioButton Content="Clients" 
+                             Height="50"
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
                              Command="{Binding TestViewCommand}"/>
-            </StackPanel>
+                    <RadioButton Content="Logout" 
+                             Height="50"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding LoginViewCommand}"
+                             CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                </StackPanel>
+            </Border>
 
-            <TextBox Width="250"
+            <Border HorizontalAlignment="Stretch"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Background="#1e1f25"
+                    BorderBrush="#21252b"
+                    BorderThickness="0,0,0,1">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                    <!--<TextBox Width="250"
                      Height="40"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Left"
                      Margin="5"
-                     Grid.Column="1"
-                     Style="{StaticResource ModernTextBox}"/>
+                     Style="{StaticResource SearchBox}"/>-->
 
-            <ContentControl Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="10"
-                            Content="{Binding CurrentView}"/>
+                    <Border HorizontalAlignment="Left"
+                            Width="150"
+                            Height="auto">
+                        <StackPanel>
+                            <TextBlock Text="Today"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#f0bb57"
+                                       FontSize="16"
+                                       Margin="0"/>
+
+                            <TextBlock Text="{Binding TodayDate}"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="12"
+                                       Margin="0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!--<Border BorderBrush="#23242b" 
+                            BorderThickness="0.5"
+                            Height="40"
+                            VerticalAlignment="Center"/>-->
+
+                    <Border HorizontalAlignment="Left"
+                            Width="150"
+                            Height="auto">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="{Binding TodaysAppointments.Count}"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="16"
+                                       Margin="0"/>
+
+                                <TextBlock Text="Appointments"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="12"
+                                       Margin="0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#23242b" 
+                            BorderThickness="0.5"
+                            Height="40"
+                            VerticalAlignment="Center"/>
+
+                    <Border HorizontalAlignment="Left"
+                            Width="150"
+                            Height="auto">
+                        <StackPanel>
+                            <TextBlock Text="This Week"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#f0bb57"
+                                       FontSize="16"
+                                       Margin="0"/>
+
+                            <TextBlock Text="{Binding CurrentWeek}"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="12"
+                                       Margin="0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!--<Border BorderBrush="#23242b" 
+                            BorderThickness="0.5"
+                            Height="40"
+                            VerticalAlignment="Center"/>-->
+
+                    <Border HorizontalAlignment="Left"
+                            Width="150"
+                            Height="auto">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="{Binding AppointmentsThisWeek}"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="16"
+                                       Margin="0"/>
+
+                                <TextBlock Text="Appointments"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="12"
+                                       Margin="0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!--<Border BorderBrush="#23242b" 
+                            BorderThickness="0.5"
+                            Height="40"
+                            VerticalAlignment="Center"/>
+
+                    <Border HorizontalAlignment="Left"
+                            Width="200"
+                            Height="auto">
+                        <StackPanel>
+                            <TextBlock Text="Next Appointment"
+                                    HorizontalAlignment="Center"
+                                    Foreground="#39d6c6"
+                                    FontSize="16"
+                                    Margin="0"/>
+
+                            <TextBlock Text="Today at 8:30am"
+                                    HorizontalAlignment="Center"
+                                    Foreground="White"
+                                    FontSize="12"
+                                    Margin="0"/>
+                        </StackPanel>
+                    </Border>-->
+                </StackPanel>
+            </Border>
+
+            <Border HorizontalAlignment="Right" 
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="0"
+                    Background="#1e1e1e"
+                    BorderBrush="#23242b"
+                    BorderThickness="0,0,0,1"
+                    Width="920">
+                <Button Content="X"
+                        Foreground="#b9bbbe"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Height="25"
+                        Width="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="Button_Click"/>
+            </Border>
+
+            <StackPanel Orientation="Vertical"
+                        VerticalAlignment="Top"
+                        Grid.Column="1"
+                        Grid.Row="2"
+                        Margin="20,20,0,0">
+
+                <TextBlock Foreground="White"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,10">
+                    <Run Text="{Binding CurrentUser.UserName}"/><Run Text="'s Dashboard"/>
+                </TextBlock>
+
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="300"
+                            Height="200"
+                            Background="#23242b">
+
+                        <Border.Clip>
+                            <RectangleGeometry RadiusX="5"
+                                               RadiusY="5"
+                                               Rect="0,0,300,200"/>
+                        </Border.Clip>
+
+
+                        <StackPanel>
+                            <Border>
+                                <TextBlock Text="UPCOMING APPOINTMENT"
+                                               Foreground="#f0bb57"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Margin="10,0,0,0"
+                                               Padding="10"
+                                               VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="{Binding UpcomingDateTime}"
+                                       Foreground="White"
+                                       FontSize="24"
+                                       Margin="20,0,0,0"/>
+
+                            <TextBlock Text="{Binding UpcomingDetails}"
+                                       Foreground="Gray"
+                                       FontSize="14"
+                                       Margin="20,0,10,0"
+                                       Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
+
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,50,0,0"
+                                        Visibility="{Binding UpcomingVisibility, Mode=OneWay}">
+                                <Button Content="Cancel"
+                                        Padding="10"
+                                        Width="75"
+                                        Margin="0,0,50,0"
+                                        Background="Transparent"
+                                        BorderBrush="Transparent"
+                                        Foreground="#4675d9"/>
+                                <Button Content="Edit"
+                                        Padding="10"
+                                        Width="75"
+                                        Background="#4675d9"
+                                        BorderBrush="Transparent"
+                                        Foreground="White"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Height="200"
+                            Width="350"
+                            CornerRadius="5"
+                            Margin="20,0,0,0"
+                            Background="#23242b">
+
+                        <Grid>
+                            <StackPanel>
+                                <Border>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="TODAY'S AGENDA"
+                                               Foreground="#f0bb57"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Margin="10,0,0,0"
+                                               Padding="10"
+                                               VerticalAlignment="Center"/>
+
+                                        <Button Content="Book Appointment"
+                                                Margin="40,0,0,0"
+                                                Width="150"
+                                                Height="30"
+                                                FontWeight="SemiBold"
+                                                Background="Transparent"
+                                                BorderBrush="#4675d9"
+                                                Foreground="#4675d9"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <ListView ItemsSource="{Binding TodaysAppointments}"
+                                          Margin="5,0,0,0"
+                                          Background="Transparent"
+                                          Foreground="White"
+                                          BorderBrush="Transparent"
+                                          FontSize="14"
+                                          IsHitTestVisible="False"
+                                          ItemTemplate="{StaticResource DailyAgendaListView}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Border>
-    <!--<StackPanel>
-        <TextBlock Text="Heading"
-                   Foreground="White"
-                   FontSize="28"
-                   HorizontalAlignment="Left"
-                   Margin="0,0,0,20"/>
-
-        <StackPanel Orientation="Horizontal"
-                     Margin="0,0,0,10">
-            <Border Width="400"
-                    Height="200">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0"
-                                         EndPoint="1,2">
-                        <GradientStop Color="#5bc3ff" Offset="0.0"/>
-                        <GradientStop Color="#3aa0ff" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-
-                <Border.Clip>
-                    <RectangleGeometry RadiusX="10"
-                                       RadiusY="10"
-                                       Rect="0,0,400,200"/>
-                </Border.Clip>
-
-                <Grid>
-                    <StackPanel>
-                        <TextBlock Text="Topic Title"
-                                   Foreground="White"
-                                   FontSize="28"
-                                   Margin="20,10,10,0"/>
-
-                        <TextBlock Text="blablabla"
-                                   Foreground="White"
-                                   FontSize="18"
-                                   Margin="20,10,10,0"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <Border Height="200"
-                    Width="200"
-                    CornerRadius="10"
-                    Margin="45,0,0,0">
-
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0"
-                                         EndPoint="1,2">
-                        <GradientStop Color="#ffc554" Offset="0.0"/>
-                        <GradientStop Color="#ffb73a" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-            </Border>
-        </StackPanel>
-
-        <StackPanel>
-            <TextBlock Text="Second Heading"
-                   Foreground="White"
-                   FontSize="20"
-                   HorizontalAlignment="Left"
-                   Margin="0,0,0,20"/>
-
-            <StackPanel Orientation="Horizontal">
-                <StackPanel.Resources>
-                    <Style TargetType="{x:Type Border}">
-                        <Setter Property="Margin" Value="15,0,0,0"/>
-                    </Style>
-                </StackPanel.Resources>
-                <Border Width="150"
-                        Height="150"
-                        Background="#844eff"
-                        CornerRadius="10"
-                        Margin="0"/>
-                <Border Width="150"
-                        Height="150"
-                        Background="#4e99ff"
-                        CornerRadius="10"/>
-                <Border Width="150"
-                        Height="150"
-                        Background="#4eff91"
-                        CornerRadius="10"/>
-                <Border Width="150"
-                        Height="150"
-                        Background="#ecff4e"
-                        CornerRadius="10"/>
-
-            </StackPanel>
-        </StackPanel>
-    </StackPanel>-->
 </UserControl>
