@@ -98,7 +98,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Utilities\DatabaseManager.cs" />
+    <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\Appointment.cs" />
+    <Compile Include="Models\City.cs" />
+    <Compile Include="Models\Country.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Utilities\DataAccess.cs" />
     <Compile Include="Utilities\LoginValidator.cs" />
     <Compile Include="Utilities\UserLogManager.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
@@ -128,6 +134,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Templates\DailyAgendaListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Theme\MenuButtonTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
