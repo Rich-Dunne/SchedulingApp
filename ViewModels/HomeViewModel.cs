@@ -128,10 +128,12 @@ namespace SchedulingApp.ViewModels
                 if(_hasUpcomingAppointment)
                 {
                     UpcomingVisibility = "Visible";
+                    NoneUpcomingVisibility = "Collapsed";
                 }
                 else
                 {
                     UpcomingVisibility = "Collapsed";
+                    NoneUpcomingVisibility = "Visible";
                 }
             }
         }
@@ -143,6 +145,28 @@ namespace SchedulingApp.ViewModels
             set
             {
                 _upcomingVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _noneUpcomingVisibility = "Collapsed";
+        public string NoneUpcomingVisibility
+        {
+            get => _noneUpcomingVisibility;
+            set
+            {
+                _noneUpcomingVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _noneTodayVisibility = "Collapsed";
+        public string NoneTodayVisibility
+        {
+            get => _noneTodayVisibility;
+            set
+            {
+                _noneTodayVisibility = value;
                 OnPropertyChanged();
             }
         }
@@ -168,6 +192,7 @@ namespace SchedulingApp.ViewModels
             LoginViewCommand = new RelayCommand(o => { NavigateLoginView((MainViewModel)o); });
 
             GetTodaysAppointments();
+            NoneTodayVisibility = TodaysAppointments.Count == 0 ? "Visible" : "Collapsed";
             CurrentWeek = GetCurrentWeek();
             AppointmentsThisWeek = GetAppointmentsThisWeek();
             SetUpcomingProperties();
@@ -187,12 +212,15 @@ namespace SchedulingApp.ViewModels
             mainViewModel.CurrentView = mainViewModel.LoginViewModel;
         }
 
-            private void GetTodaysAppointments()
+        private void GetTodaysAppointments()
         {
-            var todaysAppointments = DataAccess.SelectAppointmentsInDateRange(DateTime.UtcNow, DateTime.UtcNow.AddDays(30));
+            var todaysAppointments = DataAccess.SelectAppointmentsInDateRange(DateTime.UtcNow, DateTime.UtcNow);
             foreach(Appointment appointment in todaysAppointments)
             {
-                TodaysAppointments.Add(appointment);
+                if (appointment.Start.Day == DateTime.Today.Day)
+                {
+                    TodaysAppointments.Add(appointment);
+                }
             }
         }
 
@@ -201,7 +229,7 @@ namespace SchedulingApp.ViewModels
             UpcomingAppointment = DataAccess.SelectNextAppointment();
             if (UpcomingAppointment == null)
             {
-                UpcomingDateTime = "None";
+                UpcomingDateTime = "";
                 HasUpcomingAppointment = false;
                 return;
             }
@@ -222,7 +250,7 @@ namespace SchedulingApp.ViewModels
 
             UpcomingDateTime += UpcomingAppointment.Start.ToShortTimeString();
 
-            UpcomingCustomer = DataAccess.SelectCustomer(UpcomingAppointment.CustomerId).CustomerName;
+            UpcomingCustomer = UpcomingAppointment.CustomerName;
             UpcomingDetails = $"{UpcomingAppointment.Type} with {UpcomingCustomer}";
             HasUpcomingAppointment = true;
         }
