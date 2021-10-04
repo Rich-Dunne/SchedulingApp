@@ -6,8 +6,51 @@
              xmlns:local="clr-namespace:SchedulingApp.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="Black">
+             Background="Transparent">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" 
+                        Grid.RowSpan="2" 
+                        Style="{StaticResource NavigationPanelTheme}">
+            <TextBlock Text="Schedule Manager"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Foreground="White"
+                            Padding="10"
+                            FontSize="22"/>
+
+            <RadioButton Content="Home" 
+                             Height="50"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding HomeViewCommand}"
+                             CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+            <RadioButton Content="Calendar" 
+                             Height="50"
+                             FontSize="14"
+                             IsChecked="True"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding TestViewCommand}"
+                             CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+            <RadioButton Content="Clients" 
+                             Height="50"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding TestViewCommand}"/>
+            <RadioButton Content="Logout" 
+                             Height="50"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding TestViewCommand}"/>
+        </StackPanel>
     </Grid>
 </UserControl>
