@@ -53,8 +53,8 @@
             </StackPanel>
 
             <Button Content="{Binding ButtonText}"
-                Background="#615c89"
-                BorderBrush="#615c89"
+                Background="#6871db"
+                BorderBrush="#6871db"
                 Foreground="White"
                 Width="100"
                 Padding="5"
