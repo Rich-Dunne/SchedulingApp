@@ -12,6 +12,18 @@ namespace SchedulingApp.ViewModels
         public RelayCommand TestViewCommand { get; set; }
         public RelayCommand HomeViewCommand { get; set; }
 
+        private User _currentUser;
+        public User CurrentUser
+        {
+            get => _currentUser;
+            set
+            {
+                _currentUser = value;
+                OnPropertyChanged();
+                HomeViewModel = new HomeViewModel(this);
+            }
+        }
+
 
         private object _currentView;
         public object CurrentView
@@ -27,13 +39,12 @@ namespace SchedulingApp.ViewModels
         public MainViewModel()
         {
             Debug.WriteLine($"Initialized MainViewModel");
-            HomeViewModel = new HomeViewModel();
             LoginViewModel = new LoginViewModel();
             TestViewModel = new TestViewModel();
             CurrentView = LoginViewModel;
 
             HomeViewCommand = new RelayCommand(o => { CurrentView = HomeViewModel; });
-            TestViewCommand = new RelayCommand(o => { CurrentView = TestViewModel; });
+            //TestViewCommand = new RelayCommand(o => { CurrentView = TestViewModel; });
         }
     }
 }
