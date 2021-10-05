@@ -11,6 +11,8 @@
                 <ResourceDictionary Source="Theme/MenuButtonTheme.xaml"/>
                 <ResourceDictionary Source="Theme/TextBoxTheme.xaml"/>
                 <ResourceDictionary Source="Theme/NavigationPanelTheme.xaml"/>
+                <ResourceDictionary Source="Theme/WindowButtonTheme.xaml"/>
+                
                 <ResourceDictionary Source="Templates/DailyAgendaListView.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
