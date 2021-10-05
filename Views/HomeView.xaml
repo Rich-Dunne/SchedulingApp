@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:SchedulingApp.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="920">
-    <Border Background="#1e1f25">
+    <Border Background="Transparent">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
@@ -14,12 +14,11 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="25"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="1" 
+            <Border Grid.Row="0" 
                     Grid.RowSpan="2"
                     BorderBrush="#21252b"
                     BorderThickness="0,0,1,0">
@@ -60,7 +59,7 @@
 
             <Border HorizontalAlignment="Stretch"
                     Grid.Column="1"
-                    Grid.Row="1"
+                    Grid.Row="0"
                     Background="#1e1f25"
                     BorderBrush="#21252b"
                     BorderThickness="0,0,0,1">
@@ -190,29 +189,10 @@
                 </StackPanel>
             </Border>
 
-            <Border HorizontalAlignment="Right" 
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Grid.Row="0"
-                    Background="#1e1e1e"
-                    BorderBrush="#23242b"
-                    BorderThickness="0,0,0,1"
-                    Width="920">
-                <Button Content="X"
-                        Foreground="#b9bbbe"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        Height="25"
-                        Width="25"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Click="Button_Click"/>
-            </Border>
-
             <StackPanel Orientation="Vertical"
                         VerticalAlignment="Top"
                         Grid.Column="1"
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Margin="20,20,0,0">
 
                 <TextBlock Foreground="White"
@@ -265,23 +245,33 @@
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
                                         Margin="0,50,0,0">
-                                <Button Content="Cancel"
+                                <Border CornerRadius="2" 
+                                        Background="#ff1f48"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,0,10,0">
+                                    <Button Content="Cancel"
                                         Padding="10"
-                                        Width="75"
-                                        Margin="0,0,50,0"
                                         Background="Transparent"
-                                        BorderBrush="Transparent"
-                                        Foreground="#4675d9"
-                                        Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
-                                
-                                <Button Content="Edit"
-                                        Padding="10"
-                                        Width="75"
-                                        Background="#4675d9"
-                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
                                         Foreground="White"
+                                        Cursor="Hand"
                                         Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
-                                
+                                </Border>
+
+                                <Border CornerRadius="2" 
+                                        Background="#4675d9"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,0,10,0">
+                                    <Button Content="Edit"
+                                        Padding="10"
+                                        Width="55"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Foreground="White"
+                                        Cursor="Hand"
+                                        Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
+                                </Border>
+
                                 <Button Content="Book Appointment"
                                         Margin="0"
                                         Width="150"
@@ -290,6 +280,7 @@
                                         Background="Transparent"
                                         BorderBrush="#4675d9"
                                         Foreground="#4675d9"
+                                        Cursor="Hand"
                                         Visibility="{Binding NoneUpcomingVisibility}"/>
                             </StackPanel>
                         </StackPanel>
@@ -320,7 +311,8 @@
                                                 FontWeight="SemiBold"
                                                 Background="Transparent"
                                                 BorderBrush="#4675d9"
-                                                Foreground="#4675d9"/>
+                                                Foreground="#4675d9"
+                                                Cursor="Hand"/>
                                     </StackPanel>
                                 </Border>
 
