@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SchedulingApp.ViewModels
 {
@@ -181,6 +182,7 @@ namespace SchedulingApp.ViewModels
         public RelayCommand TestViewCommand { get; set; }
         public RelayCommand HomeViewCommand { get; set; }
         public RelayCommand LoginViewCommand { get; set; }
+        public RelayCommand CancelUpcomingCommand { get; set; }
         #endregion
 
         public HomeViewModel(MainViewModel mainViewModel)
@@ -190,6 +192,7 @@ namespace SchedulingApp.ViewModels
             TestViewCommand = new RelayCommand(o => { NavigateTestView((MainViewModel)o); });
             HomeViewCommand = new RelayCommand(o => { NavigateHomeView((MainViewModel)o); });
             LoginViewCommand = new RelayCommand(o => { NavigateLoginView((MainViewModel)o); });
+            CancelUpcomingCommand = new RelayCommand(o => CancelUpcomingAppointment());
 
             GetTodaysAppointments();
             NoneTodayVisibility = TodaysAppointments.Count == 0 ? "Visible" : "Collapsed";
@@ -214,6 +217,7 @@ namespace SchedulingApp.ViewModels
 
         private void GetTodaysAppointments()
         {
+            TodaysAppointments.Clear();
             var todaysAppointments = DataAccess.SelectAppointmentsInDateRange(DateTime.UtcNow, DateTime.UtcNow);
             foreach(Appointment appointment in todaysAppointments)
             {
@@ -295,6 +299,16 @@ namespace SchedulingApp.ViewModels
         {
             DateTime lastDay = _FIRST_DAY_OF_WEEK.AddDays(6);
             return DataAccess.SelectAppointmentsInDateRange(_FIRST_DAY_OF_WEEK, lastDay).Count;
+        }
+
+        private void CancelUpcomingAppointment()
+        {
+            var cancelPrompt = MessageBox.Show($"Are you sure you want to cancel your upcoming appointment with {UpcomingAppointment.CustomerName}?", "Cancel appointment?", MessageBoxButton.YesNo);
+            if(cancelPrompt == MessageBoxResult.Yes)
+            {
+                DataAccess.RemoveAppointment(UpcomingAppointment.AppointmentId);
+                SetUpcomingProperties();
+            }
         }
     }
 }
