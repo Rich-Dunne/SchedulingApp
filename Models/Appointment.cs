@@ -32,9 +32,9 @@ namespace SchedulingApp.Models
 
         }
 
-        public string GetTimeTo()
+        private string GetTimeTo()
         {
-            var timeTo = End.Subtract(Start);
+            var timeTo = Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime());
             if(timeTo.Minutes == 1)
             {
                 return $"In {timeTo.Minutes} minute";
