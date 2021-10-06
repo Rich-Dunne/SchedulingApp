@@ -313,7 +313,7 @@ namespace SchedulingApp.ViewModels
 
         public void AlertUpcomingAppointments()
         {
-            var appointments = TodaysAppointments.Where(x => x.Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime()).TotalMinutes <= 15 && x.Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime()).TotalMinutes >= 0);
+            var appointments = TodaysAppointments.Where(x => x.Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime()).TotalMinutes <= 15 && x.Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime()).TotalMinutes >= 0).OrderBy(y => y.TimeTo);
             if(appointments.Count() == 0)
             {
                 return;
