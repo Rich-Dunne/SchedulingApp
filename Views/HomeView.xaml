@@ -245,30 +245,19 @@
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
                                         Margin="0,50,0,0">
-                                <Border CornerRadius="2" 
-                                        Background="#ff1f48"
-                                        HorizontalAlignment="Center"
-                                        Margin="0,0,10,0">
+
                                     <Button Content="Cancel"
-                                        Padding="10"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Foreground="White"
-                                        Cursor="Hand"
-                                        Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
-                                </Border>
+                                            Style="{StaticResource CancelButtonTheme}"
+                                            Visibility="{Binding UpcomingVisibility, Mode=OneWay}"
+                                            Command="{Binding CancelUpcomingCommand}"/>
+
 
                                 <Border CornerRadius="2" 
                                         Background="#4675d9"
                                         HorizontalAlignment="Center"
                                         Margin="0,0,10,0">
                                     <Button Content="Edit"
-                                        Padding="10"
-                                        Width="55"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Foreground="White"
-                                        Cursor="Hand"
+                                        Style="{StaticResource EditButtonTheme}"
                                         Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
                                 </Border>
 
