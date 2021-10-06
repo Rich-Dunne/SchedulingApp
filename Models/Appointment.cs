@@ -22,8 +22,8 @@ namespace SchedulingApp.Models
         public string LastUpdateBy { get; set; }
 
         public string CustomerName { get => DataAccess.SelectCustomer(CustomerId).CustomerName; }
-        public string FormattedDate { get => Start.ToString("MMM dd"); }
-        public string FormattedTime { get => Start.ToShortTimeString(); }
+        public string FormattedDate { get => Start.ToLocalTime().ToString("MMM dd"); }
+        public string FormattedTime { get => Start.ToLocalTime().ToShortTimeString(); }
         public string Duration { get => End.Subtract(Start).ToString("mm"); }
         public string TimeTo { get => GetTimeTo(); }
 
