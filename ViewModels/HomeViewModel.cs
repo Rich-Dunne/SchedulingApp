@@ -218,7 +218,7 @@ namespace SchedulingApp.ViewModels
         private void GetTodaysAppointments()
         {
             TodaysAppointments.Clear();
-            var todaysAppointments = DataAccess.SelectAppointmentsInDateRange(DateTime.UtcNow, DateTime.UtcNow);
+            var todaysAppointments = DataAccess.SelectAppointmentsInDateRange(DateTime.UtcNow.AddMinutes(-30), DateTime.UtcNow.AddMinutes(30));
             foreach(Appointment appointment in todaysAppointments)
             {
                 if (appointment.Start.Day == DateTime.Today.Day)
@@ -309,6 +309,24 @@ namespace SchedulingApp.ViewModels
                 DataAccess.RemoveAppointment(UpcomingAppointment.AppointmentId);
                 SetUpcomingProperties();
             }
+        }
+
+        public void AlertUpcomingAppointments()
+        {
+            var appointments = TodaysAppointments.Where(x => x.Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime()).TotalMinutes <= 15 && x.Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime()).TotalMinutes >= 0);
+            if(appointments.Count() == 0)
+            {
+                return;
+            }
+
+            string appointmentDetails = "";
+            foreach(Appointment appointment in appointments)
+            {
+                appointmentDetails += $"{appointment.Type} with {appointment.CustomerName} at {appointment.Start.ToLocalTime().ToShortTimeString()}\n";
+            }
+
+            MessageBox.Show($"The following appointments are coming up soon:\n\n" +
+                            $"{appointmentDetails}", "Upcoming Appointment", MessageBoxButton.OK);
         }
     }
 }

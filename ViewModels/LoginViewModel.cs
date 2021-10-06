@@ -230,6 +230,7 @@ namespace SchedulingApp.ViewModels
 
             mainViewModel.CurrentUser = DataAccess.SelectUser(Username);
             mainViewModel.CurrentView = mainViewModel.HomeViewModel;
+            mainViewModel.HomeViewModel.AlertUpcomingAppointments();
             ResetProperties();
         }
 
