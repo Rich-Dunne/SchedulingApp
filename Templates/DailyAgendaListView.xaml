@@ -16,7 +16,7 @@
                     </TextBlock>
                 </StackPanel>
 
-                <StackPanel Margin="0,0,80,0">
+                <StackPanel Margin="0,0,70,0">
                     <TextBlock Text="{Binding CustomerName}" 
                                FontWeight="SemiBold"/>
                     <TextBlock Text="{Binding Type}"
@@ -24,7 +24,7 @@
                                Foreground="Gray"/>
                 </StackPanel>
 
-                <StackPanel>
+                <StackPanel HorizontalAlignment="Right">
                     <TextBlock Text="{Binding TimeTo}"
                                FontWeight="SemiBold"/>
                 </StackPanel>
