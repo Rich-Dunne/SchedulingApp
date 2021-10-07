@@ -53,14 +53,9 @@
             </StackPanel>
 
             <Button Content="{Binding ButtonText}"
-                Background="#6871db"
-                BorderBrush="#6871db"
-                Foreground="White"
-                Width="100"
-                Padding="5"
-                    Margin="10"
-                Command="{Binding SignInCommand}"
-                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                    Style="{StaticResource SignInButtonTheme}"
+                    Command="{Binding SignInCommand}"
+                    CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

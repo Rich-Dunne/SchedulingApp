@@ -239,20 +239,20 @@ namespace SchedulingApp.ViewModels
             }
 
             var upcomingDay = UpcomingAppointment.Start.Day;
-            if (upcomingDay == DateTime.Now.Day)
+            if (upcomingDay == DateTime.Now.ToLocalTime().Day)
             {
                 UpcomingDateTime += "Today @ ";
             }
-            else if (upcomingDay == DateTime.Now.AddDays(1).Day)
+            else if (upcomingDay == DateTime.Now.ToLocalTime().AddDays(1).Day)
             {
                 UpcomingDateTime += "Tomorrow @ ";
             }
             else
             {
-                UpcomingDateTime = $"{UpcomingAppointment.Start.ToString("MMM dd")} @ ";
+                UpcomingDateTime = $"{UpcomingAppointment.Start:MMM dd} @ ";
             }
 
-            UpcomingDateTime += UpcomingAppointment.Start.ToShortTimeString();
+            UpcomingDateTime += UpcomingAppointment.Start.ToLocalTime().ToShortTimeString();
 
             UpcomingCustomer = UpcomingAppointment.CustomerName;
             UpcomingDetails = $"{UpcomingAppointment.Type} with {UpcomingCustomer}";
