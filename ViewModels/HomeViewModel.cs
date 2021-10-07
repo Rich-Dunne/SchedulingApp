@@ -218,7 +218,7 @@ namespace SchedulingApp.ViewModels
         private void GetTodaysAppointments()
         {
             TodaysAppointments.Clear();
-            var todaysAppointments = DataAccess.SelectAppointmentsInDateRange(DateTime.UtcNow.AddMinutes(-30), DateTime.UtcNow.AddMinutes(30));
+            var todaysAppointments = DataAccess.SelectAppointmentsInDateRange(DateTime.Today, DateTime.Today.AddHours(23).AddMinutes(59).AddSeconds(59));
             foreach(Appointment appointment in todaysAppointments)
             {
                 if (appointment.Start.Day == DateTime.Today.Day)
