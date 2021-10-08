@@ -91,11 +91,6 @@
                         </StackPanel>
                     </Border>
 
-                    <!--<Border BorderBrush="#23242b" 
-                            BorderThickness="0.5"
-                            Height="40"
-                            VerticalAlignment="Center"/>-->
-
                     <Border HorizontalAlignment="Left"
                             Width="150"
                             Height="auto">
@@ -192,12 +187,13 @@
                                                Foreground="#f0bb57"
                                                FontSize="14"
                                                FontWeight="SemiBold"
-                                               Margin="10,0,0,0"
+                                               Margin="5,0,0,0"
                                                Padding="10"
                                                VerticalAlignment="Center"/>
                             </Border>
-                            <Label Content="None"
+                            <Label Content="No upcoming appointment"
                                    Foreground="Gray"
+                                   Height="50"
                                    FontSize="18"
                                    FontStyle="Italic"
                                    HorizontalAlignment="Center"
@@ -206,12 +202,13 @@
                             <TextBlock Text="{Binding UpcomingDateTime}"
                                        Foreground="White"
                                        FontSize="24"
-                                       Margin="20,0,0,0"/>
+                                       Margin="15,0,0,0"
+                                       Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
 
                             <TextBlock Text="{Binding UpcomingDetails}"
                                        Foreground="Gray"
                                        FontSize="14"
-                                       Margin="20,0,10,0"
+                                       Margin="15,0,10,0"
                                        Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
 
                             <StackPanel Orientation="Horizontal"
@@ -236,13 +233,14 @@
                                 <Button Content="Book Appointment"
                                         Style="{StaticResource BookAppointmentButtonTheme}"
                                         VerticalAlignment="Center"
-                                        Visibility="{Binding NoneUpcomingVisibility}"/>
+                                        Visibility="{Binding NoneUpcomingVisibility}"
+                                        Command="{Binding BookAppointmentCommand}"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
 
                     <Border Height="200"
-                            Width="350"
+                            Width="360"
                             CornerRadius="5"
                             Margin="20,0,0,0"
                             Background="#23242b">
@@ -250,13 +248,12 @@
                         <Grid>
                             <StackPanel>
                                 <Border>
-                                    <StackPanel Orientation="Horizontal"
-                                                Margin="0,0,0,0">
+                                    <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="TODAY'S AGENDA"
                                                Foreground="#f0bb57"
                                                FontSize="14"
                                                FontWeight="SemiBold"
-                                               Margin="10,0,0,0"
+                                               Margin="5,0,0,0"
                                                Padding="10"
                                                VerticalAlignment="Center"/>
 
@@ -267,27 +264,35 @@
                                     </StackPanel>
                                 </Border>
 
+                                <Label Content="No appointments today"
+                                       Foreground="Gray"
+                                       Height="50"
+                                       FontSize="18"
+                                       FontStyle="Italic"
+                                       HorizontalAlignment="Center"
+                                       Visibility="{Binding NoneTodayVisibility}"/>
+
                                 <ListView ItemsSource="{Binding TodaysAppointments}"
-                                          Height="100"
-                                          Margin="5,0,0,0"
+                                          Height="140"
                                           Background="Transparent"
                                           Foreground="White"
                                           BorderBrush="Transparent"
                                           FontSize="14"
-                                          IsHitTestVisible="False"
-                                          ItemTemplate="{StaticResource DailyAgendaListView}"/>
-
-                                <Label Content="No appointments today"
-                                   Foreground="Gray"
-                                   FontSize="18"
-                                   FontStyle="Italic"
-                                   HorizontalAlignment="Center"
-                                   Visibility="{Binding NoneTodayVisibility}"/>
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          ItemTemplate="{StaticResource DailyAgendaListView}">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="IsHitTestVisible" Value="False"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                </ListView>
 
                                 <Button Content="Book Appointment"
+                                        Margin="0,100,0,0"
                                         Style="{StaticResource BookAppointmentButtonTheme}"
                                         Width="130"
-                                        VerticalAlignment="Bottom"/>
+                                        VerticalAlignment="Bottom"
+                                        Command="{Binding BookAppointmentCommand}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
