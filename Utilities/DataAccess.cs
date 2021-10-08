@@ -359,6 +359,39 @@ namespace SchedulingApp.Utilities
             return result;
         }
 
+        public static Customer SelectCustomer(string customerName)
+        {
+            if (!OpenConnection())
+            {
+                return null;
+            }
+
+            var command = _connection.CreateCommand();
+            command.CommandText = "SELECT * FROM customer WHERE customerName = @customerName LIMIT 1";
+            command.Parameters.AddWithValue("@customerName", customerName);
+            MySqlDataReader reader = command.ExecuteReader();
+
+            Customer result = null;
+            while (reader.Read())
+            {
+                result = new Customer()
+                {
+                    CustomerId = reader.GetInt32(0),
+                    CustomerName = reader.GetString(1),
+                    AddressId = reader.GetInt32(2),
+                    Active = Convert.ToBoolean(reader.GetInt32(3)),
+                    CreateDate = reader.GetDateTime(4),
+                    CreatedBy = reader.GetString(5),
+                    LastUpdate = reader.GetDateTime(6),
+                    LastUpdateBy = reader.GetString(7)
+                };
+            }
+
+            CloseConnection();
+
+            return result;
+        }
+
         public static int RemoveCustomer(int customerId)
         {
             if (!OpenConnection())
@@ -375,7 +408,7 @@ namespace SchedulingApp.Utilities
             return rowsAffected;
         }
 
-        public static long InsertAppointment(Appointment appointment, string username)
+        public static long InsertAppointment(Appointment appointment, string userDoingInsertion)
         {
             if (!OpenConnection())
             {
@@ -392,12 +425,12 @@ namespace SchedulingApp.Utilities
             command.Parameters.AddWithValue("@contact", appointment.Contact);
             command.Parameters.AddWithValue("@type", appointment.Type);
             command.Parameters.AddWithValue("@url", appointment.URL);
-            command.Parameters.AddWithValue("@start", appointment.Start);
-            command.Parameters.AddWithValue("@end", appointment.End);
+            command.Parameters.AddWithValue("@start", appointment.Start.ToUniversalTime());
+            command.Parameters.AddWithValue("@end", appointment.End.ToUniversalTime());
             command.Parameters.AddWithValue("@createDate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@createdBy", "test");
+            command.Parameters.AddWithValue("@createdBy", userDoingInsertion);
             command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", "test");
+            command.Parameters.AddWithValue("@lastUpdateBy", userDoingInsertion);
             command.ExecuteNonQuery();
             long idFromInsert = command.LastInsertedId;
             CloseConnection();
@@ -516,6 +549,31 @@ namespace SchedulingApp.Utilities
             return result;
         }
 
+        public static bool FindOverlappingAppointments(DateTime startTime, DateTime endTime)
+        {
+            if (!OpenConnection())
+            {
+                return false;
+            }
+
+            var command = _connection.CreateCommand();
+            command.CommandText = "Select count(*) FROM appointment WHERE (start >= @startTime AND start <= @endTime) OR (@endTime >= start AND @endTime <= end) OR (start <= @startTime AND end >= @endTime)";
+            command.Parameters.AddWithValue("@startTime", startTime);
+            command.Parameters.AddWithValue("@endTime", endTime);
+            var count = command.ExecuteScalar();
+            CloseConnection();
+
+            if (count == null)
+            {
+                return false;
+            }
+
+            int matches = Convert.ToInt32(count);
+            //Console.WriteLine($"Number of matching accounts: {matches}");
+
+            return matches > 0;
+        }
+
         public static int RemoveAppointment(int appointmentId)
         {
             if (!OpenConnection())
@@ -559,71 +617,36 @@ namespace SchedulingApp.Utilities
             return result;
         }
 
-
-        public static void Update(string query)
-        {
-            if (!OpenConnection())
-            {
-                return;
-            }
-
-            var command = new MySqlCommand(query, _connection);
-            command.ExecuteNonQuery();
-
-            CloseConnection();
-        }
-
-        public static void Delete(string query)
-        {
-            if (!OpenConnection())
-            {
-                return;
-            }
-
-            MySqlCommand command = new MySqlCommand(query, _connection);
-            command.ExecuteNonQuery();
-
-            CloseConnection();
-        }
-
-        public static List<string> Select()
+        public static List<User> SelectAllUsers()
         {
             if (!OpenConnection())
             {
                 return null;
             }
 
-            var query = "SELECT * FROM customer";
-
-            var command = new MySqlCommand(query, _connection);
-
+            var command = _connection.CreateCommand();
+            command.CommandText = "SELECT * FROM user";
             MySqlDataReader reader = command.ExecuteReader();
-            Debug.WriteLine($"{reader.GetName(0)}\t {reader.GetName(1)}\t\t {reader.GetName(2)}");
 
+            var results = new List<User>();
             while (reader.Read())
             {
-                Debug.WriteLine($"{reader.GetInt32(0)}\t\t\t {reader.GetString(1)}\t\t {reader.GetString(2)}");
+                var user = new User()
+                {
+                    UserId = reader.GetInt32(0),
+                    UserName = reader.GetString(1),
+                    CreateDate = reader.GetDateTime(4).ToLocalTime(),
+                    CreatedBy = reader.GetString(5),
+                    LastUpdate = reader.GetDateTime(6).ToLocalTime(),
+                    LastUpdateBy = reader.GetString(7)
+                };
+
+                results.Add(user);
             }
 
-
             CloseConnection();
-            return new List<string>();
-        }
 
-        //Count statement
-        public static int Count()
-        {
-            return 0;
-        }
-
-        //Backup
-        public static void Backup()
-        {
-        }
-
-        //Restore
-        public static void Restore()
-        {
+            return results;
         }
     }
 }
