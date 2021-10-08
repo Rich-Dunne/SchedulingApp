@@ -13,17 +13,6 @@ namespace SchedulingApp.ViewModels
 {
     public class HomeViewModel : ObservableObject
     {
-        private object _currentView;
-        public object CurrentView
-        {
-            get { return _currentView; }
-            set
-            {
-                _currentView = value;
-                OnPropertyChanged();
-            }
-        }
-
         #region View Properties
         public string TodayDate { get; } = DateTime.Now.ToString("MMM dd, yyyy");
 
@@ -183,6 +172,7 @@ namespace SchedulingApp.ViewModels
         public RelayCommand HomeViewCommand { get; set; }
         public RelayCommand LoginViewCommand { get; set; }
         public RelayCommand CancelUpcomingCommand { get; set; }
+        public RelayCommand BookAppointmentCommand { get; set; }
         #endregion
 
         public HomeViewModel(MainViewModel mainViewModel)
@@ -193,12 +183,9 @@ namespace SchedulingApp.ViewModels
             HomeViewCommand = new RelayCommand(o => { NavigateHomeView((MainViewModel)o); });
             LoginViewCommand = new RelayCommand(o => { NavigateLoginView((MainViewModel)o); });
             CancelUpcomingCommand = new RelayCommand(o => CancelUpcomingAppointment());
+            BookAppointmentCommand = new RelayCommand(o => { NavigateBookAppointment(); });
 
-            GetTodaysAppointments();
-            NoneTodayVisibility = TodaysAppointments.Count == 0 ? "Visible" : "Collapsed";
-            CurrentWeek = GetCurrentWeek();
-            AppointmentsThisWeek = GetAppointmentsThisWeek();
-            SetUpcomingProperties();
+            UpdateProperties();
             
             //TestDataInsertion();
             //TestDataDeletion();
@@ -213,6 +200,21 @@ namespace SchedulingApp.ViewModels
         {
             mainViewModel.CurrentUser = null;
             mainViewModel.CurrentView = mainViewModel.LoginViewModel;
+        }
+
+        private void NavigateBookAppointment()
+        {
+            _MAIN_VIEW_MODEL.BookAppointmentViewModel.UpdateProperties();
+            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.BookAppointmentViewModel;
+        }
+
+        public void UpdateProperties()
+        {
+            GetTodaysAppointments();
+            NoneTodayVisibility = TodaysAppointments.Count == 0 ? "Visible" : "Collapsed";
+            CurrentWeek = GetCurrentWeek();
+            AppointmentsThisWeek = GetAppointmentsThisWeek();
+            SetUpcomingProperties();
         }
 
         private void GetTodaysAppointments()
@@ -307,7 +309,7 @@ namespace SchedulingApp.ViewModels
             if(cancelPrompt == MessageBoxResult.Yes)
             {
                 DataAccess.RemoveAppointment(UpcomingAppointment.AppointmentId);
-                SetUpcomingProperties();
+                UpdateProperties();
             }
         }
 
