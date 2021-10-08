@@ -51,8 +51,12 @@ namespace SchedulingApp.Models
             {
                 return $"In {timeTo.Hours} hours";
             }
+            if(timeTo.Minutes == 0)
+            {
+                return "Now";
+            }
 
-            return "Now";
+            return "Done";
         }
     }
 }
