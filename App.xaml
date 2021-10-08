@@ -20,12 +20,16 @@
                 <ResourceDictionary Source="Templates/DailyAgendaListView.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <DataTemplate DataType="{x:Type viewModel:LoginViewModel}">
+                <view:LoginView/>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
                 <view:HomeView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModel:LoginViewModel}">
-                <view:LoginView/>
+            <DataTemplate DataType="{x:Type viewModel:BookAppointmentViewModel}">
+                <view:BookAppointmentView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewModel:TestViewModel}">
