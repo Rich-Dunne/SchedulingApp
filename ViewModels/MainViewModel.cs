@@ -7,6 +7,7 @@ namespace SchedulingApp.ViewModels
     {
         public HomeViewModel HomeViewModel { get; set; }
         public LoginViewModel LoginViewModel { get; set; }
+        public BookAppointmentViewModel BookAppointmentViewModel { get; set; }
         public TestViewModel TestViewModel { get; set; }
         public RelayCommand SignInCommand { get; set; }
         public RelayCommand TestViewCommand { get; set; }
@@ -21,6 +22,7 @@ namespace SchedulingApp.ViewModels
                 _currentUser = value;
                 OnPropertyChanged();
                 HomeViewModel = new HomeViewModel(this);
+                BookAppointmentViewModel = new BookAppointmentViewModel(this);
             }
         }
 
@@ -40,11 +42,7 @@ namespace SchedulingApp.ViewModels
         {
             Debug.WriteLine($"Initialized MainViewModel");
             LoginViewModel = new LoginViewModel();
-            TestViewModel = new TestViewModel();
             CurrentView = LoginViewModel;
-
-            HomeViewCommand = new RelayCommand(o => { CurrentView = HomeViewModel; });
-            //TestViewCommand = new RelayCommand(o => { CurrentView = TestViewModel; });
         }
     }
 }
