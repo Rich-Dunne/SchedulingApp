@@ -3,10 +3,10 @@
     <DataTemplate x:Key="DailyAgendaListView">
         <Border BorderBrush="Gray"
                 BorderThickness="0,0,0,0.25"
-                Width="310"
+                Width="325"
                 Margin="10,0,0,0">
             <WrapPanel>
-                <StackPanel Margin="0,0,20,5">
+                <StackPanel Width="75" Margin="0,0,0,5">
                     <TextBlock Text="{Binding FormattedTime}" 
                                FontWeight="SemiBold"/>
                     <TextBlock FontSize="12"
@@ -16,7 +16,7 @@
                     </TextBlock>
                 </StackPanel>
 
-                <StackPanel Margin="0,0,70,0">
+                <StackPanel Width="150">
                     <TextBlock Text="{Binding CustomerName}" 
                                FontWeight="SemiBold"/>
                     <TextBlock Text="{Binding Type}"
@@ -24,9 +24,10 @@
                                Foreground="Gray"/>
                 </StackPanel>
 
-                <StackPanel HorizontalAlignment="Right">
+                <StackPanel Width="100">
                     <TextBlock Text="{Binding TimeTo}"
-                               FontWeight="SemiBold"/>
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Right"/>
                 </StackPanel>
             </WrapPanel>
         </Border>
