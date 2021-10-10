@@ -16,6 +16,7 @@
                 <ResourceDictionary Source="Theme/EditButtonTheme.xaml"/>
                 <ResourceDictionary Source="Theme/BookAppointmentButtonTheme.xaml"/>
                 <ResourceDictionary Source="Theme/SignInButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/ScrollBarTheme.xaml"/>
 
                 <ResourceDictionary Source="Templates/DailyAgendaListView.xaml"/>
             </ResourceDictionary.MergedDictionaries>
@@ -30,6 +31,14 @@
 
             <DataTemplate DataType="{x:Type viewModel:BookAppointmentViewModel}">
                 <view:BookAppointmentView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:UpdateAppointmentViewModel}">
+                <view:UpdateAppointmentView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:AddCustomerViewModel}">
+                <view:AddCustomerView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewModel:TestViewModel}">
