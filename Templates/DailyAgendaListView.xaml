@@ -3,7 +3,7 @@
     <DataTemplate x:Key="DailyAgendaListView">
         <Border BorderBrush="Gray"
                 BorderThickness="0,0,0,0.25"
-                Width="325"
+                Width="auto"
                 Margin="10,0,0,0">
             <WrapPanel>
                 <StackPanel Width="75" Margin="0,0,0,5">
@@ -24,7 +24,7 @@
                                Foreground="Gray"/>
                 </StackPanel>
 
-                <StackPanel Width="100">
+                <StackPanel Width="90">
                     <TextBlock Text="{Binding TimeTo}"
                                FontWeight="SemiBold"
                                HorizontalAlignment="Right"/>
