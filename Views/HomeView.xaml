@@ -226,8 +226,9 @@
                                         HorizontalAlignment="Center"
                                         Margin="0,0,10,0">
                                     <Button Content="Edit"
-                                        Style="{StaticResource EditButtonTheme}"
-                                        Visibility="{Binding UpcomingVisibility, Mode=OneWay}"/>
+                                            Style="{StaticResource EditButtonTheme}"
+                                            Visibility="{Binding UpcomingVisibility, Mode=OneWay}"
+                                            Command="{Binding UpdateAppointmentCommand}"/>
                                 </Border>
 
                                 <Button Content="Book Appointment"
