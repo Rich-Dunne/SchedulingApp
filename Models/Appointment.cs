@@ -24,7 +24,7 @@ namespace SchedulingApp.Models
         public string CustomerName { get => DataAccess.SelectCustomer(CustomerId).CustomerName; }
         public string FormattedDate { get => Start.ToLocalTime().ToString("MMM dd"); }
         public string FormattedTime { get => Start.ToLocalTime().ToShortTimeString(); }
-        public string Duration { get => End.Subtract(Start).ToString("mm"); }
+        public string Duration { get => End.Subtract(Start).TotalMinutes.ToString(); }
         public string TimeTo { get => GetTimeTo(); }
 
         public Appointment()
