@@ -170,23 +170,23 @@ namespace SchedulingApp.ViewModels
 
         public void BookAppointment()
         {
-            var user = DataAccess.SelectUser(SelectedUser);
-            Debug.WriteLine($"User: {user.UserName}");
-            var customer = DataAccess.SelectCustomer(SelectedCustomer);
-            Debug.WriteLine($"Customer: {customer.CustomerName}");
             var canParse = int.TryParse(Regex.Match(SelectedDuration, @"\d+").Value, out int duration);
             Debug.WriteLine($"Duration: {duration}");
-
             var endTime = _selectedDateTime.AddMinutes(duration);
             Debug.WriteLine($"Start:  {_selectedDateTime}, End: {endTime}");
 
-            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(_selectedDateTime.ToUniversalTime(), endTime.ToUniversalTime());
+            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(_MAIN_VIEW_MODEL.CurrentUser, _selectedDateTime, endTime);
             if(overlappingAppointment)
             {
                 Debug.WriteLine($"Appointment times overlap.");
                 MessageBox.Show($"An appointment is already scheduled during this time.  Please choose another time.", $"Appointment Time Unavailable", MessageBoxButton.OK);
                 return;
             }
+
+            var user = DataAccess.SelectUser(SelectedUser);
+            Debug.WriteLine($"User: {user.UserName}");
+            var customer = DataAccess.SelectCustomer(SelectedCustomer);
+            Debug.WriteLine($"Customer: {customer.CustomerName}");
 
             var appointment = new Appointment()
             {
@@ -198,12 +198,12 @@ namespace SchedulingApp.ViewModels
             };
 
             DataAccess.InsertAppointment(appointment, _MAIN_VIEW_MODEL.CurrentUser.UserName);
-            UpdateProperties();
+            ResetProperties();
             _MAIN_VIEW_MODEL.HomeViewModel.UpdateProperties();
             _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.HomeViewModel;
         }
 
-        public void UpdateProperties()
+        public void ResetProperties()
         {
             UserNames = new List<string>();
             _users.ForEach(x => UserNames.Add(x.UserName));
