@@ -66,69 +66,17 @@
                    Foreground="#f0bb57"
                    FontSize="24"/>
 
-                <!--<Border Width="200"
-                        BorderBrush="#21252b"
-                        BorderThickness="0,0,1,0">
-                    <StackPanel>
-                        <Label Content="Client Information"
-                           Foreground="White"
-                           FontSize="16"/>
-
-                        <Label Content="First Name"
-                           Foreground="White"
-                           Margin="0,10,0,0"/>
-                        <TextBox Width="125"
-                             Margin="5,0,0,0"
-                             HorizontalAlignment="Left"/>
-
-                        <Label Content="Last Name"
-                           Foreground="White"
-                           Margin="0,10,0,0"/>
-                        <TextBox Width="125"
-                             Margin="5,0,0,0"
-                             HorizontalAlignment="Left"/>
-
-                        <Label Content="Street Address"
-                           Foreground="White"
-                           Margin="0,10,0,0"/>
-                        <TextBox Width="125"
-                             Margin="5,0,0,0"
-                             HorizontalAlignment="Left"/>
-
-                        <Label Content="City"
-                           Foreground="White"
-                           Margin="0,10,0,0"/>
-                        <TextBox Width="125"
-                             Margin="5,0,0,0"
-                             HorizontalAlignment="Left"/>
-
-                        <Label Content="Country"
-                           Foreground="White"
-                           Margin="0,10,0,0"/>
-                        <TextBox Width="125"
-                             Margin="5,0,0,0"
-                             HorizontalAlignment="Left"/>
-
-                        <Label Content="Phone Number"
-                           Foreground="White"
-                           Margin="0,10,0,0"/>
-                        <TextBox Width="125"
-                             Margin="5,0,0,0"
-                             HorizontalAlignment="Left"/>
-                    </StackPanel>
-                </Border>-->
-
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel>
-                        <Label Content="Customer"
-                               Foreground="White"
-                               FontSize="20"/>
-                        <ComboBox Width="125"
-                                  Margin="5,0,0,0"
-                                  HorizontalAlignment="Left"
-                                  ItemsSource="{Binding CustomerNames}"
-                                  SelectedValue="{Binding SelectedCustomer}"/>
-                    </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel>
+                    <Label Content="Customer"
+                            Foreground="White"
+                            FontSize="20"/>
+                    <ComboBox Width="125"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                ItemsSource="{Binding CustomerNames}"
+                                SelectedValue="{Binding SelectedCustomer}"/>
+                </StackPanel>
 
                 <StackPanel Margin="20,0,0,0">
                     <Label Content="Appointment Type"
