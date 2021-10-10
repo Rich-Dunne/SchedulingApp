@@ -173,6 +173,8 @@ namespace SchedulingApp.ViewModels
         public RelayCommand LoginViewCommand { get; set; }
         public RelayCommand CancelUpcomingCommand { get; set; }
         public RelayCommand BookAppointmentCommand { get; set; }
+
+        public RelayCommand UpdateAppointmentCommand { get; set; }
         #endregion
 
         public HomeViewModel(MainViewModel mainViewModel)
@@ -183,7 +185,8 @@ namespace SchedulingApp.ViewModels
             HomeViewCommand = new RelayCommand(o => { NavigateHomeView((MainViewModel)o); });
             LoginViewCommand = new RelayCommand(o => { NavigateLoginView((MainViewModel)o); });
             CancelUpcomingCommand = new RelayCommand(o => CancelUpcomingAppointment());
-            BookAppointmentCommand = new RelayCommand(o => { NavigateBookAppointment(); });
+            BookAppointmentCommand = new RelayCommand(o => NavigateBookAppointment());
+            UpdateAppointmentCommand = new RelayCommand(o => NavigateUpdateAppointment());
 
             UpdateProperties();
         }
@@ -200,8 +203,14 @@ namespace SchedulingApp.ViewModels
 
         private void NavigateBookAppointment()
         {
-            _MAIN_VIEW_MODEL.BookAppointmentViewModel.UpdateProperties();
+            _MAIN_VIEW_MODEL.BookAppointmentViewModel.ResetProperties();
             _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.BookAppointmentViewModel;
+        }
+
+        private void NavigateUpdateAppointment()
+        {
+            _MAIN_VIEW_MODEL.UpdateAppointmentViewModel.SetProperties(UpcomingAppointment);
+            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.UpdateAppointmentViewModel;
         }
 
         public void UpdateProperties()
@@ -229,9 +238,9 @@ namespace SchedulingApp.ViewModels
         private void SetUpcomingProperties()
         {
             UpcomingAppointment = DataAccess.SelectNextAppointment();
+            UpcomingDateTime = "";
             if (UpcomingAppointment == null)
             {
-                UpcomingDateTime = "";
                 HasUpcomingAppointment = false;
                 return;
             }
