@@ -72,10 +72,11 @@
                             Foreground="White"
                             FontSize="20"/>
                     <ComboBox Width="125"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Left"
-                                ItemsSource="{Binding CustomerNames}"
-                                SelectedValue="{Binding SelectedCustomer}"/>
+                              Margin="5,0,0,0"
+                              HorizontalAlignment="Left"
+                              SelectedIndex="0"
+                              ItemsSource="{Binding CustomerNames}"
+                              SelectedValue="{Binding SelectedCustomer, Mode=OneWayToSource}"/>
                 </StackPanel>
 
                 <StackPanel Margin="20,0,0,0">
@@ -85,8 +86,9 @@
                     <ComboBox Width="165"
                               Margin="5,0,0,0"
                               HorizontalAlignment="Left"
+                              SelectedIndex="0"
                               ItemsSource="{Binding AppointmentTypes}"
-                              SelectedValue="{Binding SelectedAppointmentType}"/>
+                              SelectedValue="{Binding SelectedAppointmentType, Mode=OneWayToSource}"/>
                 </StackPanel>
 
                 <StackPanel Margin="20,0,0,0">
@@ -96,8 +98,9 @@
                     <ComboBox Width="125"
                               Margin="5,0,0,0"
                               HorizontalAlignment="Left"
+                              SelectedIndex="0"
                               ItemsSource="{Binding UserNames}"
-                              SelectedValue="{Binding SelectedUser}"/>
+                              SelectedValue="{Binding SelectedUser, Mode=OneWayToSource}"/>
                 </StackPanel>
             </StackPanel>
 
@@ -134,8 +137,9 @@
                     <ComboBox Width="125"
                               Margin="5,0,0,0"
                               HorizontalAlignment="Left"
+                              SelectedIndex="0"
                               ItemsSource="{Binding Durations}"
-                              SelectedValue="{Binding SelectedDuration}"/>
+                              SelectedValue="{Binding SelectedDuration, Mode=OneWayToSource}"/>
                 </StackPanel>
             </StackPanel>
 
