@@ -13,17 +13,6 @@ namespace SchedulingApp.ViewModels
 {
     public class BookAppointmentViewModel : ObservableObject
     {
-        //private object _currentView;
-        //public object CurrentView
-        //{
-        //    get { return _currentView; }
-        //    set
-        //    {
-        //        _currentView = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
-
         private MainViewModel _MAIN_VIEW_MODEL;
         private List<Customer> _customers = DataAccess.SelectAllCustomers();
         private List<User> _users = DataAccess.SelectAllUsers();
@@ -174,6 +163,13 @@ namespace SchedulingApp.ViewModels
             Debug.WriteLine($"Duration: {duration}");
             var endTime = _selectedDateTime.AddMinutes(duration);
             Debug.WriteLine($"Start:  {_selectedDateTime}, End: {endTime}");
+
+            if(endTime.Hour >= 17 && endTime.Minute > 0)
+            {
+                Debug.WriteLine($"Appointment extends past end of business day.");
+                MessageBox.Show($"Please choose a time and meeting duration that ends before 5:00 PM.", $"Appointment Time Unavailable", MessageBoxButton.OK);
+                return;
+            }
 
             bool overlappingAppointment = DataAccess.FindOverlappingAppointments(_MAIN_VIEW_MODEL.CurrentUser, _selectedDateTime, endTime);
             if(overlappingAppointment)
