@@ -315,7 +315,7 @@ namespace SchedulingApp.Utilities
             return idFromInsert;
         }
 
-        public static Address SelectAddress(string address1, string address2, int postalCode, int cityId)
+        public static Address SelectAddress(string address, string address2, int postalCode, int cityId)
         {
             if (!OpenConnection())
             {
@@ -323,8 +323,8 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM address WHERE address1 = @address1 AND address2 = @address2 AND postalCode = @postalCode AND cityId = @cityId";
-            command.Parameters.AddWithValue("@address1", address1);
+            command.CommandText = "SELECT * FROM address WHERE address = @address AND address2 = @address2 AND postalCode = @postalCode AND cityId = @cityId";
+            command.Parameters.AddWithValue("@address", address);
             command.Parameters.AddWithValue("@address2", address2);
             command.Parameters.AddWithValue("@postalCode", postalCode);
             command.Parameters.AddWithValue("@cityId", cityId);
@@ -745,7 +745,7 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "Select count(*) FROM appointment WHERE userId == @userId AND ((start >= @startTime AND start <= @endTime) OR (@endTime >= start AND @endTime <= end) OR (start <= @startTime AND end >= @endTime))";
+            command.CommandText = "Select count(*) FROM appointment WHERE userId = @userId AND ((start >= @startTime AND start <= @endTime) OR (@endTime >= start AND @endTime <= end) OR (start <= @startTime AND end >= @endTime))";
             command.Parameters.AddWithValue("@userId", user.UserId);
             command.Parameters.AddWithValue("@startTime", startTime.ToUniversalTime());
             command.Parameters.AddWithValue("@endTime", endTime.ToUniversalTime());
