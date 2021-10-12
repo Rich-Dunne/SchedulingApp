@@ -5,24 +5,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace SchedulingApp.ViewModels
 {
     public class AddCustomerViewModel : ObservableObject, INotifyDataErrorInfo
     {
-        private ErrorsViewModel _errorsViewModel;
         private MainViewModel _MAIN_VIEW_MODEL;
         private List<Customer> _customers = DataAccess.SelectAllCustomers();
         private List<User> _users = DataAccess.SelectAllUsers();
-        private string _NAME_REGEX = "^[a-zA-Z]*$";
-        private string _SPACED_NAME_REGEX = "^[a-zA-Z ]*$";
-        private string _PHONE_NUMBER_REGEX = "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$";
 
         #region Form Properties
         private string _firstName = "";
@@ -33,7 +25,7 @@ namespace SchedulingApp.ViewModels
             {
                 _firstName = value;
                 OnPropertyChanged();
-                ValidateInput();
+                ValidateFirstName();
             }
         }
 
@@ -45,7 +37,7 @@ namespace SchedulingApp.ViewModels
             {
                 _lastName = value;
                 OnPropertyChanged();
-                ValidateInput();
+                ValidateLastName();
             }
         }
 
@@ -57,7 +49,7 @@ namespace SchedulingApp.ViewModels
             {
                 _address = value;
                 OnPropertyChanged();
-                ValidateInput();
+                ValidateAddress();
             }
         }
 
@@ -80,7 +72,7 @@ namespace SchedulingApp.ViewModels
             {
                 _city = value;
                 OnPropertyChanged();
-                ValidateInput();
+                ValidateCity();
             }
         }
 
@@ -92,7 +84,7 @@ namespace SchedulingApp.ViewModels
             {
                 _country = value;
                 OnPropertyChanged();
-                ValidateInput();
+                ValidateCountry();
             }
         }
 
@@ -104,7 +96,7 @@ namespace SchedulingApp.ViewModels
             {
                 _postal = value;
                 OnPropertyChanged();
-                ValidateInput();
+                ValidatePostal();
             }
         }
 
@@ -116,18 +108,15 @@ namespace SchedulingApp.ViewModels
             {
                 _phone = value;
                 OnPropertyChanged();
-                ValidateInput();
+                ValidatePhone();
             }
         }
         #endregion
 
-        #region Validation
+        #region Error Properties
+        private ErrorsViewModel _errorsViewModel;
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
         public bool HasErrors => _errorsViewModel.HasErrors;
-        private string _requiredError { get; } = "Required";
-        private string _formatError { get; } = "Invalid format";
-        private string _phoneFormatError { get; } = "Invalid format (area code required)";
         #endregion
 
         #region Commands
@@ -283,74 +272,75 @@ namespace SchedulingApp.ViewModels
 
         private void ValidateInput()
         {
+            ValidateFirstName();
+            ValidateLastName();
+            ValidateAddress();
+            ValidateCity();
+            ValidateCountry();
+            ValidatePostal();
+            ValidatePhone();
+        }
+
+        private void ValidateFirstName()
+        {
             _errorsViewModel.ClearErrors(nameof(FirstName));
+            if (!CustomerValidator.ValidateName(FirstName, out string errorMessage))
+            {
+                _errorsViewModel.AddError(nameof(FirstName), errorMessage);
+            }
+        }
+
+        private void ValidateLastName()
+        {
             _errorsViewModel.ClearErrors(nameof(LastName));
+            if (!CustomerValidator.ValidateName(LastName, out string errorMessage))
+            {
+                _errorsViewModel.AddError(nameof(LastName), errorMessage);
+            }
+        }
+
+        private void ValidateAddress()
+        {
             _errorsViewModel.ClearErrors(nameof(Address));
+            if (!CustomerValidator.ValidateRequired(Address, out string errorMessage))
+            {
+                _errorsViewModel.AddError(nameof(Address), errorMessage);
+            }
+        }
+
+        private void ValidateCity()
+        {
             _errorsViewModel.ClearErrors(nameof(City));
-            _errorsViewModel.ClearErrors(nameof(Postal));
+            if (!CustomerValidator.ValidateName(City, out string errorMessage))
+            {
+                _errorsViewModel.AddError(nameof(City), errorMessage);
+            }
+        }
+
+        private void ValidateCountry()
+        {
             _errorsViewModel.ClearErrors(nameof(Country));
+            if (!CustomerValidator.ValidateName(Country, out string errorMessage))
+            {
+                _errorsViewModel.AddError(nameof(Country), errorMessage);
+            }
+        }
+
+        private void ValidatePostal()
+        {
+            _errorsViewModel.ClearErrors(nameof(Postal));
+            if (!CustomerValidator.ValidateRequired(Postal, out string errorMessage))
+            {
+                _errorsViewModel.AddError(nameof(Postal), errorMessage);
+            }
+        }
+
+        private void ValidatePhone()
+        {
             _errorsViewModel.ClearErrors(nameof(Phone));
-
-            // FirstName validation
-            if (string.IsNullOrWhiteSpace(FirstName))
+            if (!CustomerValidator.ValidatePhone(Phone, out string errorMessage))
             {
-                _errorsViewModel.AddError(nameof(FirstName), _requiredError);
-            }
-            else if (!Regex.IsMatch(FirstName, _NAME_REGEX))
-            {
-                _errorsViewModel.AddError(nameof(FirstName), _formatError);
-            }
-
-            // LastName validation
-            if (string.IsNullOrWhiteSpace(LastName))
-            {
-                _errorsViewModel.AddError(nameof(LastName), _requiredError);
-            }
-            else if (!Regex.IsMatch(LastName, _NAME_REGEX))
-            {
-                _errorsViewModel.AddError(nameof(LastName), _formatError);
-            }
-
-            // Address validation
-            if (string.IsNullOrWhiteSpace(Address))
-            {
-                _errorsViewModel.AddError(nameof(Address), _requiredError);
-            }
-
-            // City validation
-            if (string.IsNullOrWhiteSpace(City))
-            {
-                _errorsViewModel.AddError(nameof(City), _requiredError);
-            }
-            else if (!Regex.IsMatch(City, _SPACED_NAME_REGEX))
-            {
-                _errorsViewModel.AddError(nameof(City), _formatError);
-            }
-
-            // Postal validation
-            if (string.IsNullOrWhiteSpace(Postal))
-            {
-                _errorsViewModel.AddError(nameof(Postal), _requiredError);
-            }
-
-            // Country validation
-            if (string.IsNullOrWhiteSpace(Country))
-            {
-                _errorsViewModel.AddError(nameof(Country), _requiredError);
-            }
-            else if (!Regex.IsMatch(Country, _SPACED_NAME_REGEX))
-            {
-                _errorsViewModel.AddError(nameof(Country), _formatError);
-            }
-
-            // Phone validation
-            if (string.IsNullOrWhiteSpace(Phone))
-            {
-                _errorsViewModel.AddError(nameof(Phone), _requiredError);
-            }
-            else if (!Regex.IsMatch(Phone, _PHONE_NUMBER_REGEX))
-            {
-                _errorsViewModel.AddError(nameof(Phone), _phoneFormatError);
+                _errorsViewModel.AddError(nameof(Phone), errorMessage);
             }
         }
     }
