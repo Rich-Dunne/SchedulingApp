@@ -9,10 +9,8 @@ namespace SchedulingApp.ViewModels
         public LoginViewModel LoginViewModel { get; set; }
         public BookAppointmentViewModel BookAppointmentViewModel { get; set; }
         public UpdateAppointmentViewModel UpdateAppointmentViewModel { get; set; }
+        public AddCustomerViewModel AddCustomerViewModel { get; set; }
         public TestViewModel TestViewModel { get; set; }
-        public RelayCommand SignInCommand { get; set; }
-        public RelayCommand TestViewCommand { get; set; }
-        public RelayCommand HomeViewCommand { get; set; }
 
         private User _currentUser;
         public User CurrentUser
@@ -28,6 +26,7 @@ namespace SchedulingApp.ViewModels
                     HomeViewModel = new HomeViewModel(this);
                     BookAppointmentViewModel = new BookAppointmentViewModel(this);
                     UpdateAppointmentViewModel = new UpdateAppointmentViewModel(this);
+                    AddCustomerViewModel = new AddCustomerViewModel(this);
                 }
             }
         }
