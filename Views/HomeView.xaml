@@ -153,6 +153,17 @@
                             </StackPanel>
                         </Grid>
                     </Border>
+
+                    <Border HorizontalAlignment="Left"
+                            Width="150"
+                            Height="auto">
+                        <Grid>
+                            <StackPanel>
+                                <Button Content="Add Client"
+                                        Command="{Binding AddClientCommand}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                 </StackPanel>
             </Border>
 
