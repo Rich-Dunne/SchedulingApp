@@ -173,8 +173,8 @@ namespace SchedulingApp.ViewModels
         public RelayCommand LoginViewCommand { get; set; }
         public RelayCommand CancelUpcomingCommand { get; set; }
         public RelayCommand BookAppointmentCommand { get; set; }
-
         public RelayCommand UpdateAppointmentCommand { get; set; }
+        public RelayCommand AddClientCommand { get; set; }
         #endregion
 
         public HomeViewModel(MainViewModel mainViewModel)
@@ -187,6 +187,7 @@ namespace SchedulingApp.ViewModels
             CancelUpcomingCommand = new RelayCommand(o => CancelUpcomingAppointment());
             BookAppointmentCommand = new RelayCommand(o => NavigateBookAppointment());
             UpdateAppointmentCommand = new RelayCommand(o => NavigateUpdateAppointment());
+            AddClientCommand = new RelayCommand(o => NavigateAddCustomer());
 
             UpdateProperties();
         }
@@ -212,6 +213,8 @@ namespace SchedulingApp.ViewModels
             _MAIN_VIEW_MODEL.UpdateAppointmentViewModel.SetProperties(UpcomingAppointment);
             _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.UpdateAppointmentViewModel;
         }
+
+        private void NavigateAddCustomer() => _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.AddCustomerViewModel;
 
         public void UpdateProperties()
         {
