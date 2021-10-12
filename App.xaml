@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="Theme/ScrollBarTheme.xaml"/>
 
                 <ResourceDictionary Source="Templates/DailyAgendaListView.xaml"/>
+                <ResourceDictionary Source="Templates/ErrorTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type viewModel:LoginViewModel}">
