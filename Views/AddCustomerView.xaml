@@ -74,7 +74,8 @@
                     <TextBox Width="125"
                              Margin="5,0,0,0"
                              HorizontalAlignment="Left"
-                             Text="{Binding FirstName}"/>
+                             Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Validation.ErrorTemplate="{StaticResource ErrorTemplate}"/>
                 </StackPanel>
 
                 <StackPanel Margin="10,0,0,0">
@@ -84,7 +85,8 @@
                     <TextBox Width="125"
                              Margin="5,0,0,0"
                              HorizontalAlignment="Left"
-                             Text="{Binding LastName}"/>
+                             Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Validation.ErrorTemplate="{StaticResource ErrorTemplate}"/>
                 </StackPanel>
             </StackPanel>
 
@@ -96,7 +98,8 @@
                     <TextBox Width="125"
                              Margin="5,0,0,0"
                              HorizontalAlignment="Left"
-                             Text="{Binding Address}"/>
+                             Text="{Binding Address, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Validation.ErrorTemplate="{StaticResource ErrorTemplate}"/>
                 </StackPanel>
 
                 <StackPanel Margin="10,0,0,0">
@@ -116,7 +119,8 @@
                     <TextBox Width="125"
                              Margin="5,0,0,0"
                              HorizontalAlignment="Left"
-                             Text="{Binding City}"/>
+                             Text="{Binding City, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Validation.ErrorTemplate="{StaticResource ErrorTemplate}"/>
                 </StackPanel>
 
 
@@ -130,7 +134,8 @@
                     <TextBox Width="125"
                              Margin="5,0,0,0"
                              HorizontalAlignment="Left"
-                             Text="{Binding Postal}"/>
+                             Text="{Binding Postal, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Validation.ErrorTemplate="{StaticResource ErrorTemplate}"/>
                 </StackPanel>
 
                 <StackPanel Margin="10,0,0,0">
@@ -140,7 +145,8 @@
                     <TextBox Width="125"
                              Margin="5,0,0,0"
                              HorizontalAlignment="Left"
-                             Text="{Binding Country}"/>
+                             Text="{Binding Country, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Validation.ErrorTemplate="{StaticResource ErrorTemplate}"/>
                 </StackPanel>
 
                 <StackPanel Margin="10,0,0,0">
@@ -148,9 +154,10 @@
                            Foreground="White"
                            FontSize="20"/>
                     <TextBox Width="125"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Left"
-                             Text="{Binding Phone}"/>
+                             Margin="5,0,0,0"
+                             HorizontalAlignment="Left"
+                             Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Validation.ErrorTemplate="{StaticResource ErrorTemplate}"/>
                 </StackPanel>
             </StackPanel>
 
@@ -162,7 +169,7 @@
                         Command="{Binding HomeViewCommand}"/>
                 <Button Content="Submit"
                         Style="{StaticResource EditButtonTheme}"
-                        Command="{Binding BookAppointmentCommand}"/>
+                        Command="{Binding AddCustomerCommand}"/>
             </StackPanel>
         </StackPanel>
     </Grid>
