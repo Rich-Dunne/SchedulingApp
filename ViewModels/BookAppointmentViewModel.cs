@@ -3,17 +3,13 @@ using SchedulingApp.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace SchedulingApp.ViewModels
 {
     public class BookAppointmentViewModel : ObservableObject
     {
-        private MainViewModel _MAIN_VIEW_MODEL;
         private List<Customer> _customers = DataAccess.SelectAllCustomers();
         private List<User> _users = DataAccess.SelectAllUsers();
 
@@ -137,24 +133,12 @@ namespace SchedulingApp.ViewModels
         public RelayCommand BookAppointmentCommand { get; set; }
         #endregion
 
-        public BookAppointmentViewModel(MainViewModel mainViewModel)
+        public BookAppointmentViewModel()
         {
             Debug.WriteLine($"BookAppointment VM initialized.");
-            _MAIN_VIEW_MODEL = mainViewModel;
-            LoginViewCommand = new RelayCommand(o => { NavigateLoginView((MainViewModel)o); });
-            HomeViewCommand = new RelayCommand(o => { NavigateHomeView(); });
+            LoginViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<LoginViewModel>(); });
+            HomeViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<HomeViewModel>(); });
             BookAppointmentCommand = new RelayCommand(o => { BookAppointment(); });
-        }
-
-        private void NavigateLoginView(MainViewModel mainViewModel)
-        {
-            mainViewModel.CurrentUser = null;
-            mainViewModel.CurrentView = mainViewModel.LoginViewModel;
-        }
-
-        private void NavigateHomeView()
-        {
-            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.HomeViewModel;
         }
 
         public void BookAppointment()
@@ -171,7 +155,7 @@ namespace SchedulingApp.ViewModels
                 return;
             }
 
-            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(_MAIN_VIEW_MODEL.CurrentUser, _selectedDateTime, endTime);
+            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(NavigationService.MainVM.CurrentUser, _selectedDateTime, endTime);
             if(overlappingAppointment)
             {
                 Debug.WriteLine($"Appointment times overlap.");
@@ -193,10 +177,10 @@ namespace SchedulingApp.ViewModels
                 End = _selectedDateTime.AddMinutes(duration)
             };
 
-            DataAccess.InsertAppointment(appointment, _MAIN_VIEW_MODEL.CurrentUser.UserName);
+            DataAccess.InsertAppointment(appointment, NavigationService.MainVM.CurrentUser.UserName);
             ResetProperties();
-            _MAIN_VIEW_MODEL.HomeViewModel.UpdateProperties();
-            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.HomeViewModel;
+
+            NavigationService.NavigateTo<HomeViewModel>();
         }
 
         public void ResetProperties()

@@ -163,7 +163,7 @@ namespace SchedulingApp.ViewModels
 
         public LoginViewModel()
         {
-            SignInCommand = new RelayCommand(o => { SignIn((MainViewModel)o); });
+            SignInCommand = new RelayCommand(o => { SignIn(); });
             LoginValidator.UseForeignLanguage = UserIsOutsideUSA();
             if(UserIsOutsideUSA())
             {
@@ -191,7 +191,7 @@ namespace SchedulingApp.ViewModels
             ButtonText = "Iniciar sesión";
         }
 
-        private void SignIn(MainViewModel mainViewModel)
+        private void SignIn()
         {
             HasErrors = !LoginValidator.ValidateLogin(Username, Password, out string usernameErrorMessage, out string passwordErrorMessage);
             if (HasErrors)
@@ -228,10 +228,10 @@ namespace SchedulingApp.ViewModels
 
             UserLogManager.LogValidSignIn(Username);
 
-            mainViewModel.CurrentUser = DataAccess.SelectUser(Username);
-            mainViewModel.CurrentView = mainViewModel.HomeViewModel;
-            mainViewModel.HomeViewModel.AlertUpcomingAppointments();
+            NavigationService.MainVM.CurrentUser = DataAccess.SelectUser(Username);
             ResetProperties();
+
+            NavigationService.NavigateTo<HomeViewModel>(true);
         }
 
         private void ResetProperties()

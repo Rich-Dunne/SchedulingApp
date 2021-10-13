@@ -5,14 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace SchedulingApp.ViewModels
 {
     public class AddCustomerViewModel : ObservableObject, INotifyDataErrorInfo
     {
-        private MainViewModel _MAIN_VIEW_MODEL;
         private List<Customer> _customers = DataAccess.SelectAllCustomers();
         private List<User> _users = DataAccess.SelectAllUsers();
 
@@ -125,24 +123,16 @@ namespace SchedulingApp.ViewModels
         public RelayCommand AddCustomerCommand { get; set; }
         #endregion
 
-        public AddCustomerViewModel(MainViewModel mainViewModel)
+        public AddCustomerViewModel()
         {
             Debug.WriteLine($"AddCustomer VM initialized.");
-            _MAIN_VIEW_MODEL = mainViewModel;
             _errorsViewModel = new ErrorsViewModel();
             _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
-            LoginViewCommand = new RelayCommand(o => { NavigateLoginView((MainViewModel)o); });
-            HomeViewCommand = new RelayCommand(o => { NavigateHomeView(); });
+            LoginViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<LoginViewModel>(); });
+            HomeViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<HomeViewModel>(); });
             AddCustomerCommand = new RelayCommand(o => { AddCustomer(); });
-        }
 
-        private void NavigateLoginView(MainViewModel mainViewModel)
-        {
-            mainViewModel.CurrentUser = null;
-            mainViewModel.CurrentView = mainViewModel.LoginViewModel;
         }
-
-        private void NavigateHomeView() => _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.HomeViewModel;
 
         public void AddCustomer()
         {
@@ -197,11 +187,11 @@ namespace SchedulingApp.ViewModels
                 {
                     CountryName = Country,
                     CreateDate = DateTime.Now,
-                    CreatedBy = _MAIN_VIEW_MODEL.CurrentUser.UserName,
+                    CreatedBy = NavigationService.MainVM.CurrentUser.UserName,
                     LastUpdate = DateTime.Now,
-                    LastUpdateBy = _MAIN_VIEW_MODEL.CurrentUser.UserName
+                    LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
                 };
-                country.CountryId = (int)DataAccess.InsertCountry(country, _MAIN_VIEW_MODEL.CurrentUser.UserName);
+                country.CountryId = (int)DataAccess.InsertCountry(country, NavigationService.MainVM.CurrentUser.UserName);
             }
 
             if (city is null)
@@ -211,11 +201,11 @@ namespace SchedulingApp.ViewModels
                     CityName = City,
                     CountryId = country.CountryId,
                     CreateDate = DateTime.Now,
-                    CreatedBy = _MAIN_VIEW_MODEL.CurrentUser.UserName,
+                    CreatedBy = NavigationService.MainVM.CurrentUser.UserName,
                     LastUpdate = DateTime.Now,
-                    LastUpdateBy = _MAIN_VIEW_MODEL.CurrentUser.UserName
+                    LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
                 };
-                city.CityId = (int)DataAccess.InsertCity(city, _MAIN_VIEW_MODEL.CurrentUser.UserName);
+                city.CityId = (int)DataAccess.InsertCity(city, NavigationService.MainVM.CurrentUser.UserName);
             }
 
             if (address is null)
@@ -228,11 +218,11 @@ namespace SchedulingApp.ViewModels
                     PostalCode = int.Parse(Postal),
                     Phone = Phone,
                     CreateDate = DateTime.Now,
-                    CreatedBy = _MAIN_VIEW_MODEL.CurrentUser.UserName,
+                    CreatedBy = NavigationService.MainVM.CurrentUser.UserName,
                     LastUpdate = DateTime.Now,
-                    LastUpdateBy = _MAIN_VIEW_MODEL.CurrentUser.UserName
+                    LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
                 };
-                address.AddressId = (int)DataAccess.InsertAddress(address, _MAIN_VIEW_MODEL.CurrentUser.UserName);
+                address.AddressId = (int)DataAccess.InsertAddress(address, NavigationService.MainVM.CurrentUser.UserName);
             }
 
             var customer = new Customer()
@@ -240,15 +230,15 @@ namespace SchedulingApp.ViewModels
                 CustomerName = $"{FirstName} {LastName}",
                 AddressId = address.AddressId,
                 CreateDate = DateTime.Now,
-                CreatedBy = _MAIN_VIEW_MODEL.CurrentUser.UserName,
+                CreatedBy = NavigationService.MainVM.CurrentUser.UserName,
                 LastUpdate = DateTime.Now,
-                LastUpdateBy = _MAIN_VIEW_MODEL.CurrentUser.UserName
+                LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
             };
-            DataAccess.InsertCustomer(customer, _MAIN_VIEW_MODEL.CurrentUser.UserName);
+            DataAccess.InsertCustomer(customer, NavigationService.MainVM.CurrentUser.UserName);
 
             ResetProperties();
-            _MAIN_VIEW_MODEL.HomeViewModel.UpdateProperties();
-            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.HomeViewModel;
+
+            NavigationService.NavigateTo<HomeViewModel>();
         }
 
         public void ResetProperties()

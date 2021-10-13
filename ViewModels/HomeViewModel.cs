@@ -1,12 +1,8 @@
 ﻿using SchedulingApp.Models;
 using SchedulingApp.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace SchedulingApp.ViewModels
@@ -45,6 +41,17 @@ namespace SchedulingApp.ViewModels
             set
             {
                 _appointmentsThisWeek = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _customers;
+        public int Customers
+        {
+            get => _customers;
+            set
+            {
+                _customers = value;
                 OnPropertyChanged();
             }
         }
@@ -177,44 +184,17 @@ namespace SchedulingApp.ViewModels
         public RelayCommand AddClientCommand { get; set; }
         #endregion
 
-        public HomeViewModel(MainViewModel mainViewModel)
+        public HomeViewModel()
         {
-            _MAIN_VIEW_MODEL = mainViewModel;
-            CurrentUser = _MAIN_VIEW_MODEL.CurrentUser;
-            TestViewCommand = new RelayCommand(o => { NavigateTestView((MainViewModel)o); });
-            HomeViewCommand = new RelayCommand(o => { NavigateHomeView((MainViewModel)o); });
-            LoginViewCommand = new RelayCommand(o => { NavigateLoginView((MainViewModel)o); });
+            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo<HomeViewModel>());
+            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo<LoginViewModel>());
             CancelUpcomingCommand = new RelayCommand(o => CancelUpcomingAppointment());
-            BookAppointmentCommand = new RelayCommand(o => NavigateBookAppointment());
-            UpdateAppointmentCommand = new RelayCommand(o => NavigateUpdateAppointment());
-            AddClientCommand = new RelayCommand(o => NavigateAddCustomer());
+            BookAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<BookAppointmentViewModel>());
+            UpdateAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateAppointmentViewModel>(UpcomingAppointment));
+            AddClientCommand = new RelayCommand(o => NavigationService.NavigateTo<AddCustomerViewModel>());
 
             UpdateProperties();
         }
-
-        private void NavigateTestView(MainViewModel mainViewModel) => mainViewModel.CurrentView = mainViewModel.TestViewModel;
-
-        private void NavigateHomeView(MainViewModel mainViewModel) => mainViewModel.CurrentView = mainViewModel.HomeViewModel;
-
-        private void NavigateLoginView(MainViewModel mainViewModel)
-        {
-            mainViewModel.CurrentUser = null;
-            mainViewModel.CurrentView = mainViewModel.LoginViewModel;
-        }
-
-        private void NavigateBookAppointment()
-        {
-            _MAIN_VIEW_MODEL.BookAppointmentViewModel.ResetProperties();
-            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.BookAppointmentViewModel;
-        }
-
-        private void NavigateUpdateAppointment()
-        {
-            _MAIN_VIEW_MODEL.UpdateAppointmentViewModel.SetProperties(UpcomingAppointment);
-            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.UpdateAppointmentViewModel;
-        }
-
-        private void NavigateAddCustomer() => _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.AddCustomerViewModel;
 
         public void UpdateProperties()
         {
@@ -222,6 +202,7 @@ namespace SchedulingApp.ViewModels
             NoneTodayVisibility = TodaysAppointments.Count == 0 ? "Visible" : "Collapsed";
             CurrentWeek = GetCurrentWeek();
             AppointmentsThisWeek = GetAppointmentsThisWeek();
+            Customers = DataAccess.CountAllCustomers();
             SetUpcomingProperties();
         }
 
@@ -268,36 +249,6 @@ namespace SchedulingApp.ViewModels
             UpcomingDetails = $"{UpcomingAppointment.Type} with {UpcomingCustomer}";
             HasUpcomingAppointment = true;
         }
-
-        //private void TestDataInsertion()
-        //{
-        //    //DataAccess.InsertCountry(new Country() { CountryName = "Test Country" }, "test");
-        //    //DataAccess.InsertCity(new City() { CityName = "Test City", CountryId = 1 }, "test");
-        //    //DataAccess.InsertAddress(new Address() { Address1 = "420 Test St.", Address2 = "Apartment 69", CityId = 1, PostalCode = 90210, Phone = 8675309 }, "test");
-        //    //DataAccess.InsertCustomer(new Customer() { CustomerName = "Test Customer", AddressId = 1, Active = true }, "test");
-        //    //DataAccess.InsertAppointment(new Appointment() { CustomerId = 1, UserId = 1, Type = "Test appointment", Start = DateTime.Today.AddDays(1), End = DateTime.Today.AddDays(2)}, "test");
-        //}
-
-        //private void TestDataDeletion()
-        //{
-        //    //DataAccess.RemoveCountry(5);
-        //    //DataAccess.RemoveCity(8);
-        //    //DataAccess.RemoveAddress(5);
-        //    //DataAccess.RemoveCustomer(9);
-        //    //DataAccess.RemoveAppointment(5);
-        //}
-
-        //private void TestDataSelection()
-        //{
-        //    //var appointments = DataAccess.SelectAllAppointments();
-        //    //Debug.WriteLine($"Appointments found: {appointments.Count}");
-
-        //    //var customers = DataAccess.SelectAllCustomers();
-        //    //Debug.WriteLine($"Customers found: {customers.Count}");
-
-        //    //var appointmentsInRange = DataAccess.SelectAppointmentsInDateRange(firstDay, lastDay);
-        //    //Debug.WriteLine($"Appointments found: {appointmentsInRange.Count}");
-        //}
 
         private string GetCurrentWeek()
         {

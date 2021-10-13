@@ -11,7 +11,6 @@ namespace SchedulingApp.ViewModels
 {
     public class UpdateAppointmentViewModel : ObservableObject
     {
-        private MainViewModel _MAIN_VIEW_MODEL;
         private List<Customer> _customers = DataAccess.SelectAllCustomers();
         private List<User> _users = DataAccess.SelectAllUsers();
         private Appointment _appointment;
@@ -136,24 +135,12 @@ namespace SchedulingApp.ViewModels
         public RelayCommand UpdateAppointmentCommand { get; set; }
         #endregion
 
-        public UpdateAppointmentViewModel(MainViewModel mainViewModel)
+        public UpdateAppointmentViewModel()
         {
             Debug.WriteLine($"UpdateAppointment VM initialized.");
-            _MAIN_VIEW_MODEL = mainViewModel;
-            LoginViewCommand = new RelayCommand(o => { NavigateLoginView(); });
-            HomeViewCommand = new RelayCommand(o => { NavigateHomeView(); });
+            LoginViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<LoginViewModel>(); });
+            HomeViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<HomeViewModel>(); });
             UpdateAppointmentCommand = new RelayCommand(o => { UpdateAppointment(); });
-        }
-
-        private void NavigateLoginView()
-        {
-            _MAIN_VIEW_MODEL.CurrentUser = null;
-            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.LoginViewModel;
-        }
-
-        private void NavigateHomeView()
-        {
-            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.HomeViewModel;
         }
 
         public void UpdateAppointment()
@@ -179,11 +166,11 @@ namespace SchedulingApp.ViewModels
             _appointment.Start = startTime;
             _appointment.End = endTime;
 
-            DataAccess.UpdateAppointment(_appointment, _MAIN_VIEW_MODEL.CurrentUser.UserName);
+            DataAccess.UpdateAppointment(_appointment, NavigationService.MainVM.CurrentUser.UserName);
             Debug.WriteLine($"Appointment updated");
             ResetProperties();
-            _MAIN_VIEW_MODEL.HomeViewModel.UpdateProperties();
-            _MAIN_VIEW_MODEL.CurrentView = _MAIN_VIEW_MODEL.HomeViewModel;
+
+            NavigationService.NavigateTo<HomeViewModel>();
         }
 
         public void SetProperties(Appointment appointment)

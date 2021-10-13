@@ -154,13 +154,27 @@
                         </Grid>
                     </Border>
 
+                    <Border BorderBrush="#23242b" 
+                            BorderThickness="0.5"
+                            Height="40"
+                            VerticalAlignment="Center"/>
+
                     <Border HorizontalAlignment="Left"
-                            Width="150"
+                            Width="110"
                             Height="auto">
                         <Grid>
                             <StackPanel>
-                                <Button Content="Add Client"
-                                        Command="{Binding AddClientCommand}"/>
+                                <TextBlock Text="{Binding Customers}"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#f0bb57"
+                                       FontSize="16"
+                                       Margin="0"/>
+
+                                <TextBlock Text="Customers"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="12"
+                                       Margin="0"/>
                             </StackPanel>
                         </Grid>
                     </Border>

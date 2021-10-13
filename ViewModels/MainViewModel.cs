@@ -1,17 +1,11 @@
 ﻿using SchedulingApp.Models;
+using SchedulingApp.Utilities;
 using System.Diagnostics;
 
 namespace SchedulingApp.ViewModels
 {
     public class MainViewModel : ObservableObject
     {
-        public HomeViewModel HomeViewModel { get; set; }
-        public LoginViewModel LoginViewModel { get; set; }
-        public BookAppointmentViewModel BookAppointmentViewModel { get; set; }
-        public UpdateAppointmentViewModel UpdateAppointmentViewModel { get; set; }
-        public AddCustomerViewModel AddCustomerViewModel { get; set; }
-        public TestViewModel TestViewModel { get; set; }
-
         private User _currentUser;
         public User CurrentUser
         {
@@ -20,14 +14,6 @@ namespace SchedulingApp.ViewModels
             {
                 _currentUser = value;
                 OnPropertyChanged();
-
-                if (value != null)
-                {
-                    HomeViewModel = new HomeViewModel(this);
-                    BookAppointmentViewModel = new BookAppointmentViewModel(this);
-                    UpdateAppointmentViewModel = new UpdateAppointmentViewModel(this);
-                    AddCustomerViewModel = new AddCustomerViewModel(this);
-                }
             }
         }
 
@@ -46,8 +32,7 @@ namespace SchedulingApp.ViewModels
         public MainViewModel()
         {
             Debug.WriteLine($"Initialized MainViewModel");
-            LoginViewModel = new LoginViewModel();
-            CurrentView = LoginViewModel;
+            NavigationService.AssignMainViewModel(this);
         }
     }
 }

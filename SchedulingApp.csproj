@@ -108,6 +108,7 @@
     <Compile Include="Utilities\DataAccess.cs" />
     <Compile Include="Utilities\Enums.cs" />
     <Compile Include="Utilities\LoginValidator.cs" />
+    <Compile Include="Utilities\NavigationService.cs" />
     <Compile Include="Utilities\UserLogManager.cs" />
     <Compile Include="ViewModels\AddCustomerViewModel.cs" />
     <Compile Include="ViewModels\ErrorsViewModel.cs" />

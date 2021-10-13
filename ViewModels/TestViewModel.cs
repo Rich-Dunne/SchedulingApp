@@ -1,9 +1,4 @@
 ﻿using SchedulingApp.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SchedulingApp.ViewModels
 {
@@ -27,17 +22,17 @@ namespace SchedulingApp.ViewModels
 
         public TestViewModel()
         {
-            TestViewCommand = new RelayCommand(o => { NavigateTestView((MainViewModel)o); });
-            HomeViewCommand = new RelayCommand(o => { NavigateHomeView((MainViewModel)o); });
+            //TestViewCommand = new RelayCommand(o => { NavigateTestView((MainViewModel)o); });
+            //HomeViewCommand = new RelayCommand(o => { NavigateHomeView((MainViewModel)o); });
         }
-        private void NavigateTestView(MainViewModel mainViewModel)
-        {
-            mainViewModel.CurrentView = mainViewModel.TestViewModel;
-        }
+        //private void NavigateTestView(MainViewModel mainViewModel)
+        //{
+        //    mainViewModel.CurrentView = mainViewModel.TestViewModel;
+        //}
 
-        private void NavigateHomeView(MainViewModel mainViewModel)
-        {
-            mainViewModel.CurrentView = mainViewModel.HomeViewModel;
-        }
+        //private void NavigateHomeView(MainViewModel mainViewModel)
+        //{
+        //    mainViewModel.CurrentView = mainViewModel.HomeViewModel;
+        //}
     }
 }

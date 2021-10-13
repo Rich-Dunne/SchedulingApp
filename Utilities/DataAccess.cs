@@ -524,6 +524,26 @@ namespace SchedulingApp.Utilities
             return result;
         }
 
+        public static int CountAllCustomers()
+        {
+            if (!OpenConnection())
+            {
+                return 0;
+            }
+
+            var command = _connection.CreateCommand();
+            command.CommandText = "Select count(*) FROM customer";
+            var count = command.ExecuteScalar();
+            CloseConnection();
+
+            if (count == null)
+            {
+                return 0;
+            }
+
+            return Convert.ToInt32(count);
+        }
+
         public static int RemoveCustomer(int customerId)
         {
             if (!OpenConnection())
@@ -719,7 +739,7 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "Select count(*) FROM appointment WHERE userId == @userId AND appointmentId != @appointmentId AND ((start >= @startTime AND start <= @endTime) OR (@endTime >= start AND @endTime <= end) OR (start <= @startTime AND end >= @endTime))";
+            command.CommandText = "Select count(*) FROM appointment WHERE userId = @userId AND appointmentId != @appointmentId AND ((start >= @startTime AND start <= @endTime) OR (@endTime >= start AND @endTime <= end) OR (start <= @startTime AND end >= @endTime))";
             command.Parameters.AddWithValue("@userId", appointment.UserId);
             command.Parameters.AddWithValue("@appointmentId", appointment.AppointmentId);
             command.Parameters.AddWithValue("@startTime", startTime.ToUniversalTime());
