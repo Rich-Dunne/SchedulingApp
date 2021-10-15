@@ -72,6 +72,7 @@ namespace SchedulingApp.Utilities
 
             if(typeof(T) == typeof(CalendarViewModel))
             {
+                _calendarVM.SetProperties();
                 MainVM.CurrentView = _calendarVM;
             }
         }
