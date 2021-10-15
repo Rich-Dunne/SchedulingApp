@@ -73,10 +73,12 @@
                        Foreground="#f0bb57"
                        VerticalAlignment="Center"
                         Margin="420,0,0,0"/>
-                <ListBox ItemsSource="{Binding UserNames}"
+                <ComboBox ItemsSource="{Binding UserNames}"
                          Height="25"
                          Width="75"
-                         Margin="0,2,0,0"/>
+                         Margin="0,2,0,0"
+                         SelectedIndex="0"
+                         SelectedValue="{Binding SelectedUser, Mode=OneWayToSource, ValidatesOnDataErrors=False}"/>
             </StackPanel>
 
             <Border
@@ -85,7 +87,8 @@
                 Background="#23242b">
 
                 <StackPanel>
-                    <ListView ItemsSource="{Binding TodaysAppointments}"
+                    <ListView x:Name="calendarListView"
+                        ItemsSource="{Binding Appointments}"
                     Height="470"
                     Background="Transparent"
                     Foreground="White"
