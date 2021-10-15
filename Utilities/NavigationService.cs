@@ -1,5 +1,6 @@
 ﻿using SchedulingApp.Models;
 using SchedulingApp.ViewModels;
+using System;
 using System.Diagnostics;
 
 namespace SchedulingApp.Utilities
@@ -13,6 +14,7 @@ namespace SchedulingApp.Utilities
         private static UpdateAppointmentViewModel _updateAppointmentVM;
         private static AddCustomerViewModel _addCustomerVM;
         private static UpdateCustomerViewModel _updateCustomerVM;
+        private static CalendarViewModel _calendarVM;
 
         public static void AssignMainViewModel(MainViewModel mainViewModel)
         {
@@ -23,6 +25,7 @@ namespace SchedulingApp.Utilities
             _updateAppointmentVM = new UpdateAppointmentViewModel();
             _addCustomerVM = new AddCustomerViewModel();
             _updateCustomerVM = new UpdateCustomerViewModel();
+            _calendarVM = new CalendarViewModel();
 
             NavigateTo<LoginViewModel>();
         }
@@ -66,10 +69,23 @@ namespace SchedulingApp.Utilities
                 MainVM.CurrentView = _updateCustomerVM;
                 return;
             }
+
+            if(typeof(T) == typeof(CalendarViewModel))
+            {
+                MainVM.CurrentView = _calendarVM;
+            }
         }
 
         public static void NavigateTo<T>(object obj)
         {
+            if (typeof(T) == typeof(BookAppointmentViewModel) && obj.GetType() == typeof(DateTime))
+            {
+                _bookAppointmentVM.ResetProperties();
+                _bookAppointmentVM.SetDate((DateTime)obj);
+                MainVM.CurrentView = _bookAppointmentVM;
+                return;
+            }
+
             if (typeof(T) == typeof(UpdateAppointmentViewModel) && obj.GetType() == typeof(Appointment))
             {
                 _updateAppointmentVM.SetProperties((Appointment)obj);

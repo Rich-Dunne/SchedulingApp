@@ -46,6 +46,10 @@
                 <view:UpdateCustomerView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type viewModel:CalendarViewModel}">
+                <view:CalendarView/>
+            </DataTemplate>
+            
             <DataTemplate DataType="{x:Type viewModel:TestViewModel}">
                 <view:TestView/>
             </DataTemplate>
