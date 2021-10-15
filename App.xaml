@@ -42,6 +42,10 @@
                 <view:AddCustomerView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type viewModel:UpdateCustomerViewModel}">
+                <view:UpdateCustomerView/>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type viewModel:TestViewModel}">
                 <view:TestView/>
             </DataTemplate>
