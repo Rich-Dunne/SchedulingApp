@@ -166,7 +166,7 @@ namespace SchedulingApp.ViewModels
             _appointment.Start = startTime;
             _appointment.End = endTime;
 
-            DataAccess.UpdateAppointment(_appointment, NavigationService.MainVM.CurrentUser.UserName);
+            DataAccess.UpdateAppointment(_appointment);
             Debug.WriteLine($"Appointment updated");
             ResetProperties();
 

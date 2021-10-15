@@ -159,7 +159,7 @@ namespace SchedulingApp.ViewModels
                 return;
             }
 
-            Address address = DataAccess.SelectAddress(Address, Address2, int.Parse(Postal), city.CityId);
+            Address address = DataAccess.SelectAddress(Address, Address2, Postal, city.CityId);
             if(address is null)
             {
                 Debug.WriteLine($"Creating new record from null address");
@@ -191,7 +191,7 @@ namespace SchedulingApp.ViewModels
                     LastUpdate = DateTime.Now,
                     LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
                 };
-                country.CountryId = (int)DataAccess.InsertCountry(country, NavigationService.MainVM.CurrentUser.UserName);
+                country.CountryId = (int)DataAccess.InsertCountry(country);
             }
 
             if (city is null)
@@ -205,7 +205,7 @@ namespace SchedulingApp.ViewModels
                     LastUpdate = DateTime.Now,
                     LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
                 };
-                city.CityId = (int)DataAccess.InsertCity(city, NavigationService.MainVM.CurrentUser.UserName);
+                city.CityId = (int)DataAccess.InsertCity(city);
             }
 
             if (address is null)
@@ -215,14 +215,14 @@ namespace SchedulingApp.ViewModels
                     Address1 = Address,
                     Address2 = Address2,
                     CityId = city.CityId,
-                    PostalCode = int.Parse(Postal),
+                    PostalCode = Postal,
                     Phone = Phone,
                     CreateDate = DateTime.Now,
                     CreatedBy = NavigationService.MainVM.CurrentUser.UserName,
                     LastUpdate = DateTime.Now,
                     LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
                 };
-                address.AddressId = (int)DataAccess.InsertAddress(address, NavigationService.MainVM.CurrentUser.UserName);
+                address.AddressId = (int)DataAccess.InsertAddress(address);
             }
 
             var customer = new Customer()
@@ -234,7 +234,7 @@ namespace SchedulingApp.ViewModels
                 LastUpdate = DateTime.Now,
                 LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
             };
-            DataAccess.InsertCustomer(customer, NavigationService.MainVM.CurrentUser.UserName);
+            DataAccess.InsertCustomer(customer);
 
             ResetProperties();
 

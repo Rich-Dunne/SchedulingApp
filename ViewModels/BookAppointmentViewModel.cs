@@ -177,7 +177,7 @@ namespace SchedulingApp.ViewModels
                 End = _selectedDateTime.AddMinutes(duration)
             };
 
-            DataAccess.InsertAppointment(appointment, NavigationService.MainVM.CurrentUser.UserName);
+            DataAccess.InsertAppointment(appointment);
             ResetProperties();
 
             NavigationService.NavigateTo<HomeViewModel>();
