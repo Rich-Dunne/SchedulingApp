@@ -171,13 +171,13 @@ namespace SchedulingApp.ViewModels
 
         #region Constants
         private DateTime _FIRST_DAY_OF_WEEK = DateTime.Now.AddDays(-(int) DateTime.Now.DayOfWeek);
-        private MainViewModel _MAIN_VIEW_MODEL;
         #endregion
 
         #region Commands
         public RelayCommand TestViewCommand { get; set; }
         public RelayCommand HomeViewCommand { get; set; }
         public RelayCommand LoginViewCommand { get; set; }
+        public RelayCommand CalendarViewCommand { get; set; }
         public RelayCommand CancelUpcomingCommand { get; set; }
         public RelayCommand BookAppointmentCommand { get; set; }
         public RelayCommand UpdateAppointmentCommand { get; set; }
@@ -189,9 +189,12 @@ namespace SchedulingApp.ViewModels
         {
             HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo<HomeViewModel>());
             LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo<LoginViewModel>());
+            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo<CalendarViewModel>());
             CancelUpcomingCommand = new RelayCommand(o => CancelUpcomingAppointment());
             BookAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<BookAppointmentViewModel>());
             UpdateAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateAppointmentViewModel>(UpcomingAppointment));
+            
+            // To be removed
             AddClientCommand = new RelayCommand(o => NavigationService.NavigateTo<AddCustomerViewModel>());
             UpdateCustomerCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateCustomerViewModel>(1));
 
