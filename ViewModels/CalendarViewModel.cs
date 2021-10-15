@@ -1,6 +1,9 @@
 ﻿using SchedulingApp.Models;
 using SchedulingApp.Utilities;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Data;
 
 namespace SchedulingApp.ViewModels
 {
@@ -16,6 +19,42 @@ namespace SchedulingApp.ViewModels
             set
             {
                 _userNames = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _selectedUser;
+        public string SelectedUser
+        {
+            get => _selectedUser;
+            set
+            {
+                _selectedUser = value;
+                OnPropertyChanged();
+
+                User = _users.First(x => x.UserName == _selectedUser);
+                Appointments = DataAccess.SelectAppointmentsForUser(User);
+            }
+        }
+
+        private User _user;
+        public User User
+        {
+            get => _user;
+            set
+            {
+                _user = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private List<Appointment> _appointments;
+        public List<Appointment> Appointments
+        {
+            get => _appointments;
+            set
+            {
+                _appointments = value;
                 OnPropertyChanged();
             }
         }
