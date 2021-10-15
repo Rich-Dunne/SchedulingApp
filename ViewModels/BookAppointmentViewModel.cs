@@ -80,8 +80,8 @@ namespace SchedulingApp.ViewModels
                 _selectedDate = value;
                 OnPropertyChanged();
 
-                _selectedDateTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
-                Debug.WriteLine($"Selected DateTime is {_selectedDateTime}");
+                //_selectedDateTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
+                //Debug.WriteLine($"Selected DateTime is {_selectedDateTime}");
             }
         }
 
@@ -106,12 +106,12 @@ namespace SchedulingApp.ViewModels
                 _selectedTime = value;
                 OnPropertyChanged();
 
-                _selectedDateTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
-                Debug.WriteLine($"Selected DateTime is {_selectedDateTime}");
+                //_selectedDateTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
+                //Debug.WriteLine($"Selected DateTime is {_selectedDateTime}");
             }
         }
 
-        private DateTime _selectedDateTime;
+        //private DateTime _selectedDateTime;
 
         public string[] Durations { get; } = new string[] { "15 minutes", "30 minutes", "45 minutes", "60 minutes" };
 
@@ -143,10 +143,11 @@ namespace SchedulingApp.ViewModels
 
         public void BookAppointment()
         {
+            var startTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
             var canParse = int.TryParse(Regex.Match(SelectedDuration, @"\d+").Value, out int duration);
             Debug.WriteLine($"Duration: {duration}");
-            var endTime = _selectedDateTime.AddMinutes(duration);
-            Debug.WriteLine($"Start:  {_selectedDateTime}, End: {endTime}");
+            var endTime = startTime.AddMinutes(duration);
+            Debug.WriteLine($"Start:  {startTime}, End: {endTime}");
 
             if(endTime.Hour >= 17 && endTime.Minute > 0)
             {
@@ -155,7 +156,7 @@ namespace SchedulingApp.ViewModels
                 return;
             }
 
-            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(NavigationService.MainVM.CurrentUser, _selectedDateTime, endTime);
+            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(NavigationService.MainVM.CurrentUser, startTime, endTime);
             if(overlappingAppointment)
             {
                 Debug.WriteLine($"Appointment times overlap.");
@@ -173,8 +174,8 @@ namespace SchedulingApp.ViewModels
                 CustomerId = customer.CustomerId,
                 UserId = user.UserId,
                 Type = SelectedAppointmentType,
-                Start = _selectedDateTime,
-                End = _selectedDateTime.AddMinutes(duration)
+                Start = startTime,
+                End = endTime
             };
 
             DataAccess.InsertAppointment(appointment);
@@ -196,6 +197,11 @@ namespace SchedulingApp.ViewModels
             SelectedAppointmentType = "";
             SelectedCustomer = "";
             SelectedDuration = "";
+        }
+
+        public void SetDate(DateTime dateTime)
+        {
+            SelectedDate = dateTime;
         }
     }
 }
