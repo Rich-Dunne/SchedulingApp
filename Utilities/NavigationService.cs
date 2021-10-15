@@ -1,5 +1,6 @@
 ﻿using SchedulingApp.Models;
 using SchedulingApp.ViewModels;
+using System.Diagnostics;
 
 namespace SchedulingApp.Utilities
 {
@@ -11,6 +12,7 @@ namespace SchedulingApp.Utilities
         private static BookAppointmentViewModel _bookAppointmentVM;
         private static UpdateAppointmentViewModel _updateAppointmentVM;
         private static AddCustomerViewModel _addCustomerVM;
+        private static UpdateCustomerViewModel _updateCustomerVM;
 
         public static void AssignMainViewModel(MainViewModel mainViewModel)
         {
@@ -20,6 +22,7 @@ namespace SchedulingApp.Utilities
             _bookAppointmentVM = new BookAppointmentViewModel();
             _updateAppointmentVM = new UpdateAppointmentViewModel();
             _addCustomerVM = new AddCustomerViewModel();
+            _updateCustomerVM = new UpdateCustomerViewModel();
 
             NavigateTo<LoginViewModel>();
         }
@@ -57,14 +60,41 @@ namespace SchedulingApp.Utilities
                 MainVM.CurrentView = _addCustomerVM;
                 return;
             }
+
+            if (typeof(T) == typeof(UpdateCustomerViewModel))
+            {
+                MainVM.CurrentView = _updateCustomerVM;
+                return;
+            }
         }
 
         public static void NavigateTo<T>(object obj)
         {
-            if (typeof(T) == typeof(UpdateAppointmentViewModel))
+            if (typeof(T) == typeof(UpdateAppointmentViewModel) && obj.GetType() == typeof(Appointment))
             {
                 _updateAppointmentVM.SetProperties((Appointment)obj);
                 MainVM.CurrentView = _updateAppointmentVM;
+                return;
+            }
+
+            if (typeof(T) == typeof(UpdateCustomerViewModel) && obj.GetType() == typeof(Customer))
+            {
+                _updateCustomerVM.SetProperties((Customer)obj);
+                MainVM.CurrentView = _updateCustomerVM;
+                return;
+            }
+
+            if (typeof(T) == typeof(UpdateCustomerViewModel) && obj.GetType() == typeof(int))
+            {
+                var customer = DataAccess.SelectCustomer((int)obj);
+                if(customer is null)
+                {
+                    Debug.WriteLine($"customer was null");
+                    return;
+                }
+
+                _updateCustomerVM.SetProperties(customer);
+                MainVM.CurrentView = _updateCustomerVM;
                 return;
             }
         }
