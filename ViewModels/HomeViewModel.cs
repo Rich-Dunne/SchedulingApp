@@ -182,6 +182,7 @@ namespace SchedulingApp.ViewModels
         public RelayCommand BookAppointmentCommand { get; set; }
         public RelayCommand UpdateAppointmentCommand { get; set; }
         public RelayCommand AddClientCommand { get; set; }
+        public RelayCommand UpdateCustomerCommand { get; set; }
         #endregion
 
         public HomeViewModel()
@@ -192,6 +193,7 @@ namespace SchedulingApp.ViewModels
             BookAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<BookAppointmentViewModel>());
             UpdateAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateAppointmentViewModel>(UpcomingAppointment));
             AddClientCommand = new RelayCommand(o => NavigationService.NavigateTo<AddCustomerViewModel>());
+            UpdateCustomerCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateCustomerViewModel>(1));
 
             UpdateProperties();
         }
