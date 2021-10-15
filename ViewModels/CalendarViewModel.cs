@@ -1,6 +1,7 @@
 ﻿using SchedulingApp.Models;
 using SchedulingApp.Utilities;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Data;
@@ -33,7 +34,9 @@ namespace SchedulingApp.ViewModels
                 OnPropertyChanged();
 
                 User = _users.First(x => x.UserName == _selectedUser);
-                Appointments = DataAccess.SelectAppointmentsForUser(User);
+                Appointments.Clear();
+                var appointments = DataAccess.SelectAppointmentsForUser(User);
+                appointments.ForEach(x => Appointments.Add(x));
             }
         }
 
@@ -48,8 +51,8 @@ namespace SchedulingApp.ViewModels
             }
         }
 
-        private List<Appointment> _appointments;
-        public List<Appointment> Appointments
+        private ObservableCollection<Appointment> _appointments = new ObservableCollection<Appointment>();
+        public ObservableCollection<Appointment> Appointments
         {
             get => _appointments;
             set
