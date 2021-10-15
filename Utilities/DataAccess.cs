@@ -965,6 +965,43 @@ namespace SchedulingApp.Utilities
             return results;
         }
 
+        public static List<Appointment> SelectAppointmentsForUser(User user)
+        {
+            if (!OpenConnection())
+            {
+                return null;
+            }
+
+            var command = _connection.CreateCommand();
+            command.CommandText = "SELECT * FROM appointment WHERE userId = @userId";
+            command.Parameters.AddWithValue("@userId", user.UserId);
+            MySqlDataReader reader = command.ExecuteReader();
+
+            var results = new List<Appointment>();
+            while (reader.Read())
+            {
+                var appointment = new Appointment()
+                {
+                    AppointmentId = reader.GetInt32(0),
+                    CustomerId = reader.GetInt32(1),
+                    UserId = reader.GetInt32(2),
+                    Type = reader.GetString(7),
+                    Start = reader.GetDateTime(9).ToLocalTime(),
+                    End = reader.GetDateTime(10).ToLocalTime(),
+                    CreateDate = reader.GetDateTime(11).ToLocalTime(),
+                    CreatedBy = reader.GetString(12),
+                    LastUpdate = reader.GetDateTime(13).ToLocalTime(),
+                    LastUpdateBy = reader.GetString(14)
+                };
+
+                results.Add(appointment);
+            }
+
+            CloseConnection();
+
+            return results;
+        }
+
         public static int UpdateAppointment(Appointment appointment)
         {
             if (!OpenConnection())
