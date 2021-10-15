@@ -43,7 +43,7 @@
                              Style="{StaticResource MenuButtonTheme}"
                              Command="{Binding TestViewCommand}"
                              CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
-                    <RadioButton Content="Clients" 
+                    <RadioButton Content="Customers"
                              Height="50"
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
@@ -223,7 +223,7 @@
                                    FontStyle="Italic"
                                    HorizontalAlignment="Center"
                                    Visibility="{Binding NoneUpcomingVisibility}"/>
-                            
+
                             <TextBlock Text="{Binding UpcomingDateTime}"
                                        Foreground="White"
                                        FontSize="24"
@@ -240,7 +240,7 @@
                                         HorizontalAlignment="Center"
                                         Margin="0,50,0,0">
 
-                                    <Button Content="Cancel"
+                                <Button Content="Cancel"
                                             Style="{StaticResource CancelButtonTheme}"
                                             Visibility="{Binding UpcomingVisibility, Mode=OneWay}"
                                             Command="{Binding CancelUpcomingCommand}"/>
