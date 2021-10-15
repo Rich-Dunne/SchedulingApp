@@ -8,7 +8,7 @@ namespace SchedulingApp.Models
         public string Address1 { get; set; }
         public string Address2 { get; set; }
         public int CityId { get; set; }
-        public int PostalCode { get; set; }
+        public string PostalCode { get; set; }
         public string Phone { get; set; }
         public DateTime CreateDate { get; set; }
         public string CreatedBy { get; set; }
