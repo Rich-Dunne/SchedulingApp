@@ -157,6 +157,33 @@ namespace SchedulingApp.Utilities
             return result;
         }
 
+        public static User SelectUser(int userId)
+        {
+            if (!OpenConnection())
+            {
+                return null;
+            }
+
+            var command = _connection.CreateCommand();
+            command.CommandText = "SELECT * FROM client_schedule.user WHERE userId = @userId";
+            command.Parameters.AddWithValue("@userId", userId);
+            MySqlDataReader reader = command.ExecuteReader();
+
+            User result = null;
+            while (reader.Read())
+            {
+                result = new User()
+                {
+                    UserId = reader.GetInt32(0),
+                    UserName = reader.GetString(1)
+                };
+            }
+
+            CloseConnection();
+
+            return result;
+        }
+
         public static List<User> SelectAllUsers()
         {
             if (!OpenConnection())
@@ -893,7 +920,7 @@ namespace SchedulingApp.Utilities
             return results;
         }
 
-        public static Appointment SelectNextAppointment()
+        public static Appointment SelectNextAppointment(int userId)
         {
             if (!OpenConnection())
             {
@@ -901,7 +928,8 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM appointment WHERE start >= @startDate LIMIT 1";
+            command.CommandText = "SELECT * FROM appointment WHERE userId = @userId AND start >= @startDate LIMIT 1";
+            command.Parameters.AddWithValue("@userId", userId);
             command.Parameters.AddWithValue("@startDate", DateTime.UtcNow);
             MySqlDataReader reader = command.ExecuteReader();
 
