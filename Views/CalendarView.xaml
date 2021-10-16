@@ -19,9 +19,9 @@
             </Grid.RowDefinitions>
 
         <Border Grid.Row="0" 
-                    Grid.RowSpan="2"
-                    BorderBrush="#21252b"
-                    BorderThickness="0,0,1,0">
+                Grid.RowSpan="2"
+                BorderBrush="#21252b"
+                BorderThickness="0,0,1,0">
             <StackPanel Style="{StaticResource NavigationPanelTheme}">
                 <TextBlock Text="Schedule Manager"
                             VerticalAlignment="Center"
@@ -40,6 +40,7 @@
                              Height="50"
                              FontSize="14"
                              IsChecked="True"
+                             IsEnabled="False"
                              Style="{StaticResource MenuButtonTheme}"
                              Command="{Binding CalendarViewCommand}"
                              CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
@@ -59,49 +60,150 @@
 
         <StackPanel Grid.Column="1"
                     Grid.RowSpan="2">
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Left">
-                <TextBlock Text="Calendar"
-                            Foreground="White"
-                            FontSize="24"
-                            FontWeight="SemiBold"
-                            Margin="20,0,0,0"
-                            Padding="10"
-                            VerticalAlignment="Center"/>
-                <Label Content="User: "
-                       FontSize="20"
-                       Foreground="#f0bb57"
-                       VerticalAlignment="Center"
-                        Margin="420,0,0,0"/>
-                <ComboBox ItemsSource="{Binding UserNames}"
-                         Height="25"
-                         Width="75"
-                         Margin="0,2,0,0"
-                         SelectedIndex="0"
-                         SelectedValue="{Binding SelectedUser, Mode=OneWayToSource, ValidatesOnDataErrors=False}"/>
-            </StackPanel>
-
             <Border
                 CornerRadius="5"
-                Margin="20,0,20,0"
-                Background="#23242b">
+                Margin="20,10,20,0"
+                Background="#23242b"
+                Height="550">
 
-                <StackPanel>
+                <StackPanel Height="550">
+                    <Border BorderBrush="Gray"
+                            BorderThickness="0,0,0,0.25">
+                        <StackPanel Margin="10,0,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Search Filters"
+                                   Foreground="White"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                       Width="530"/>
+
+                                <TextBlock VerticalAlignment="Center"
+                                           Foreground="Gray"
+                                           FontStyle="Italic">
+                                           <Run Text="Appointments found:"></Run> 
+                                           <Run Text="{Binding Path=Appointments.Count, Mode=OneWay}"/> 
+                                </TextBlock>
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,0,10,5">
+                                <Border>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="User"
+                                               Foreground="Gray"/>
+                                        <ComboBox ItemsSource="{Binding UserNames}"
+                                              SelectedValue="{Binding SelectedUser, Mode=TwoWay}"
+                                              Width="100"
+                                              Style="{StaticResource ComboBoxTheme}"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Margin="20,0,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="When"
+                                       Foreground="Gray"/>
+                                        <ComboBox ItemsSource="{Binding TimeFrames}"
+                                              SelectedValue="{Binding SelectedTimeFrame, Mode=OneWayToSource}"
+                                              SelectedIndex="0"
+                                              Width="100"
+                                              Style="{StaticResource ComboBoxTheme}"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Margin="20,0,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="Type"
+                                       Foreground="Gray"/>
+                                        <ComboBox ItemsSource="{Binding AppointmentTypes}"
+                                              SelectedValue="{Binding SelectedAppointmentType, Mode=OneWayToSource}"
+                                              SelectedIndex="0"
+                                              Width="100"
+                                              Style="{StaticResource ComboBoxTheme}"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Margin="50,0,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox VerticalAlignment="Center"
+                                                 HorizontalAlignment="Left"
+                                                 Style="{StaticResource SearchBox}"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <Border BorderBrush="Gray"
+                                    BorderThickness="0,0,0,0.25"
+                                    Margin="-10,5,0,0">
+
+                            </Border>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Date"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"/>
+                                <Label Content="Time"
+                                       Margin="50,0,0,0"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"/>
+                                <Label Content="Appointment"
+                                       Margin="40,0,0,0"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"/>
+                                <Label Content="Customer"
+                                       Margin="40,0,0,0"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"/>
+                                <Label Content="Actions"
+                                       Margin="60,0,0,0"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Label Content="No appointments found"
+                                       Foreground="Gray"
+                                       Height="400"
+                                       FontSize="18"
+                                       FontStyle="Italic"
+                                       HorizontalAlignment="Center"
+                                       Visibility="{Binding NoAppointmentsFound}"/>
+
                     <ListView x:Name="calendarListView"
-                        ItemsSource="{Binding Appointments}"
-                    Height="470"
-                    Background="Transparent"
-                    Foreground="White"
-                    BorderBrush="Transparent"
-                    FontSize="14"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    ItemTemplate="{StaticResource DailyAgendaListView}">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="IsHitTestVisible" Value="False"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
+                              ItemsSource="{Binding CollectionView.View}"
+                              Height="400"
+                              Background="Transparent"
+                              Foreground="White"
+                              BorderBrush="Transparent"
+                              FontSize="14"
+                              Padding="10"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemTemplate="{StaticResource CalendarListView}"
+                              ItemContainerStyle="{StaticResource CalendarTheme}"
+                              Visibility="{Binding CalendarVisibility}">
+                        <ListView.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontSize="15" Foreground="#f0bb57" Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListView.GroupStyle>
                     </ListView>
+
+
+                    <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                        <Button Content="Book Appointment"
+                                        Style="{StaticResource BookAppointmentButtonTheme}"
+                                        Width="130"
+                                        Command="{Binding BookAppointmentCommand}"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </StackPanel>
