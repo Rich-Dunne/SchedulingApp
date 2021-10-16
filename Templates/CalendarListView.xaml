@@ -1,33 +1,28 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DataTemplate x:Key="CalendarListView">
-        <Border BorderBrush="Gray"
-                BorderThickness="0,0,0,0.25"
-                Width="auto"
-                Margin="10,0,0,0">
+        <Border>
             <WrapPanel>
-                <StackPanel Width="75" Margin="0,0,0,5">
-                    <TextBlock Text="{Binding FormattedTime}" 
-                               FontWeight="SemiBold"/>
-                    <TextBlock FontSize="12"
-                               Foreground="Gray">
-                               <Run Text="{Binding Duration, Mode=OneWay}"/>
-                               <Run Text="min"/>
-                    </TextBlock>
+                <StackPanel Orientation="Horizontal" Width="521" Margin="0,5,0,0">
+                    <TextBlock Text="{Binding FullDate, Mode=OneWay}"
+                               Width="100"/>
+                    <TextBlock Text="{Binding FormattedTime, Mode=OneWay}"
+                               Width="95"/>
+                    <TextBlock Text="{Binding Type, Mode=OneWay}"
+                               Width="170"/>
+                    <TextBlock Text="{Binding CustomerName, Mode=OneWay}"/>
                 </StackPanel>
 
-                <StackPanel Width="150">
-                    <TextBlock Text="{Binding CustomerName}" 
-                               FontWeight="SemiBold"/>
-                    <TextBlock Text="{Binding Type}"
-                               FontSize="12"
-                               Foreground="Gray"/>
-                </StackPanel>
-
-                <StackPanel Width="90">
-                    <TextBlock Text="{Binding TimeTo}"
-                               FontWeight="SemiBold"
-                               HorizontalAlignment="Right"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource EditButtonTheme}"
+                            Command="{Binding EditCommand}">
+                        <Image Source="/Images/edit.png" Width="15"/>
+                    </Button>
+                    <Button Margin="10,0,0,0"
+                            Style="{StaticResource CancelButtonTheme}"
+                            Command="{Binding CancelCommand}">
+                        <Image Source="/Images/exit.png" Width="15"/>
+                    </Button>
                 </StackPanel>
             </WrapPanel>
         </Border>
