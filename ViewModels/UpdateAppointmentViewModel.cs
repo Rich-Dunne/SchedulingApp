@@ -38,7 +38,7 @@ namespace SchedulingApp.ViewModels
             }
         }
 
-        public List<string> AppointmentTypes { get; } = new List<string>() { AppointmentType.Scrum.ToString(), AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString() };
+        public List<string> AppointmentTypes { get; } = new List<string>() { AppointmentType.Scrum.ToString(), AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString(), AppointmentType.Presentation.ToString() };
 
         private string _selectedCustomer;
         public string SelectedCustomer
@@ -113,7 +113,7 @@ namespace SchedulingApp.ViewModels
             }
         }
 
-        private DateTime _selectedDateTime;
+        //private DateTime _selectedDateTime;
 
         public string[] Durations { get; } = new string[] { "15 minutes", "30 minutes", "45 minutes", "60 minutes" };
 
@@ -145,6 +145,12 @@ namespace SchedulingApp.ViewModels
 
         public void UpdateAppointment()
         {
+            if(string.IsNullOrEmpty(SelectedTime))
+            {
+                MessageBox.Show($"Please choose an appointment time.", $"Invalid Appointment Time", MessageBoxButton.OK);
+                return;
+            }
+
             var canParse = int.TryParse(Regex.Match(SelectedDuration, @"\d+").Value, out int duration);
             var startTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
             var endTime = startTime.AddMinutes(duration);
