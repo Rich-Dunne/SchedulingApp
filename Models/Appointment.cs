@@ -1,5 +1,8 @@
 ﻿using SchedulingApp.Utilities;
+using SchedulingApp.ViewModels;
 using System;
+using System.Diagnostics;
+using System.Windows;
 
 namespace SchedulingApp.Models
 {
@@ -21,15 +24,32 @@ namespace SchedulingApp.Models
         public DateTime LastUpdate { get; set; }
         public string LastUpdateBy { get; set; }
 
+        public string Consultant { get => DataAccess.SelectUser(UserId).UserName;  }
         public string CustomerName { get => DataAccess.SelectCustomer(CustomerId).CustomerName; }
+        public string FullDate { get => Start.ToLocalTime().ToString("MMM dd, yyyy"); }
         public string FormattedDate { get => Start.ToLocalTime().ToString("MMM dd"); }
         public string FormattedTime { get => Start.ToLocalTime().ToShortTimeString(); }
         public string Duration { get => End.Subtract(Start).TotalMinutes.ToString(); }
         public string TimeTo { get => GetTimeTo(); }
+        public string MonthYear { get => Start.ToString("MMMM yyyy"); }
+
+        public RelayCommand CancelCommand { get; set; }
+        public RelayCommand EditCommand { get; set; }
 
         public Appointment()
         {
+            CancelCommand = new RelayCommand(o => CancelAppointment());
+            EditCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateAppointmentViewModel>(this));
+        }
 
+        private void CancelAppointment()
+        {
+            var cancelPrompt = MessageBox.Show($"Are you sure you want to cancel this appointment?", "Cancel appointment?", MessageBoxButton.YesNo);
+            if (cancelPrompt == MessageBoxResult.Yes)
+            {
+                DataAccess.RemoveAppointment(AppointmentId);
+                NavigationService.NavigateTo<CalendarViewModel>();
+            }
         }
 
         private string GetTimeTo()
