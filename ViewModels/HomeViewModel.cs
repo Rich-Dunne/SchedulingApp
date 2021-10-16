@@ -2,6 +2,7 @@
 using SchedulingApp.Utilities;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
@@ -197,12 +198,11 @@ namespace SchedulingApp.ViewModels
             // To be removed
             AddClientCommand = new RelayCommand(o => NavigationService.NavigateTo<AddCustomerViewModel>());
             UpdateCustomerCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateCustomerViewModel>(1));
-
-            UpdateProperties();
         }
 
         public void UpdateProperties()
         {
+            CurrentUser = NavigationService.MainVM.CurrentUser;
             GetTodaysAppointments();
             NoneTodayVisibility = TodaysAppointments.Count == 0 ? "Visible" : "Collapsed";
             CurrentWeek = GetCurrentWeek();
@@ -215,18 +215,13 @@ namespace SchedulingApp.ViewModels
         {
             TodaysAppointments.Clear();
             var todaysAppointments = DataAccess.SelectAppointmentsInDateRange(DateTime.Today, DateTime.Today.AddHours(23).AddMinutes(59).AddSeconds(59));
-            foreach(Appointment appointment in todaysAppointments)
-            {
-                if (appointment.Start.Day == DateTime.Today.Day)
-                {
-                    TodaysAppointments.Add(appointment);
-                }
-            }
+            todaysAppointments.RemoveAll(x => x.UserId != CurrentUser.UserId);
+            todaysAppointments.ForEach(x => TodaysAppointments.Add(x));
         }
 
         private void SetUpcomingProperties()
         {
-            UpcomingAppointment = DataAccess.SelectNextAppointment();
+            UpcomingAppointment = DataAccess.SelectNextAppointment(NavigationService.MainVM.CurrentUser.UserId);
             UpcomingDateTime = "";
             if (UpcomingAppointment == null)
             {
@@ -235,11 +230,11 @@ namespace SchedulingApp.ViewModels
             }
 
             var upcomingDay = UpcomingAppointment.Start.Day;
-            if (upcomingDay == DateTime.Now.ToLocalTime().Day)
+            if (upcomingDay == DateTime.Now.Day)
             {
                 UpcomingDateTime += "Today @ ";
             }
-            else if (upcomingDay == DateTime.Now.ToLocalTime().AddDays(1).Day)
+            else if (upcomingDay == DateTime.Now.AddDays(1).Day)
             {
                 UpcomingDateTime += "Tomorrow @ ";
             }
@@ -248,7 +243,7 @@ namespace SchedulingApp.ViewModels
                 UpcomingDateTime = $"{UpcomingAppointment.Start:MMM dd} @ ";
             }
 
-            UpcomingDateTime += UpcomingAppointment.Start.ToLocalTime().ToShortTimeString();
+            UpcomingDateTime += UpcomingAppointment.Start.ToShortTimeString();
 
             UpcomingCustomer = UpcomingAppointment.CustomerName;
             UpcomingDetails = $"{UpcomingAppointment.Type} with {UpcomingCustomer}";
@@ -258,13 +253,15 @@ namespace SchedulingApp.ViewModels
         private string GetCurrentWeek()
         {
             DateTime lastDay = _FIRST_DAY_OF_WEEK.AddDays(6);
-            return $"{_FIRST_DAY_OF_WEEK.ToString("MMM dd")} - {lastDay.ToString("MMM dd")}";
+            return $"{_FIRST_DAY_OF_WEEK:MMM dd} - {lastDay:MMM dd}";
         }
 
         private int GetAppointmentsThisWeek()
         {
             DateTime lastDay = _FIRST_DAY_OF_WEEK.AddDays(6);
-            return DataAccess.SelectAppointmentsInDateRange(_FIRST_DAY_OF_WEEK, lastDay).Count;
+            var appointmentsThisWeek = DataAccess.SelectAppointmentsInDateRange(_FIRST_DAY_OF_WEEK, lastDay);
+            appointmentsThisWeek.RemoveAll(x => x.UserId != CurrentUser.UserId);
+            return appointmentsThisWeek.Count;
         }
 
         private void CancelUpcomingAppointment()
@@ -279,7 +276,7 @@ namespace SchedulingApp.ViewModels
 
         public void AlertUpcomingAppointments()
         {
-            var appointments = TodaysAppointments.Where(x => x.Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime()).TotalMinutes <= 15 && x.Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime()).TotalMinutes >= 0).OrderBy(y => y.TimeTo);
+            var appointments = TodaysAppointments.Where(x => x.Start.Subtract(DateTime.Now).TotalMinutes <= 15 && x.Start.Subtract(DateTime.Now).TotalMinutes >= 0).OrderBy(y => y.TimeTo);
             if(appointments.Count() == 0)
             {
                 return;
@@ -288,7 +285,7 @@ namespace SchedulingApp.ViewModels
             string appointmentDetails = "";
             foreach(Appointment appointment in appointments)
             {
-                appointmentDetails += $"{appointment.Type} with {appointment.CustomerName} at {appointment.Start.ToLocalTime().ToShortTimeString()}\n";
+                appointmentDetails += $"{appointment.Type} with {appointment.CustomerName} at {appointment.Start.ToShortTimeString()}\n";
             }
 
             MessageBox.Show($"The following appointments are coming up soon:\n\n" +
