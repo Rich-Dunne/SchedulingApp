@@ -17,8 +17,11 @@
                 <ResourceDictionary Source="Theme/BookAppointmentButtonTheme.xaml"/>
                 <ResourceDictionary Source="Theme/SignInButtonTheme.xaml"/>
                 <ResourceDictionary Source="Theme/ScrollBarTheme.xaml"/>
+                <ResourceDictionary Source="Theme/CalendarTheme.xaml"/>
+                <ResourceDictionary Source="Theme/ComboBoxTheme.xaml"/>
 
                 <ResourceDictionary Source="Templates/DailyAgendaListView.xaml"/>
+                <ResourceDictionary Source="Templates/CalendarListView.xaml"/>
                 <ResourceDictionary Source="Templates/ErrorTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
