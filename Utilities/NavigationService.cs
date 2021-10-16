@@ -42,7 +42,6 @@ namespace SchedulingApp.Utilities
             {
                 if (firstTime)
                 {
-                    _homeVM.CurrentUser = MainVM.CurrentUser;
                     _homeVM.AlertUpcomingAppointments();
                 }
 
