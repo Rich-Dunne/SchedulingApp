@@ -28,7 +28,11 @@ namespace SchedulingApp.Models
         {
             var names = name.Split(' ');
             FirstName = names[0];
-            LastName = names[1];
+            for(int i = 1; i< names.Length; i++)
+            {
+                LastName += $"{names[i]} ";
+            }
+            LastName = LastName.Trim(' ');
             return name;
         }
     }
