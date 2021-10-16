@@ -36,7 +36,7 @@ namespace SchedulingApp.ViewModels
             }
         }
 
-        public List<string> AppointmentTypes { get; } = new List<string>() { AppointmentType.Scrum.ToString(), AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString() };
+        public List<string> AppointmentTypes { get; } = new List<string>() { AppointmentType.Scrum.ToString(), AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString(), AppointmentType.Presentation.ToString() };
 
         private string _selectedCustomer;
         public string SelectedCustomer
