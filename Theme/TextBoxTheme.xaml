@@ -6,27 +6,27 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border Background="#353340"
-                            Width="200" Height="40">
+                            Width="150">
 
                         <Grid>
-                            <Rectangle StrokeThickness="1"/>
                             <TextBox Margin="1"
-                                        Text="{TemplateBinding Text}"
-                                        BorderThickness="0"
-                                        Background="Transparent"
-                                        VerticalContentAlignment="Center"
-                                        Padding="5"
-                                        Foreground="#CFCFCF"
-                                        x:Name="SearchBox"/>
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     VerticalContentAlignment="Center"
+                                     Padding="5"
+                                     Foreground="#CFCFCF"
+                                     x:Name="SearchBox"/>
 
                             <TextBlock IsHitTestVisible="False"
-                                       Text="Search"
+                                       Text="Search by customer"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Left"
                                        Margin="10,0,0,0"
                                        Foreground="DarkGray"
                                        FontSize="11"
-                                       Grid.Column="1">
+                                       Grid.Column="1"
+                                       FontStyle="Italic">
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
                                         <Style.Triggers>
