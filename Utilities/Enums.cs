@@ -2,8 +2,25 @@
 {
     public enum AppointmentType
     {
-        Scrum = 0,
-        Lunch = 1,
-        Sales = 2
+        Scrum,
+        Lunch,
+        Sales,
+        Presentation
+    }
+
+    public enum Month
+    {
+        January,
+        February,
+        March,
+        April,
+        May,
+        June,
+        July,
+        August,
+        September,
+        October,
+        November,
+        December
     }
 }
