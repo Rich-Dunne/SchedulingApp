@@ -81,7 +81,7 @@
                                            Foreground="Gray"
                                            FontStyle="Italic">
                                            <Run Text="Appointments found:"></Run> 
-                                           <Run Text="{Binding Path=Appointments.Count, Mode=OneWay}"/> 
+                                           <Run Text="{Binding Path=FilterResultsCount, Mode=OneWay}"/> 
                                 </TextBlock>
                             </StackPanel>
                             
@@ -93,8 +93,7 @@
                                                Foreground="Gray"/>
                                         <ComboBox ItemsSource="{Binding UserNames}"
                                               SelectedValue="{Binding SelectedUser, Mode=TwoWay}"
-                                              Width="100"
-                                              Style="{StaticResource ComboBoxTheme}"/>
+                                              Width="100"/>
                                     </StackPanel>
                                 </Border>
 
@@ -103,10 +102,9 @@
                                         <Label Content="When"
                                        Foreground="Gray"/>
                                         <ComboBox ItemsSource="{Binding TimeFrames}"
+                                                  SelectedIndex="0"
                                               SelectedValue="{Binding SelectedTimeFrame, Mode=OneWayToSource}"
-                                              SelectedIndex="0"
-                                              Width="100"
-                                              Style="{StaticResource ComboBoxTheme}"/>
+                                              Width="100"/>
                                     </StackPanel>
                                 </Border>
 
@@ -117,8 +115,7 @@
                                         <ComboBox ItemsSource="{Binding AppointmentTypes}"
                                               SelectedValue="{Binding SelectedAppointmentType, Mode=OneWayToSource}"
                                               SelectedIndex="0"
-                                              Width="100"
-                                              Style="{StaticResource ComboBoxTheme}"/>
+                                              Width="100"/>
                                     </StackPanel>
                                 </Border>
 
@@ -174,7 +171,7 @@
                                        Visibility="{Binding NoAppointmentsFound}"/>
 
                     <ListView x:Name="calendarListView"
-                              ItemsSource="{Binding CollectionView.View}"
+                              ItemsSource="{Binding CollectionView}"
                               Height="400"
                               Background="Transparent"
                               Foreground="White"
