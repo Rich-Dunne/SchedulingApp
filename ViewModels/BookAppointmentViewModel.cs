@@ -79,9 +79,6 @@ namespace SchedulingApp.ViewModels
             {
                 _selectedDate = value;
                 OnPropertyChanged();
-
-                //_selectedDateTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
-                //Debug.WriteLine($"Selected DateTime is {_selectedDateTime}");
             }
         }
 
@@ -105,13 +102,8 @@ namespace SchedulingApp.ViewModels
             {
                 _selectedTime = value;
                 OnPropertyChanged();
-
-                //_selectedDateTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
-                //Debug.WriteLine($"Selected DateTime is {_selectedDateTime}");
             }
         }
-
-        //private DateTime _selectedDateTime;
 
         public string[] Durations { get; } = new string[] { "15 minutes", "30 minutes", "45 minutes", "60 minutes" };
 
@@ -196,6 +188,7 @@ namespace SchedulingApp.ViewModels
             SelectedUser = "";
             SelectedAppointmentType = "";
             SelectedCustomer = "";
+            SelectedDate = DateTime.Today;
             SelectedDuration = "";
         }
 
