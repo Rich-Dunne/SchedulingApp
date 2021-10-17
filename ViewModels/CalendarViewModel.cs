@@ -3,6 +3,7 @@ using SchedulingApp.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Data;
@@ -38,10 +39,9 @@ namespace SchedulingApp.ViewModels
                 if (_selectedUser != "All")
                 {
                     User = _users.First(x => x.UserName == _selectedUser);
-                    Debug.WriteLine($"SelectedUser: {SelectedUser}, User: {User.UserName}");
                 }
 
-                FilterAppointments();
+                CollectionView.Refresh();
             }
         }
 
@@ -87,9 +87,7 @@ namespace SchedulingApp.ViewModels
             {
                 _selectedTimeFrame = value;
                 OnPropertyChanged();
-                Debug.WriteLine($"Selected time frame: {SelectedTimeFrame}");
-
-                FilterAppointments();
+                CollectionView.Refresh();
             }
         }
 
@@ -101,9 +99,7 @@ namespace SchedulingApp.ViewModels
             {
                 _selectedAppointmentType = value;
                 OnPropertyChanged();
-                Debug.WriteLine($"Selected appointment type: {SelectedAppointmentType}");
-
-                FilterAppointments();
+                CollectionView.Refresh();
             }
         }
 
@@ -118,7 +114,7 @@ namespace SchedulingApp.ViewModels
             }
         }
 
-        private string _searchText;
+        private string _searchText = string.Empty;
         public string SearchText
         {
             get => _searchText;
@@ -126,9 +122,7 @@ namespace SchedulingApp.ViewModels
             {
                 _searchText = value;
                 OnPropertyChanged();
-
-                FilterAppointments();
-                Debug.WriteLine($"Search: \"{SearchText}\"");
+                CollectionView.Refresh();
             }
         }
 
@@ -154,7 +148,18 @@ namespace SchedulingApp.ViewModels
             }
         }
 
-        public CollectionViewSource CollectionView { get; set; }
+        private int _filterResultsCount;
+        public int FilterResultsCount
+        {
+            get => _filterResultsCount;
+            set
+            {
+                _filterResultsCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICollectionView CollectionView { get; set; }
         #endregion
 
         #region Commands
@@ -172,6 +177,16 @@ namespace SchedulingApp.ViewModels
             LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo<LoginViewModel>());
             CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo<CalendarViewModel>());
             BookAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<BookAppointmentViewModel>());
+
+            CollectionView = CollectionViewSource.GetDefaultView(Appointments);
+            CollectionView.Filter = AppointmentFilter;
+            CollectionView.GroupDescriptions.Add(new PropertyGroupDescription("MonthYear"));
+            CollectionView.CollectionChanged += CollectionView_CollectionChanged;
+        }
+
+        private void CollectionView_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            FilterResultsCount = CollectionView.Cast<Appointment>().Count();
         }
 
         public void SetProperties()
@@ -179,59 +194,64 @@ namespace SchedulingApp.ViewModels
             SelectedUser = NavigationService.MainVM.CurrentUser.UserName;
             UserNames.RemoveAll(x => x != "All");
             _users.ForEach(x => UserNames.Add(x.UserName));
+
+            Appointments.Clear();
+            var allAppointments = DataAccess.SelectAllAppointments();
+            allAppointments.ForEach(x => Appointments.Add(x));
+            NoAppointmentsFound = Appointments.Count == 0 ? "Visible" : "Collapsed";
+            CalendarVisibility = Appointments.Count == 0 ? "Collapsed" : "Visible";
         }
 
-        private void FilterAppointments()
+        private bool AppointmentFilter(object obj)
         {
-            Appointments.Clear();
-            var appointments = DataAccess.SelectAllAppointments();
-            if (_selectedUser != "All")
+            if(obj is Appointment appointment)
             {
-                appointments.RemoveAll(x => x.UserId != User.UserId);
+                bool matchingUser = true;
+                bool matchingDate = true;
+                bool matchingType = true;
+                bool matchingCustomer = true;
+
+                if(SelectedUser != "All")
+                {
+                    matchingUser = appointment.UserId == User.UserId;
+                }
+
+                switch (SelectedTimeFrame)
+                {
+                    case "All":
+                        break;
+                    case "Today":
+                        matchingDate = appointment.Start.Day == DateTime.Today.Day;
+                        break;
+
+                    case "This Week":
+                        var firstDayOfWeek = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek);
+                        matchingDate = appointment.Start.Day >= firstDayOfWeek.Day && appointment.End.Day <= firstDayOfWeek.AddDays(6).Day;
+                        break;
+
+                    case "This Month":
+                        matchingDate = appointment.Start.Month == DateTime.Today.Month;
+                        break;
+
+                    default:
+                        matchingDate = appointment.Start.ToString("MMMM") == SelectedTimeFrame;
+                        break;
+                }
+
+                if (SelectedAppointmentType != "All")
+                {
+                    matchingType = appointment.Type == SelectedAppointmentType;
+                }
+
+                if (!string.IsNullOrWhiteSpace(SearchText))
+                {
+                    matchingCustomer = appointment.CustomerName.ToLower().Contains(SearchText);
+                }
+
+                return matchingUser && matchingDate && matchingType && matchingCustomer;
             }
 
-            switch(SelectedTimeFrame)
-            {
-                case "All":
-                    break;
-                case "Today":
-                    appointments.RemoveAll(x => x.Start.Day != DateTime.Today.Day);
-                    break;
-
-                case "This Week":
-                    var firstDayOfWeek = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek);
-                    appointments.RemoveAll(x => x.Start.Day < firstDayOfWeek.Day || x.End.Day > firstDayOfWeek.AddDays(6).Day);
-                    break;
-
-                case "This Month":
-                    appointments.RemoveAll(x => x.Start.Month != DateTime.Today.Month);
-                    break;
-
-                default:
-                    appointments.RemoveAll(x => x.Start.ToString("MMMM") != SelectedTimeFrame);
-                    break;
-            }
-
-            if (SelectedAppointmentType != "All")
-            {
-                appointments.RemoveAll(x => x.Type != SelectedAppointmentType);
-            }
-
-            if(!string.IsNullOrWhiteSpace(SearchText))
-            {
-                appointments.RemoveAll(x => !x.CustomerName.ToLower().Contains(SearchText));
-            }
-
-            Appointments.Clear();
-            appointments.ForEach(x => Appointments.Add(x));
-            NoAppointmentsFound = appointments.Count == 0 ? "Visible" : "Collapsed";
-            CalendarVisibility = appointments.Count == 0 ? "Collapsed" : "Visible";
-
-            var view = new CollectionViewSource();
-            view.GroupDescriptions.Add(new PropertyGroupDescription("MonthYear"));
-            // view.Filter ???
-            view.Source = Appointments;
-            CollectionView = view;
+            return false;
         }
     }
 }
