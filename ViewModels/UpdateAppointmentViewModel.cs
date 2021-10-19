@@ -70,8 +70,12 @@ namespace SchedulingApp.ViewModels
             {
                 _selectedUser = value;
                 OnPropertyChanged();
+
+                _user = _users.FirstOrDefault(x => x.UserName == SelectedUser);
             }
         }
+
+        private User _user;
 
         private DateTime _selectedDate = DateTime.Today;
         public DateTime SelectedDate
@@ -81,9 +85,6 @@ namespace SchedulingApp.ViewModels
             {
                 _selectedDate = value;
                 OnPropertyChanged();
-
-                //_selectedDateTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
-                //Debug.WriteLine($"Selected DateTime is {_selectedDateTime}");
             }
         }
 
@@ -107,13 +108,8 @@ namespace SchedulingApp.ViewModels
             {
                 _selectedTime = value;
                 OnPropertyChanged();
-
-                //_selectedDateTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
-                //Debug.WriteLine($"Selected DateTime is {_selectedDateTime}");
             }
         }
-
-        //private DateTime _selectedDateTime;
 
         public string[] Durations { get; } = new string[] { "15 minutes", "30 minutes", "45 minutes", "60 minutes" };
 
@@ -133,15 +129,25 @@ namespace SchedulingApp.ViewModels
         public RelayCommand LoginViewCommand { get; set; }
         public RelayCommand HomeViewCommand { get; set; }
         public RelayCommand UpdateAppointmentCommand { get; set; }
+        public RelayCommand CalendarViewCommand { get; set; }
+        public RelayCommand CustomersViewCommand { get; set; }
+        public RelayCommand CancelCommand { get; set; }
+        public RelayCommand DeleteCommand { get; set; }
         #endregion
 
         public UpdateAppointmentViewModel()
         {
             Debug.WriteLine($"UpdateAppointment VM initialized.");
-            LoginViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<LoginViewModel>(); });
-            HomeViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<HomeViewModel>(); });
-            UpdateAppointmentCommand = new RelayCommand(o => { UpdateAppointment(); });
+            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Login));
+            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Home));
+            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Calendar));
+            CustomersViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Customers));
+            UpdateAppointmentCommand = new RelayCommand(o => UpdateAppointment());
+            DeleteCommand = new RelayCommand(o => DeleteAppointment());
+            CancelCommand = new RelayCommand(o => NavigationService.NavigateTo(NavigationService.PreviousView));
         }
+
+        public void DeleteAppointment() => _appointment.CancelAppointment(true);
 
         public void UpdateAppointment()
         {
@@ -155,11 +161,18 @@ namespace SchedulingApp.ViewModels
             var startTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
             var endTime = startTime.AddMinutes(duration);
 
-            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(_appointment, startTime, endTime);
+            if (endTime.Hour >= 17 && endTime.Minute > 0)
+            {
+                Debug.WriteLine($"Appointment extends past end of business day.");
+                MessageBox.Show($"Please choose a time and meeting duration that ends before 5:00 PM.", $"Appointment Time Unavailable", MessageBoxButton.OK);
+                return;
+            }
+
+            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(_user, startTime, endTime);
             if(overlappingAppointment)
             {
                 Debug.WriteLine($"Appointment times overlap.");
-                MessageBox.Show($"An appointment is already scheduled during this time.  Please choose another time.", $"Appointment Time Unavailable", MessageBoxButton.OK);
+                MessageBox.Show($"An appointment is already scheduled during this time for {SelectedUser}.  Please choose another time.", $"An appointment is already scheduled during this time for  {SelectedUser} .  Please choose a different time.", MessageBoxButton.OK);
                 return;
             }
 
@@ -176,7 +189,7 @@ namespace SchedulingApp.ViewModels
             Debug.WriteLine($"Appointment updated");
             ResetProperties();
 
-            NavigationService.NavigateTo<HomeViewModel>();
+            NavigationService.NavigateTo(View.Home);
         }
 
         public void SetProperties(Appointment appointment)
@@ -185,13 +198,12 @@ namespace SchedulingApp.ViewModels
             UserNames = new List<string>();
             _users.ForEach(x => UserNames.Add(x.UserName));
 
-            _customers = DataAccess.SelectAllCustomers();
             CustomerNames = new List<string>();
             _customers.ForEach(x => CustomerNames.Add(x.CustomerName));
 
             SelectedUser = _users.First(x => x.UserId == appointment.UserId).UserName;
             SelectedAppointmentType = appointment.Type;
-            SelectedCustomer = CustomerNames.First(x => x == appointment.CustomerName);
+            SelectedCustomer = CustomerNames.First(x => x == appointment.Customer.CustomerName);
             SelectedDate = appointment.Start.Date;
             SelectedTime = Times.FirstOrDefault(x => x == appointment.Start.ToShortTimeString());
             SelectedDuration = Durations.First(x => x.Contains(appointment.End.Subtract(appointment.Start).TotalMinutes.ToString()));
@@ -202,7 +214,6 @@ namespace SchedulingApp.ViewModels
             UserNames = new List<string>();
             _users.ForEach(x => UserNames.Add(x.UserName));
 
-            _customers = DataAccess.SelectAllCustomers();
             CustomerNames = new List<string>();
             _customers.ForEach(x => CustomerNames.Add(x.CustomerName));
 
