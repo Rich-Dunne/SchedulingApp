@@ -167,16 +167,17 @@ namespace SchedulingApp.ViewModels
         public RelayCommand HomeViewCommand { get; set; }
         public RelayCommand LoginViewCommand { get; set; }
         public RelayCommand CalendarViewCommand { get; set; }
-        public RelayCommand CancelCommand { get; set; }
         public RelayCommand BookAppointmentCommand { get; set; }
+        public RelayCommand CustomersViewCommand { get; set; }
         #endregion
 
         public CalendarViewModel()
         {
-            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo<HomeViewModel>());
-            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo<LoginViewModel>());
-            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo<CalendarViewModel>());
-            BookAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<BookAppointmentViewModel>());
+            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Home));
+            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Login));
+            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Calendar));
+            BookAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo(View.BookAppointment));
+            CustomersViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Customers));
 
             CollectionView = CollectionViewSource.GetDefaultView(Appointments);
             CollectionView.Filter = AppointmentFilter;
@@ -191,7 +192,7 @@ namespace SchedulingApp.ViewModels
 
         public void SetProperties()
         {
-            SelectedUser = NavigationService.MainVM.CurrentUser.UserName;
+            SelectedUser = NavigationService.MainViewModel.CurrentUser.UserName;
             UserNames.RemoveAll(x => x != "All");
             _users.ForEach(x => UserNames.Add(x.UserName));
 
@@ -245,7 +246,7 @@ namespace SchedulingApp.ViewModels
 
                 if (!string.IsNullOrWhiteSpace(SearchText))
                 {
-                    matchingCustomer = appointment.CustomerName.ToLower().Contains(SearchText);
+                    matchingCustomer = appointment.Customer.CustomerName.ToLower().Contains(SearchText);
                 }
 
                 return matchingUser && matchingDate && matchingType && matchingCustomer;
