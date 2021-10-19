@@ -229,111 +229,14 @@ namespace SchedulingApp.Utilities
             command.CommandText = "INSERT INTO country (country, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES (@country, @createDate, @createdBy, @lastUpdate, @lastUpdateBy)";
             command.Parameters.AddWithValue("@country", country.CountryName);
             command.Parameters.AddWithValue("@createDate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@createdBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@createdBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.ExecuteNonQuery();
             long idFromInsert = command.LastInsertedId;
             CloseConnection();
 
             return idFromInsert;
-        }
-
-        public static Country SelectCountry(int id)
-        {
-            if (!OpenConnection())
-            {
-                return null;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM country WHERE countryId = @countryId";
-            command.Parameters.AddWithValue("@countryId", id);
-            MySqlDataReader reader = command.ExecuteReader();
-
-            Country result = null;
-            while (reader.Read())
-            {
-                result = new Country()
-                {
-                    CountryId = reader.GetInt32(0),
-                    CountryName = reader.GetString(1),
-                    CreateDate = reader.GetDateTime(2).ToLocalTime(),
-                    CreatedBy = reader.GetString(3),
-                    LastUpdate = reader.GetDateTime(4).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(5)
-                };
-            }
-
-            CloseConnection();
-
-            return result;
-        }
-
-        public static Country SelectCountry(string country)
-        {
-            if (!OpenConnection())
-            {
-                return null;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM country WHERE country = @country";
-            command.Parameters.AddWithValue("@country", country);
-            MySqlDataReader reader = command.ExecuteReader();
-
-            Country result = null;
-            while (reader.Read())
-            {
-                result = new Country()
-                {
-                    CountryId = reader.GetInt32(0),
-                    CountryName = reader.GetString(1),
-                    CreateDate = reader.GetDateTime(2).ToLocalTime(),
-                    CreatedBy = reader.GetString(3),
-                    LastUpdate = reader.GetDateTime(4).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(5)
-                };
-            }
-
-            CloseConnection();
-
-            return result;
-        }
-
-        public static int UpdateCountry(Country country)
-        {
-            if (!OpenConnection())
-            {
-                return 0;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "UPDATE country SET country = @country, lastUpdate = @lastUpdate, lastUpdateBy = @lastUpdateBy WHERE countryId = @countryId";
-            command.Parameters.AddWithValue("@countryId", country.CountryId);
-            command.Parameters.AddWithValue("@country", country.CountryName);
-            command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
-            var rowsAffected = command.ExecuteNonQuery();
-            CloseConnection();
-
-            return rowsAffected;
-        }
-
-        public static int RemoveCountry(int countryId)
-        {
-            if (!OpenConnection())
-            {
-                return 0;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "DELETE FROM country WHERE countryId = @countryId";
-            command.Parameters.AddWithValue("@countryId", countryId);
-            var rowsAffected = command.ExecuteNonQuery();
-            CloseConnection();
-
-            return rowsAffected;
         }
         #endregion
 
@@ -350,115 +253,14 @@ namespace SchedulingApp.Utilities
             command.Parameters.AddWithValue("@city", city.CityName);
             command.Parameters.AddWithValue("@countryId", city.CountryId);
             command.Parameters.AddWithValue("@createDate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@createdBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@createdBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.ExecuteNonQuery();
             long idFromInsert = command.LastInsertedId;
             CloseConnection();
 
             return idFromInsert;
-        }
-
-        public static City SelectCity(int id)
-        {
-            if (!OpenConnection())
-            {
-                return null;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM city WHERE cityId = @cityId";
-            command.Parameters.AddWithValue("@cityId", id);
-            MySqlDataReader reader = command.ExecuteReader();
-
-            City result = null;
-            while (reader.Read())
-            {
-                result = new City()
-                {
-                    CityId = reader.GetInt32(0),
-                    CityName = reader.GetString(1),
-                    CountryId = reader.GetInt32(2),
-                    CreateDate = reader.GetDateTime(3).ToLocalTime(),
-                    CreatedBy = reader.GetString(4),
-                    LastUpdate = reader.GetDateTime(5).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(6)
-                };
-            }
-
-            CloseConnection();
-
-            return result;
-        }
-
-        public static City SelectCity(string city, int countryId)
-        {
-            if (!OpenConnection())
-            {
-                return null;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM city WHERE city = @city AND countryId = @countryId";
-            command.Parameters.AddWithValue("@city", city);
-            command.Parameters.AddWithValue("@countryId", countryId);
-            MySqlDataReader reader = command.ExecuteReader();
-
-            City result = null;
-            while (reader.Read())
-            {
-                result = new City()
-                {
-                    CityId = reader.GetInt32(0),
-                    CityName = reader.GetString(1),
-                    CountryId = reader.GetInt32(2),
-                    CreateDate = reader.GetDateTime(3).ToLocalTime(),
-                    CreatedBy = reader.GetString(4),
-                    LastUpdate = reader.GetDateTime(5).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(6)
-                };
-            }
-
-            CloseConnection();
-
-            return result;
-        }
-
-        public static int UpdateCity(City city)
-        {
-            if (!OpenConnection())
-            {
-                return 0;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "UPDATE city SET city = @city, countryId = @countryId, lastUpdate = @lastUpdate, lastUpdateBy = @lastUpdateBy WHERE cityId = @cityId";
-            command.Parameters.AddWithValue("@cityId", city.CityId);
-            command.Parameters.AddWithValue("@city", city.CityName);
-            command.Parameters.AddWithValue("@countryId", city.CountryId);
-            command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
-            var rowsAffected = command.ExecuteNonQuery();
-            CloseConnection();
-
-            return rowsAffected;
-        }
-
-        public static int RemoveCity(int cityId)
-        {
-            if (!OpenConnection())
-            {
-                return 0;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "DELETE FROM city WHERE cityId = @cityId";
-            command.Parameters.AddWithValue("@cityId", cityId);
-            var rowsAffected = command.ExecuteNonQuery();
-            CloseConnection();
-
-            return rowsAffected;
         }
         #endregion
 
@@ -478,126 +280,14 @@ namespace SchedulingApp.Utilities
             command.Parameters.AddWithValue("@postalCode", address.PostalCode);
             command.Parameters.AddWithValue("@phone", address.Phone);
             command.Parameters.AddWithValue("@createDate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@createdBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@createdBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.ExecuteNonQuery();
             long idFromInsert = command.LastInsertedId;
             CloseConnection();
 
             return idFromInsert;
-        }
-
-        public static Address SelectAddress(int id)
-        {
-            if (!OpenConnection())
-            {
-                return null;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM address WHERE addressId = @addressId";
-            command.Parameters.AddWithValue("@addressId", id);
-            MySqlDataReader reader = command.ExecuteReader();
-
-            Address result = null;
-            while (reader.Read())
-            {
-                result = new Address()
-                {
-                    AddressId = reader.GetInt32(0),
-                    Address1 = reader.GetString(1),
-                    Address2 = reader.GetString(2),
-                    CityId = reader.GetInt32(3),
-                    PostalCode = reader.GetInt32(4).ToString(),
-                    Phone = reader.GetString(5),
-                    CreateDate = reader.GetDateTime(6).ToLocalTime(),
-                    CreatedBy = reader.GetString(7),
-                    LastUpdate = reader.GetDateTime(8).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(9)
-                };
-            }
-
-            CloseConnection();
-
-            return result;
-        }
-
-        public static Address SelectAddress(string address, string address2, string postalCode, int cityId)
-        {
-            if (!OpenConnection())
-            {
-                return null;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM address WHERE address = @address AND address2 = @address2 AND postalCode = @postalCode AND cityId = @cityId";
-            command.Parameters.AddWithValue("@address", address);
-            command.Parameters.AddWithValue("@address2", address2);
-            command.Parameters.AddWithValue("@postalCode", postalCode);
-            command.Parameters.AddWithValue("@cityId", cityId);
-            MySqlDataReader reader = command.ExecuteReader();
-
-            Address result = null;
-            while (reader.Read())
-            {
-                result = new Address()
-                {
-                    AddressId = reader.GetInt32(0),
-                    Address1 = reader.GetString(1),
-                    Address2 = reader.GetString(2),
-                    CityId = reader.GetInt32(3),
-                    PostalCode = reader.GetInt32(4).ToString(),
-                    Phone = reader.GetString(5),
-                    CreateDate = reader.GetDateTime(6).ToLocalTime(),
-                    CreatedBy = reader.GetString(7),
-                    LastUpdate = reader.GetDateTime(8).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(9)
-                };
-            }
-
-            CloseConnection();
-
-            return result;
-        }
-
-        public static int UpdateAddress(Address address)
-        {
-            if (!OpenConnection())
-            {
-                return 0;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "UPDATE address SET address = @address, address2 = @address2, cityId = @cityId, postalCode = @postalCode, phone = @phone, lastUpdate = @lastUpdate, lastUpdateBy = @lastUpdateBy WHERE addressId = @addressId";
-            command.Parameters.AddWithValue("@addressId", address.AddressId);
-            command.Parameters.AddWithValue("@address", address.Address1);
-            command.Parameters.AddWithValue("@address2", address.Address2);
-            command.Parameters.AddWithValue("@cityId", address.CityId);
-            command.Parameters.AddWithValue("@postalCode", address.PostalCode);
-            command.Parameters.AddWithValue("@phone", address.Phone);
-            command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
-            var rowsAffected = command.ExecuteNonQuery();
-            CloseConnection();
-
-            return rowsAffected;
-        }
-
-        public static int RemoveAddress(int addressId)
-        {
-            if (!OpenConnection())
-            {
-                return 0;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "DELETE FROM address WHERE addressId = @addressId";
-            command.Parameters.AddWithValue("@addressId", addressId);
-            var rowsAffected = command.ExecuteNonQuery();
-            CloseConnection();
-
-            return rowsAffected;
         }
         #endregion
 
@@ -615,9 +305,9 @@ namespace SchedulingApp.Utilities
             command.Parameters.AddWithValue("@addressId", customer.AddressId);
             command.Parameters.AddWithValue("@active", Convert.ToInt32(customer.Active));
             command.Parameters.AddWithValue("@createDate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@createdBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@createdBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.ExecuteNonQuery();
             long idFromInsert = command.LastInsertedId;
             CloseConnection();
@@ -633,26 +323,64 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM customer";
+            command.CommandText = "SELECT * FROM customer " +
+                                    " INNER JOIN address ON customer.addressId = address.addressId " +
+                                    " INNER JOIN city ON address.cityId = city.cityId " +
+                                    " INNER JOIN country ON city.countryId = country.countryId";
             MySqlDataReader reader = command.ExecuteReader();
-            //Debug.WriteLine($"{reader.GetName(0)}\t {reader.GetName(1)}\t\t {reader.GetName(2)}");
 
             var results = new List<Customer>();
             while (reader.Read())
             {
-                //Debug.WriteLine($"{reader.GetInt32(0)}\t\t\t {reader.GetString(1)}\t\t {reader.GetString(2)}");
-                var customer = new Customer()
-                {
-                    CustomerId = reader.GetInt32(0),
-                    CustomerName = reader.GetString(1),
-                    AddressId = reader.GetInt32(2),
-                    CreateDate = reader.GetDateTime(4),
-                    CreatedBy = reader.GetString(5),
-                    LastUpdate = reader.GetDateTime(6),
-                    LastUpdateBy = reader.GetString(7)
-                };
+                results.Add(ReadCustomer(reader));
+                //var customer = new Customer()
+                //{
+                //    CustomerId = reader.GetInt32(0),
+                //    CustomerName = reader.GetString(1),
+                //    AddressId = reader.GetInt32(2),
+                //    CreateDate = reader.GetDateTime(4),
+                //    CreatedBy = reader.GetString(5),
+                //    LastUpdate = reader.GetDateTime(6),
+                //    LastUpdateBy = reader.GetString(7),
 
-                results.Add(customer);
+                //    Address = new Address()
+                //    {
+                //        AddressId = reader.GetInt32(8),
+                //        Address1 = reader.GetString(9),
+                //        Address2 = reader.GetString(10),
+                //        CityId = reader.GetInt32(11),
+                //        PostalCode = reader.GetString(12),
+                //        Phone = reader.GetString(13),
+                //        CreateDate = reader.GetDateTime(14).ToLocalTime(),
+                //        CreatedBy = reader.GetString(15),
+                //        LastUpdate = reader.GetDateTime(16).ToLocalTime(),
+                //        LastUpdateBy = reader.GetString(17)
+
+                //    },
+
+                //    City = new City()
+                //    {
+                //        CityId = reader.GetInt32(18),
+                //        CityName = reader.GetString(19),
+                //        CountryId = reader.GetInt32(20),
+                //        CreateDate = reader.GetDateTime(21).ToLocalTime(),
+                //        CreatedBy = reader.GetString(22),
+                //        LastUpdate = reader.GetDateTime(23).ToLocalTime(),
+                //        LastUpdateBy = reader.GetString(24)
+                //    },
+
+                //    Country = new Country()
+                //    {
+                //        CountryId = reader.GetInt32(25),
+                //        CountryName = reader.GetString(26),
+                //        CreateDate = reader.GetDateTime(27).ToLocalTime(),
+                //        CreatedBy = reader.GetString(28),
+                //        LastUpdate = reader.GetDateTime(29).ToLocalTime(),
+                //        LastUpdateBy = reader.GetString(30)
+                //    }
+                //};
+
+                //results.Add(customer);
             }
 
             CloseConnection();
@@ -660,7 +388,7 @@ namespace SchedulingApp.Utilities
             return results;
         }
 
-        public static Customer SelectCustomer(int id)
+        public static Customer SelectCustomer(int customerId)
         {
             if (!OpenConnection())
             {
@@ -668,23 +396,18 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM customer WHERE customerId = @customerId";
-            command.Parameters.AddWithValue("@customerId", id);
+            command.CommandText = "SELECT * FROM customer" +
+                                    " INNER JOIN address ON customer.addressId = address.addressId " +
+                                    " INNER JOIN city ON address.cityId = city.cityId " +
+                                    " INNER JOIN country ON city.countryId = country.countryId " +
+                                    " WHERE customerId = @customerId ";
+            command.Parameters.AddWithValue("@customerId", customerId);
             MySqlDataReader reader = command.ExecuteReader();
 
             Customer result = null;
             while (reader.Read())
             {
-                result = new Customer()
-                {
-                    CustomerId = reader.GetInt32(0),
-                    CustomerName = reader.GetString(1),
-                    AddressId = reader.GetInt32(2),
-                    CreateDate = reader.GetDateTime(4).ToLocalTime(),
-                    CreatedBy = reader.GetString(5),
-                    LastUpdate = reader.GetDateTime(6).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(7)
-                };
+                result = ReadCustomer(reader);
             }
 
             CloseConnection();
@@ -699,23 +422,18 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM customer WHERE customerName = @customerName LIMIT 1";
+            command.CommandText = "SELECT * FROM customer" +
+                                    " INNER JOIN address ON customer.addressId = address.addressId " +
+                                    " INNER JOIN city ON address.cityId = city.cityId " +
+                                    " INNER JOIN country ON city.countryId = country.countryId " +
+                                    " WHERE customerName = @customerName ";
             command.Parameters.AddWithValue("@customerName", customerName);
             MySqlDataReader reader = command.ExecuteReader();
 
             Customer result = null;
             while (reader.Read())
             {
-                result = new Customer()
-                {
-                    CustomerId = reader.GetInt32(0),
-                    CustomerName = reader.GetString(1),
-                    AddressId = reader.GetInt32(2),
-                    CreateDate = reader.GetDateTime(4).ToLocalTime(),
-                    CreatedBy = reader.GetString(5),
-                    LastUpdate = reader.GetDateTime(6).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(7)
-                };
+                result = ReadCustomer(reader);
             }
 
             CloseConnection();
@@ -723,37 +441,55 @@ namespace SchedulingApp.Utilities
             return result;
         }
 
-        public static Customer SelectCustomer(string customerName, int addressId)
+        private static Customer ReadCustomer(MySqlDataReader reader)
         {
-            if (!OpenConnection())
+            var customer = new Customer()
             {
-                return null;
-            }
+                CustomerId = reader.GetInt32(0),
+                CustomerName = reader.GetString(1),
+                AddressId = reader.GetInt32(2),
+                CreateDate = reader.GetDateTime(4),
+                CreatedBy = reader.GetString(5),
+                LastUpdate = reader.GetDateTime(6),
+                LastUpdateBy = reader.GetString(7),
 
-            var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM customer WHERE customerName = @customerName AND addressId = @addressId";
-            command.Parameters.AddWithValue("@customerName", customerName);
-            command.Parameters.AddWithValue("@addressId", addressId);
-            MySqlDataReader reader = command.ExecuteReader();
-
-            Customer result = null;
-            while (reader.Read())
-            {
-                result = new Customer()
+                Address = new Address()
                 {
-                    CustomerId = reader.GetInt32(0),
-                    CustomerName = reader.GetString(1),
-                    AddressId = reader.GetInt32(2),
-                    CreateDate = reader.GetDateTime(4).ToLocalTime(),
-                    CreatedBy = reader.GetString(5),
-                    LastUpdate = reader.GetDateTime(6).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(7)
-                };
-            }
+                    AddressId = reader.GetInt32(8),
+                    Address1 = reader.GetString(9),
+                    Address2 = reader.GetString(10),
+                    CityId = reader.GetInt32(11),
+                    PostalCode = reader.GetString(12),
+                    Phone = reader.GetString(13),
+                    CreateDate = reader.GetDateTime(14).ToLocalTime(),
+                    CreatedBy = reader.GetString(15),
+                    LastUpdate = reader.GetDateTime(16).ToLocalTime(),
+                    LastUpdateBy = reader.GetString(17),
 
-            CloseConnection();
+                    City = new City()
+                    {
+                        CityId = reader.GetInt32(18),
+                        CityName = reader.GetString(19),
+                        CountryId = reader.GetInt32(20),
+                        CreateDate = reader.GetDateTime(21).ToLocalTime(),
+                        CreatedBy = reader.GetString(22),
+                        LastUpdate = reader.GetDateTime(23).ToLocalTime(),
+                        LastUpdateBy = reader.GetString(24),
 
-            return result;
+                        Country = new Country()
+                        {
+                            CountryId = reader.GetInt32(25),
+                            CountryName = reader.GetString(26),
+                            CreateDate = reader.GetDateTime(27).ToLocalTime(),
+                            CreatedBy = reader.GetString(28),
+                            LastUpdate = reader.GetDateTime(29).ToLocalTime(),
+                            LastUpdateBy = reader.GetString(30)
+                        }
+                    },
+                },
+            };
+
+            return customer;
         }
 
         public static int UpdateCustomer(Customer customer)
@@ -763,13 +499,36 @@ namespace SchedulingApp.Utilities
                 return 0;
             }
 
+            var truncatedDateTime = DateTime.UtcNow.AddTicks(-(DateTime.UtcNow.Ticks % TimeSpan.TicksPerSecond));
             var command = _connection.CreateCommand();
-            command.CommandText = "UPDATE customer SET customerName = @customerName, addressId = @addressId, lastUpdate = @lastUpdate, lastUpdateBy = @lastUpdateBy WHERE customerId = @customerId";
+            command.CommandText = "UPDATE customer " +
+                                    "INNER JOIN address ON address.addressId = customer.addressId " +
+                                    "INNER JOIN city ON address.cityId = city.cityId " +
+                                    "INNER JOIN country ON city.countryId = country.countryId " +
+                                    "SET customer.customerName = @customerName, " +
+                                        "address.address = @address, " +
+                                        "address.address2 = @address2, " +
+                                        "address.postalCode = @postalCode, " +
+                                        "address.phone = @phone, " +
+                                        "address.lastUpdate = @lastUpdate, " +
+                                        "address.lastUpdateBy = @lastUpdateBy, " +
+                                        "city.city = @city, " +
+                                        "city.lastUpdate = @lastUpdate, " +
+                                        "city.lastUpdateBy = @lastUpdateBy, " +
+                                        "country.country = @country, " +
+                                        "country.lastUpdate = @lastUpdate, " +
+                                        "country.lastUpdateBy = @lastUpdateBy " +
+                                    "WHERE customer.customerId = @customerId";
             command.Parameters.AddWithValue("@customerId", customer.CustomerId);
             command.Parameters.AddWithValue("@customerName", customer.CustomerName);
-            command.Parameters.AddWithValue("@addressId", customer.AddressId);
-            command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@address", customer.Address.Address1);
+            command.Parameters.AddWithValue("@address2", customer.Address.Address2);
+            command.Parameters.AddWithValue("@postalCode", customer.Address.PostalCode);
+            command.Parameters.AddWithValue("@phone", customer.Address.Phone);
+            command.Parameters.AddWithValue("@city", customer.Address.City.CityName);
+            command.Parameters.AddWithValue("@country", customer.Address.City.Country.CountryName);
+            command.Parameters.AddWithValue("@lastUpdate", truncatedDateTime);
+            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainViewModel.CurrentUser.UserName);
             var rowsAffected = command.ExecuteNonQuery();
             CloseConnection();
 
@@ -804,13 +563,16 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "DELETE FROM customer WHERE customerId = @customerId";
+            command.CommandText = "DELETE customer, address, city, country FROM customer  " +
+                                    "INNER JOIN address on customer.addressId = address.addressId " +
+                                    "INNER JOIN city ON address.cityId = city.cityId " +
+                                    "INNER JOIN country on city.countryId = country.countryId " +
+                                    "WHERE customerId = @customerId";
             command.Parameters.AddWithValue("@customerId", customer.CustomerId);
             var rowsAffected = command.ExecuteNonQuery();
 
             CloseConnection();
 
-            RemoveAddress(customer.AddressId);
             return rowsAffected;
         }
         #endregion
@@ -836,9 +598,9 @@ namespace SchedulingApp.Utilities
             command.Parameters.AddWithValue("@start", appointment.Start.ToUniversalTime());
             command.Parameters.AddWithValue("@end", appointment.End.ToUniversalTime());
             command.Parameters.AddWithValue("@createDate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@createdBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@createdBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainViewModel.CurrentUser.UserName);
             command.ExecuteNonQuery();
             long idFromInsert = command.LastInsertedId;
             CloseConnection();
@@ -854,27 +616,17 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM appointment";
+            command.CommandText = "SELECT * FROM appointment " +
+                                    "INNER JOIN customer ON appointment.customerId = customer.customerId " +
+                                    "INNER JOIN address ON customer.addressId = address.addressId " +
+                                    "INNER JOIN city on address.cityID = city.cityId " +
+                                    "INNER JOIN country on city.countryID = country.countryId ";
             MySqlDataReader reader = command.ExecuteReader();
 
             var results = new List<Appointment>();
             while (reader.Read())
             {
-                var appointment = new Appointment()
-                { 
-                    AppointmentId = reader.GetInt32(0),
-                    CustomerId = reader.GetInt32(1),
-                    UserId = reader.GetInt32(2),
-                    Type = reader.GetString(7),
-                    Start = reader.GetDateTime(9).ToLocalTime(),
-                    End = reader.GetDateTime(10).ToLocalTime(),
-                    CreateDate = reader.GetDateTime(11).ToLocalTime(),
-                    CreatedBy = reader.GetString(12),
-                    LastUpdate = reader.GetDateTime(13).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(14)
-                };
-
-                results.Add(appointment);
+                results.Add(ReadAppointment(reader));
             }
 
             CloseConnection();
@@ -890,7 +642,13 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM appointment WHERE start >= @startDate AND end <= @endDate";
+            command.CommandText = "SELECT * FROM appointment " +
+                                    "INNER JOIN customer ON appointment.customerId = customer.customerId " +
+                                    "INNER JOIN address ON customer.addressId = address.addressId " +
+                                    "INNER JOIN city on address.cityID = city.cityId " +
+                                    "INNER JOIN country on city.countryID = country.countryId " +
+                                    "WHERE start >= @startDate AND end <= @endDate";
+            //command.CommandText = "SELECT * FROM appointment WHERE start >= @startDate AND end <= @endDate";
             command.Parameters.AddWithValue("@startDate", startDate);
             command.Parameters.AddWithValue("@endDate", endDate);
             MySqlDataReader reader = command.ExecuteReader();
@@ -898,21 +656,7 @@ namespace SchedulingApp.Utilities
             var results = new List<Appointment>();
             while (reader.Read())
             {
-                var appointment = new Appointment()
-                {
-                    AppointmentId = reader.GetInt32(0),
-                    CustomerId = reader.GetInt32(1),
-                    UserId = reader.GetInt32(2),
-                    Type = reader.GetString(7),
-                    Start = reader.GetDateTime(9).ToLocalTime(),
-                    End = reader.GetDateTime(10).ToLocalTime(),
-                    CreateDate = reader.GetDateTime(11).ToLocalTime(),
-                    CreatedBy = reader.GetString(12),
-                    LastUpdate = reader.GetDateTime(13).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(14)
-                };
-
-                results.Add(appointment);
+                results.Add(ReadAppointment(reader));
             }
 
             CloseConnection();
@@ -928,7 +672,13 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM appointment WHERE userId = @userId AND start >= @startDate LIMIT 1";
+            command.CommandText = "SELECT * FROM appointment " +
+                                    "INNER JOIN customer ON appointment.customerId = customer.customerId " +
+                                    "INNER JOIN address ON customer.addressId = address.addressId " +
+                                    "INNER JOIN city on address.cityID = city.cityId " +
+                                    "INNER JOIN country on city.countryID = country.countryId " +
+                                    "WHERE userId = @userId AND start >= @startDate LIMIT 1";
+            //command.CommandText = "SELECT * FROM appointment WHERE userId = @userId AND start >= @startDate LIMIT 1";
             command.Parameters.AddWithValue("@userId", userId);
             command.Parameters.AddWithValue("@startDate", DateTime.UtcNow);
             MySqlDataReader reader = command.ExecuteReader();
@@ -936,19 +686,7 @@ namespace SchedulingApp.Utilities
             Appointment result = null;
             while (reader.Read())
             {
-                result = new Appointment()
-                {
-                    AppointmentId = reader.GetInt32(0),
-                    CustomerId = reader.GetInt32(1),
-                    UserId = reader.GetInt32(2),
-                    Type = reader.GetString(7),
-                    Start = reader.GetDateTime(9).ToLocalTime(),
-                    End = reader.GetDateTime(10).ToLocalTime(),
-                    CreateDate = reader.GetDateTime(11).ToLocalTime(),
-                    CreatedBy = reader.GetString(12),
-                    LastUpdate = reader.GetDateTime(13).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(14)
-                };
+                result = ReadAppointment(reader);
             }
 
             CloseConnection();
@@ -964,28 +702,19 @@ namespace SchedulingApp.Utilities
             }
 
             var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM appointment WHERE customerId = @customerId";
+            command.CommandText = "SELECT * FROM appointment " +
+                                    "INNER JOIN customer ON appointment.customerId = customer.customerId " +
+                                    "INNER JOIN address ON customer.addressId = address.addressId " +
+                                    "INNER JOIN city on address.cityID = city.cityId " +
+                                    "INNER JOIN country on city.countryID = country.countryId " +
+                                    "WHERE customer.customerId = @customerId";
             command.Parameters.AddWithValue("@customerId", customer.CustomerId);
             MySqlDataReader reader = command.ExecuteReader();
 
             var results = new List<Appointment>();
             while (reader.Read())
             {
-                var appointment = new Appointment()
-                {
-                    AppointmentId = reader.GetInt32(0),
-                    CustomerId = reader.GetInt32(1),
-                    UserId = reader.GetInt32(2),
-                    Type = reader.GetString(7),
-                    Start = reader.GetDateTime(9).ToLocalTime(),
-                    End = reader.GetDateTime(10).ToLocalTime(),
-                    CreateDate = reader.GetDateTime(11).ToLocalTime(),
-                    CreatedBy = reader.GetString(12),
-                    LastUpdate = reader.GetDateTime(13).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(14)
-                };
-
-                results.Add(appointment);
+                results.Add(ReadAppointment(reader));
             }
 
             CloseConnection();
@@ -993,41 +722,69 @@ namespace SchedulingApp.Utilities
             return results;
         }
 
-        public static List<Appointment> SelectAppointmentsForUser(User user)
+        private static Appointment ReadAppointment(MySqlDataReader reader)
         {
-            if (!OpenConnection())
+            var appointment = new Appointment()
             {
-                return null;
-            }
+                AppointmentId = reader.GetInt32(0),
+                CustomerId = reader.GetInt32(1),
+                UserId = reader.GetInt32(2),
+                Type = reader.GetString(7),
+                Start = reader.GetDateTime(9).ToLocalTime(),
+                End = reader.GetDateTime(10).ToLocalTime(),
+                CreateDate = reader.GetDateTime(11).ToLocalTime(),
+                CreatedBy = reader.GetString(12),
+                LastUpdate = reader.GetDateTime(13).ToLocalTime(),
+                LastUpdateBy = reader.GetString(14),
 
-            var command = _connection.CreateCommand();
-            command.CommandText = "SELECT * FROM appointment WHERE userId = @userId";
-            command.Parameters.AddWithValue("@userId", user.UserId);
-            MySqlDataReader reader = command.ExecuteReader();
-
-            var results = new List<Appointment>();
-            while (reader.Read())
-            {
-                var appointment = new Appointment()
+                Customer = new Customer()
                 {
-                    AppointmentId = reader.GetInt32(0),
-                    CustomerId = reader.GetInt32(1),
-                    UserId = reader.GetInt32(2),
-                    Type = reader.GetString(7),
-                    Start = reader.GetDateTime(9).ToLocalTime(),
-                    End = reader.GetDateTime(10).ToLocalTime(),
-                    CreateDate = reader.GetDateTime(11).ToLocalTime(),
-                    CreatedBy = reader.GetString(12),
-                    LastUpdate = reader.GetDateTime(13).ToLocalTime(),
-                    LastUpdateBy = reader.GetString(14)
-                };
+                    CustomerId = reader.GetInt32(15),
+                    CustomerName = reader.GetString(16),
+                    AddressId = reader.GetInt32(17),
+                    CreateDate = reader.GetDateTime(19),
+                    CreatedBy = reader.GetString(20),
+                    LastUpdate = reader.GetDateTime(21),
+                    LastUpdateBy = reader.GetString(22),
 
-                results.Add(appointment);
-            }
+                    Address = new Address()
+                    {
+                        AddressId = reader.GetInt32(23),
+                        Address1 = reader.GetString(24),
+                        Address2 = reader.GetString(25),
+                        CityId = reader.GetInt32(26),
+                        PostalCode = reader.GetString(27),
+                        Phone = reader.GetString(28),
+                        CreateDate = reader.GetDateTime(29).ToLocalTime(),
+                        CreatedBy = reader.GetString(30),
+                        LastUpdate = reader.GetDateTime(31).ToLocalTime(),
+                        LastUpdateBy = reader.GetString(32),
 
-            CloseConnection();
+                        City = new City()
+                        {
+                            CityId = reader.GetInt32(33),
+                            CityName = reader.GetString(34),
+                            CountryId = reader.GetInt32(35),
+                            CreateDate = reader.GetDateTime(36).ToLocalTime(),
+                            CreatedBy = reader.GetString(37),
+                            LastUpdate = reader.GetDateTime(38).ToLocalTime(),
+                            LastUpdateBy = reader.GetString(39),
 
-            return results;
+                            Country = new Country()
+                            {
+                                CountryId = reader.GetInt32(40),
+                                CountryName = reader.GetString(41),
+                                CreateDate = reader.GetDateTime(42).ToLocalTime(),
+                                CreatedBy = reader.GetString(43),
+                                LastUpdate = reader.GetDateTime(44).ToLocalTime(),
+                                LastUpdateBy = reader.GetString(45)
+                            }
+                        },
+                    },
+                }
+            };
+
+            return appointment;
         }
 
         public static int UpdateAppointment(Appointment appointment)
@@ -1051,37 +808,11 @@ namespace SchedulingApp.Utilities
             command.Parameters.AddWithValue("@start", appointment.Start.ToUniversalTime());
             command.Parameters.AddWithValue("@end", appointment.End.ToUniversalTime());
             command.Parameters.AddWithValue("@lastUpdate", DateTime.UtcNow);
-            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainVM.CurrentUser.UserName);
+            command.Parameters.AddWithValue("@lastUpdateBy", NavigationService.MainViewModel.CurrentUser.UserName);
             var rowsAffected = command.ExecuteNonQuery();
             CloseConnection();
 
             return rowsAffected;
-        }
-
-        public static bool FindOverlappingAppointments(Appointment appointment, DateTime startTime, DateTime endTime)
-        {
-            if (!OpenConnection())
-            {
-                return false;
-            }
-
-            var command = _connection.CreateCommand();
-            command.CommandText = "Select count(*) FROM appointment WHERE userId = @userId AND appointmentId != @appointmentId AND ((start >= @startTime AND start <= @endTime) OR (@endTime >= start AND @endTime <= end) OR (start <= @startTime AND end >= @endTime))";
-            command.Parameters.AddWithValue("@userId", appointment.UserId);
-            command.Parameters.AddWithValue("@appointmentId", appointment.AppointmentId);
-            command.Parameters.AddWithValue("@startTime", startTime.ToUniversalTime());
-            command.Parameters.AddWithValue("@endTime", endTime.ToUniversalTime());
-            var count = command.ExecuteScalar();
-            CloseConnection();
-
-            if (count == null)
-            {
-                return false;
-            }
-
-            int matches = Convert.ToInt32(count);
-
-            return matches > 0;
         }
 
         public static bool FindOverlappingAppointments(User user, DateTime startTime, DateTime endTime)
