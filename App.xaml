@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="Theme/NavigationPanelTheme.xaml"/>
                 <ResourceDictionary Source="Theme/WindowButtonTheme.xaml"/>
                 <ResourceDictionary Source="Theme/CancelButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/DeleteButtonTheme.xaml"/>
                 <ResourceDictionary Source="Theme/EditButtonTheme.xaml"/>
                 <ResourceDictionary Source="Theme/BookAppointmentButtonTheme.xaml"/>
                 <ResourceDictionary Source="Theme/SignInButtonTheme.xaml"/>
@@ -22,6 +23,7 @@
 
                 <ResourceDictionary Source="Templates/DailyAgendaListView.xaml"/>
                 <ResourceDictionary Source="Templates/CalendarListView.xaml"/>
+                <ResourceDictionary Source="Templates/CustomersListView.xaml"/>
                 <ResourceDictionary Source="Templates/ErrorTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
@@ -41,6 +43,10 @@
                 <view:UpdateAppointmentView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type viewModel:CustomersViewModel}">
+                <view:CustomersView/>
+            </DataTemplate>
+            
             <DataTemplate DataType="{x:Type viewModel:AddCustomerViewModel}">
                 <view:AddCustomerView/>
             </DataTemplate>
