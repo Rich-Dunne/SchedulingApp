@@ -1,5 +1,4 @@
 ﻿using SchedulingApp.Utilities;
-using SchedulingApp.ViewModels;
 using System;
 using System.Diagnostics;
 using System.Windows;
@@ -25,37 +24,45 @@ namespace SchedulingApp.Models
         public string LastUpdateBy { get; set; }
 
         public string Consultant { get => DataAccess.SelectUser(UserId).UserName;  }
-        public string CustomerName { get => DataAccess.SelectCustomer(CustomerId).CustomerName; }
         public string FullDate { get => Start.ToLocalTime().ToString("MMM dd, yyyy"); }
         public string FormattedDate { get => Start.ToLocalTime().ToString("MMM dd"); }
         public string FormattedTime { get => Start.ToLocalTime().ToShortTimeString(); }
         public string Duration { get => End.Subtract(Start).TotalMinutes.ToString(); }
         public string TimeTo { get => GetTimeTo(); }
         public string MonthYear { get => Start.ToString("MMMM yyyy"); }
+        public Customer Customer { get; set; }
 
         public RelayCommand CancelCommand { get; set; }
         public RelayCommand EditCommand { get; set; }
 
         public Appointment()
         {
-            CancelCommand = new RelayCommand(o => CancelAppointment());
-            EditCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateAppointmentViewModel>(this));
+            CancelCommand = new RelayCommand(o => CancelAppointment(false));
+            EditCommand = new RelayCommand(o => NavigationService.NavigateTo(View.UpdateAppointment, this));
         }
 
-        private void CancelAppointment()
+        public void CancelAppointment(bool navigateBack)
         {
             var cancelPrompt = MessageBox.Show($"Are you sure you want to cancel this appointment?", "Cancel appointment?", MessageBoxButton.YesNo);
             if (cancelPrompt == MessageBoxResult.Yes)
             {
                 DataAccess.RemoveAppointment(AppointmentId);
-                NavigationService.NavigateTo<CalendarViewModel>();
+                if(navigateBack)
+                {
+                    NavigationService.NavigateTo(NavigationService.PreviousView);
+                }
+                else
+                {
+                    NavigationService.NavigateTo(NavigationService.CurrentView);
+                }
             }
         }
 
         private string GetTimeTo()
         {
-            var timeTo = Start.ToLocalTime().Subtract(DateTime.Now.ToLocalTime());
-            if(timeTo.Minutes == 1)
+            var timeTo = Start.Subtract(DateTime.Now);
+
+            if (timeTo.Minutes == 1)
             {
                 return $"In {timeTo.Minutes} minute";
             }
@@ -63,13 +70,13 @@ namespace SchedulingApp.Models
             {
                 return $"In {timeTo.Minutes} minutes";
             }
-            if(timeTo.Hours == 1)
+            if(timeTo.Hours == 1 && timeTo.Minutes == 0)
             {
                 return $"In {timeTo.Hours} hour";
             }
-            if(timeTo.Hours > 1 && timeTo.Hours < 24)
+            if(timeTo.Hours >= 1 && timeTo.Hours < 24)
             {
-                return $"In {timeTo.Hours} hours";
+                return $"In {timeTo.Hours}h {timeTo.Minutes}min";
             }
             if(timeTo.Minutes == 0)
             {
