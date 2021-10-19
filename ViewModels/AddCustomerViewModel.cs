@@ -121,6 +121,8 @@ namespace SchedulingApp.ViewModels
         public RelayCommand LoginViewCommand { get; set; }
         public RelayCommand HomeViewCommand { get; set; }
         public RelayCommand AddCustomerCommand { get; set; }
+        public RelayCommand CustomersViewCommand { get; set; }
+        public RelayCommand CancelCommand { get; set; }
         #endregion
 
         public AddCustomerViewModel()
@@ -128,10 +130,11 @@ namespace SchedulingApp.ViewModels
             Debug.WriteLine($"AddCustomer VM initialized.");
             _errorsViewModel = new ErrorsViewModel();
             _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
-            LoginViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<LoginViewModel>(); });
-            HomeViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<HomeViewModel>(); });
+            LoginViewCommand = new RelayCommand(o => { NavigationService.NavigateTo(View.Login); });
+            HomeViewCommand = new RelayCommand(o => { NavigationService.NavigateTo(View.Home); });
             AddCustomerCommand = new RelayCommand(o => { AddCustomer(); });
-
+            CustomersViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Customers));
+            CancelCommand = new RelayCommand(o => NavigationService.NavigateTo(NavigationService.PreviousView));
         }
 
         public void AddCustomer()
@@ -143,102 +146,55 @@ namespace SchedulingApp.ViewModels
                 return;
             }
 
-            Country country = DataAccess.SelectCountry(Country);
-            if(country is null)
+            var country = new Country()
             {
-                Debug.WriteLine($"Creating new record from null country");
-                CreateNewCustomerRecord();
-                return;
-            }
+                CountryName = Country,
+                CreateDate = DateTime.Now,
+                CreatedBy = NavigationService.MainViewModel.CurrentUser.UserName,
+                LastUpdate = DateTime.Now,
+                LastUpdateBy = NavigationService.MainViewModel.CurrentUser.UserName
+            };
+            country.CountryId = (int)DataAccess.InsertCountry(country);
 
-            City city = DataAccess.SelectCity(City, country.CountryId);
-            if(city is null)
+            var city = new City()
             {
-                Debug.WriteLine($"Creating new record from null city");
-                CreateNewCustomerRecord(country);
-                return;
-            }
+                CityName = City,
+                CountryId = country.CountryId,
+                CreateDate = DateTime.Now,
+                CreatedBy = NavigationService.MainViewModel.CurrentUser.UserName,
+                LastUpdate = DateTime.Now,
+                LastUpdateBy = NavigationService.MainViewModel.CurrentUser.UserName
+            };
+            city.CityId = (int)DataAccess.InsertCity(city);
 
-            Address address = DataAccess.SelectAddress(Address, Address2, Postal, city.CityId);
-            if(address is null)
+            var address = new Address()
             {
-                Debug.WriteLine($"Creating new record from null address");
-                CreateNewCustomerRecord(country, city);
-                return;
-            }
-
-            Customer customer = DataAccess.SelectCustomer($"{FirstName} {LastName}", address.AddressId);
-            if(customer is null)
-            {
-                Debug.WriteLine($"Creating new record from null customer");
-                CreateNewCustomerRecord(country, city, address);
-                return;
-            }
-
-            Debug.WriteLine($"A customer with that information already exists.");
-            MessageBox.Show($"A customer with that information already exists.", $"Customer Already Exists", MessageBoxButton.OK);
-        }
-
-        private void CreateNewCustomerRecord(Country country = null, City city = null, Address address = null)
-        {
-            if (country is null)
-            {
-                country = new Country()
-                {
-                    CountryName = Country,
-                    CreateDate = DateTime.Now,
-                    CreatedBy = NavigationService.MainVM.CurrentUser.UserName,
-                    LastUpdate = DateTime.Now,
-                    LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
-                };
-                country.CountryId = (int)DataAccess.InsertCountry(country);
-            }
-
-            if (city is null)
-            {
-                city = new City()
-                {
-                    CityName = City,
-                    CountryId = country.CountryId,
-                    CreateDate = DateTime.Now,
-                    CreatedBy = NavigationService.MainVM.CurrentUser.UserName,
-                    LastUpdate = DateTime.Now,
-                    LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
-                };
-                city.CityId = (int)DataAccess.InsertCity(city);
-            }
-
-            if (address is null)
-            {
-                address = new Address()
-                {
-                    Address1 = Address,
-                    Address2 = Address2,
-                    CityId = city.CityId,
-                    PostalCode = Postal,
-                    Phone = Phone,
-                    CreateDate = DateTime.Now,
-                    CreatedBy = NavigationService.MainVM.CurrentUser.UserName,
-                    LastUpdate = DateTime.Now,
-                    LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
-                };
-                address.AddressId = (int)DataAccess.InsertAddress(address);
-            }
+                Address1 = Address,
+                Address2 = Address2,
+                CityId = city.CityId,
+                PostalCode = Postal,
+                Phone = Phone,
+                CreateDate = DateTime.Now,
+                CreatedBy = NavigationService.MainViewModel.CurrentUser.UserName,
+                LastUpdate = DateTime.Now,
+                LastUpdateBy = NavigationService.MainViewModel.CurrentUser.UserName
+            };
+            address.AddressId = (int)DataAccess.InsertAddress(address);
 
             var customer = new Customer()
             {
                 CustomerName = $"{FirstName} {LastName}",
                 AddressId = address.AddressId,
                 CreateDate = DateTime.Now,
-                CreatedBy = NavigationService.MainVM.CurrentUser.UserName,
+                CreatedBy = NavigationService.MainViewModel.CurrentUser.UserName,
                 LastUpdate = DateTime.Now,
-                LastUpdateBy = NavigationService.MainVM.CurrentUser.UserName
+                LastUpdateBy = NavigationService.MainViewModel.CurrentUser.UserName
             };
             DataAccess.InsertCustomer(customer);
 
             ResetProperties();
 
-            NavigationService.NavigateTo<HomeViewModel>();
+            NavigationService.NavigateTo(NavigationService.PreviousView);
         }
 
         public void ResetProperties()
@@ -251,6 +207,14 @@ namespace SchedulingApp.ViewModels
             Postal = "";
             Country = "";
             Phone = "";
+            _errorsViewModel.ClearErrors(nameof(FirstName));
+            _errorsViewModel.ClearErrors(nameof(LastName));
+            _errorsViewModel.ClearErrors(nameof(Address));
+            _errorsViewModel.ClearErrors(nameof(Address2));
+            _errorsViewModel.ClearErrors(nameof(City));
+            _errorsViewModel.ClearErrors(nameof(Postal));
+            _errorsViewModel.ClearErrors(nameof(Country));
+            _errorsViewModel.ClearErrors(nameof(Phone));
         }
 
         public IEnumerable GetErrors(string propertyName) => _errorsViewModel.GetErrors(propertyName);
