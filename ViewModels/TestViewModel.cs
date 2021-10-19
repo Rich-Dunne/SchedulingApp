@@ -18,9 +18,9 @@ namespace SchedulingApp.ViewModels
 
         public TestViewModel()
         {
-            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo<HomeViewModel>());
-            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo<LoginViewModel>());
-            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo<CalendarViewModel>());
+            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Home));
+            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Login));
+            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Calendar));
         }
     }
 }
