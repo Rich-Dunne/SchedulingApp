@@ -23,4 +23,16 @@
         November,
         December
     }
+
+    public enum View
+    { 
+        Login,
+        Home,
+        Calendar,
+        Customers,
+        BookAppointment,
+        UpdateAppointment,
+        AddCustomer,
+        UpdateCustomer
+    }
 }
