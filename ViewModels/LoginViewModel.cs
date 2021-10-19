@@ -180,7 +180,7 @@ namespace SchedulingApp.ViewModels
             var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == int.Parse(geoID));
 
 
-            return regionInfo.DisplayName != "United States" || languageName != "en";
+            return regionInfo.DisplayName != "United States" || languageName == "es";
         }
 
         private void UpdateLoginLanguage()
@@ -228,10 +228,10 @@ namespace SchedulingApp.ViewModels
 
             UserLogManager.LogValidSignIn(Username);
 
-            NavigationService.MainVM.CurrentUser = DataAccess.SelectUser(Username);
+            NavigationService.MainViewModel.CurrentUser = DataAccess.SelectUser(Username);
             ResetProperties();
 
-            NavigationService.NavigateTo<HomeViewModel>(true);
+            NavigationService.NavigateTo(View.Home);
         }
 
         private void ResetProperties()
