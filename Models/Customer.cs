@@ -1,5 +1,7 @@
 ﻿using SchedulingApp.Utilities;
 using System;
+using System.Diagnostics;
+using System.Windows;
 
 namespace SchedulingApp.Models
 {
@@ -16,12 +18,18 @@ namespace SchedulingApp.Models
         public DateTime LastUpdate { get; set; }
         public string LastUpdateBy { get; set; }
         public Address Address { get; set; }
-        public City City { get; set; }
-        public Country Country { get; set; }
 
+        public string Phone { get => Address.Phone; }
+        public string FullAddress { get => $"{Address.FullAddress} {Address.City.CityName}, {Address.City.Country.CountryName}, {Address.PostalCode}"; }
+        public string FirstLetter { get => CustomerName[0].ToString().ToUpper(); }
+
+
+        public RelayCommand DeleteCommand { get; set; }
+        public RelayCommand EditCommand { get; set; }
         public Customer()
         {
-
+            DeleteCommand = new RelayCommand(o => Delete(false));
+            EditCommand = new RelayCommand(o => NavigationService.NavigateTo(View.UpdateCustomer, this));
         }
 
         private string SplitName(string name)
@@ -34,6 +42,31 @@ namespace SchedulingApp.Models
             }
             LastName = LastName.Trim(' ');
             return name;
+        }
+
+        public void Delete(bool navigateBack)
+        {
+            var result = MessageBox.Show($"Are you sure you want to delete {CustomerName}?  This will remove all associated appointments.", $"Delete customer?", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.No)
+            {
+                return;
+            }
+            var appointments = DataAccess.SelectAppointmentsForCustomer(this);
+            appointments.ForEach(x => DataAccess.RemoveAppointment(x.AppointmentId));
+
+            var rows = DataAccess.RemoveCustomer(this);
+            if (rows > 0)
+            {
+                Debug.WriteLine($"Customer deleted");
+                if(navigateBack)
+                {
+                    NavigationService.NavigateTo(NavigationService.PreviousView);
+                }
+                else
+                {
+                    NavigationService.NavigateTo(NavigationService.CurrentView);
+                }
+            }
         }
     }
 }
