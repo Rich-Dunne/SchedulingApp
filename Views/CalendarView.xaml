@@ -48,7 +48,7 @@
                              Height="50"
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
-                             Command="{Binding TestViewCommand}"/>
+                             Command="{Binding CustomersViewCommand}"/>
                 <RadioButton Content="Logout" 
                              Height="50"
                              FontSize="14"
@@ -139,12 +139,12 @@
                                        FontSize="20"
                                        FontWeight="SemiBold"/>
                                 <Label Content="Time"
-                                       Margin="50,0,0,0"
+                                       Margin="55,0,0,0"
                                        Foreground="White"
                                        FontSize="20"
                                        FontWeight="SemiBold"/>
                                 <Label Content="Appointment"
-                                       Margin="40,0,0,0"
+                                       Margin="45,0,0,0"
                                        Foreground="White"
                                        FontSize="20"
                                        FontWeight="SemiBold"/>
@@ -153,8 +153,9 @@
                                        Foreground="White"
                                        FontSize="20"
                                        FontWeight="SemiBold"/>
-                                <Label Content="Actions"
-                                       Margin="60,0,0,0"
+
+                                <Label Content="Consultant"
+                                       Margin="50,0,0,0"
                                        Foreground="White"
                                        FontSize="20"
                                        FontWeight="SemiBold"/>
