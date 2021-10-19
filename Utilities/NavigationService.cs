@@ -7,112 +7,113 @@ namespace SchedulingApp.Utilities
 {
     public static class NavigationService
     {
-        public static MainViewModel MainVM { get; private set; }
-        private static LoginViewModel _loginVM;
-        private static HomeViewModel _homeVM;
-        private static BookAppointmentViewModel _bookAppointmentVM;
-        private static UpdateAppointmentViewModel _updateAppointmentVM;
-        private static AddCustomerViewModel _addCustomerVM;
-        private static UpdateCustomerViewModel _updateCustomerVM;
-        private static CalendarViewModel _calendarVM;
+        public static MainViewModel MainViewModel { get; private set; }
+        public static View PreviousView { get; private set; }
+        public static View CurrentView { get; private set; }
+        private static LoginViewModel _loginViewModel { get; set; }
+        private static HomeViewModel _homeViewModel { get; set; }
+        private static BookAppointmentViewModel _bookAppointmentViewModel { get; set; }
+        private static UpdateAppointmentViewModel _updateAppointmentViewModel { get; set; }
+        private static CustomersViewModel _customersViewModel { get; set; }
+        private static AddCustomerViewModel _addCustomerViewModel { get; set; }
+        private static UpdateCustomerViewModel _updateCustomerViewModel { get; set; }
+        private static CalendarViewModel _calendarViewModel { get; set; }
 
         public static void AssignMainViewModel(MainViewModel mainViewModel)
         {
-            MainVM = mainViewModel;
-            _loginVM = new LoginViewModel();
-            _homeVM = new HomeViewModel();
-            _bookAppointmentVM = new BookAppointmentViewModel();
-            _updateAppointmentVM = new UpdateAppointmentViewModel();
-            _addCustomerVM = new AddCustomerViewModel();
-            _updateCustomerVM = new UpdateCustomerViewModel();
-            _calendarVM = new CalendarViewModel();
+            MainViewModel = mainViewModel;
+            _loginViewModel = new LoginViewModel();
+            _homeViewModel = new HomeViewModel();
+            _bookAppointmentViewModel = new BookAppointmentViewModel();
+            _updateAppointmentViewModel = new UpdateAppointmentViewModel();
+            _addCustomerViewModel = new AddCustomerViewModel();
+            _updateCustomerViewModel = new UpdateCustomerViewModel();
+            _calendarViewModel = new CalendarViewModel();
+            _customersViewModel = new CustomersViewModel();
 
-            NavigateTo<LoginViewModel>();
+            NavigateTo(View.Login);
         }
 
-        public static void NavigateTo<T>(bool firstTime = false)
+        public static void NavigateTo(View newView)
         {
-            if (typeof(T) == typeof(LoginViewModel))
-            {
-                MainVM.CurrentView = _loginVM;
-                return;
-            }
+            PreviousView = CurrentView;
+            CurrentView = newView;
 
-            if (typeof(T) == typeof(HomeViewModel))
+            switch (newView)
             {
-                if (firstTime)
-                {
-                    _homeVM.AlertUpcomingAppointments();
-                }
+                case View.Login:
+                    _homeViewModel.AlertUpcoming = true;
+                    MainViewModel.CurrentView = _loginViewModel;
+                    break;
 
-                _homeVM.UpdateProperties();
-                MainVM.CurrentView = _homeVM;
-                return;
-            }
+                case View.Home:
+                    _homeViewModel.UpdateProperties();
+                    MainViewModel.CurrentView = _homeViewModel;
+                    if(_homeViewModel.AlertUpcoming)
+                    {
+                        _homeViewModel.AlertUpcomingAppointments();
+                    }
+                    _homeViewModel.AlertUpcoming = false;
+                    break;
 
-            if (typeof(T) == typeof(BookAppointmentViewModel))
-            {
-                _bookAppointmentVM.ResetProperties();
-                MainVM.CurrentView = _bookAppointmentVM;
-                return;
-            }
+                case View.BookAppointment:
+                    _bookAppointmentViewModel.ResetProperties();
+                    MainViewModel.CurrentView = _bookAppointmentViewModel;
+                    break;
 
-            if (typeof(T) == typeof(AddCustomerViewModel))
-            {
-                MainVM.CurrentView = _addCustomerVM;
-                return;
-            }
+                case View.AddCustomer:
+                    MainViewModel.CurrentView = _addCustomerViewModel;
+                    break;
 
-            if (typeof(T) == typeof(UpdateCustomerViewModel))
-            {
-                MainVM.CurrentView = _updateCustomerVM;
-                return;
-            }
+                case View.Calendar:
+                    _calendarViewModel.SetProperties();
+                    MainViewModel.CurrentView = _calendarViewModel;
+                    break;
 
-            if(typeof(T) == typeof(CalendarViewModel))
-            {
-                _calendarVM.SetProperties();
-                MainVM.CurrentView = _calendarVM;
+                case View.Customers:
+                    _customersViewModel.SetProperties();
+                    MainViewModel.CurrentView = _customersViewModel;
+                    break;
             }
         }
 
-        public static void NavigateTo<T>(object obj)
+        public static void NavigateTo(View newView, object obj)
         {
-            if (typeof(T) == typeof(BookAppointmentViewModel) && obj.GetType() == typeof(DateTime))
-            {
-                _bookAppointmentVM.ResetProperties();
-                _bookAppointmentVM.SetDate((DateTime)obj);
-                MainVM.CurrentView = _bookAppointmentVM;
-                return;
-            }
+            PreviousView = CurrentView;
+            CurrentView = newView;
 
-            if (typeof(T) == typeof(UpdateAppointmentViewModel) && obj.GetType() == typeof(Appointment))
+            switch (newView)
             {
-                _updateAppointmentVM.SetProperties((Appointment)obj);
-                MainVM.CurrentView = _updateAppointmentVM;
-                return;
-            }
+                case View.UpdateAppointment:
+                    if(obj is Appointment)
+                    {
+                        _updateAppointmentViewModel.SetProperties((Appointment)obj);
+                        MainViewModel.CurrentView = _updateAppointmentViewModel;
+                    }
+                    break;
 
-            if (typeof(T) == typeof(UpdateCustomerViewModel) && obj.GetType() == typeof(Customer))
-            {
-                _updateCustomerVM.SetProperties((Customer)obj);
-                MainVM.CurrentView = _updateCustomerVM;
-                return;
-            }
+                case View.UpdateCustomer:
+                    if(obj is Customer)
+                    {
+                        var customer = obj as Customer;
+                        Debug.WriteLine($"City: {customer.Address.City.CityName}");
+                        _updateCustomerViewModel.SetProperties((Customer)obj);
+                        MainViewModel.CurrentView = _updateCustomerViewModel;
+                    }
+                    else if (obj is int)
+                    {
+                        var customer = DataAccess.SelectCustomer((int)obj);
+                        if (customer is null)
+                        {
+                            Debug.WriteLine($"customer was null");
+                            break;
+                        }
 
-            if (typeof(T) == typeof(UpdateCustomerViewModel) && obj.GetType() == typeof(int))
-            {
-                var customer = DataAccess.SelectCustomer((int)obj);
-                if(customer is null)
-                {
-                    Debug.WriteLine($"customer was null");
-                    return;
-                }
-
-                _updateCustomerVM.SetProperties(customer);
-                MainVM.CurrentView = _updateCustomerVM;
-                return;
-            }
+                        _updateCustomerViewModel.SetProperties(customer);
+                        MainViewModel.CurrentView = _updateCustomerViewModel;
+                    }
+                    break;
+            }    
         }
     }
 }
