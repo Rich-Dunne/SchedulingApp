@@ -1,0 +1,158 @@
+﻿<UserControl x:Class="SchedulingApp.Views.CustomersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SchedulingApp.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="920"
+             Background="Transparent">
+    <Grid>
+        <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" 
+                Grid.RowSpan="2"
+                BorderBrush="#21252b"
+                BorderThickness="0,0,1,0">
+            <StackPanel Style="{StaticResource NavigationPanelTheme}">
+                <TextBlock Text="Schedule Manager"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Foreground="White"
+                            Padding="10"
+                            FontSize="22"/>
+
+                <RadioButton Content="Home" 
+                             Height="50"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding HomeViewCommand}"
+                             CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                <RadioButton Content="Calendar" 
+                             Height="50"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding CalendarViewCommand}"
+                             CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                <RadioButton Content="Customers"
+                             Height="50"
+                             FontSize="14"
+                             IsChecked="True"
+                             IsEnabled="False"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding TestViewCommand}"/>
+                <RadioButton Content="Logout" 
+                             Height="50"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding LoginViewCommand}"
+                             CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+            </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Column="1"
+                    Grid.RowSpan="2">
+            <Border
+                CornerRadius="5"
+                Margin="20,10,20,0"
+                Background="#23242b"
+                Height="550">
+
+                <StackPanel Height="550">
+                    <Border BorderBrush="Gray"
+                            BorderThickness="0,0,0,0.25">
+                        <StackPanel Margin="10,10,0,0">
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,0,10,5">
+
+                                <Border>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox VerticalAlignment="Center"
+                                                 HorizontalAlignment="Left"
+                                                 Style="{StaticResource SearchBox}"/>
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock VerticalAlignment="Center"
+                                           Margin="20,0,0,0"
+                                           Foreground="Gray"
+                                           FontStyle="Italic">
+                                           <Run Text="Customers found:"></Run> 
+                                           <Run Text="{Binding Path=FilterResultsCount, Mode=OneWay}"/>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <Border BorderBrush="Gray"
+                                    BorderThickness="0,0,0,0.25"
+                                    Margin="-10,5,0,0">
+
+                            </Border>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Customer"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"/>
+                                <Label Content="Phone"
+                                       Margin="50,0,0,0"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"/>
+                                <Label Content="Address"
+                                       Margin="40,0,0,0"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Label Content="No customers found"
+                                       Foreground="Gray"
+                                       Height="427"
+                                       FontSize="18"
+                                       FontStyle="Italic"
+                                       HorizontalAlignment="Center"
+                                       Visibility="{Binding NoCustomersFound}"/>
+
+                    <ListView x:Name="calendarListView"
+                              ItemsSource="{Binding CollectionView}"
+                              Height="427"
+                              Background="Transparent"
+                              Foreground="White"
+                              BorderBrush="Transparent"
+                              FontSize="14"
+                              Padding="10"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemTemplate="{StaticResource CustomersListView}"
+                              ItemContainerStyle="{StaticResource CalendarTheme}"
+                              Visibility="{Binding ListViewVisibility}">
+                        <ListView.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontSize="15" Foreground="#f0bb57" Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListView.GroupStyle>
+                    </ListView>
+
+                    <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                        <Button Content="Add Customer"
+                                        Style="{StaticResource BookAppointmentButtonTheme}"
+                                        Width="130"
+                                        Command="{Binding AddCustomerCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>
