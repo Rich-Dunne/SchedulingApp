@@ -11,7 +11,7 @@ namespace SchedulingApp.ViewModels
 {
     public class UpdateCustomerViewModel : ObservableObject, INotifyDataErrorInfo
     {
-        private Customer _customer;
+        private Customer _customer { get; set; }
 
         #region Form Properties
         private string _firstName = "";
@@ -120,7 +120,10 @@ namespace SchedulingApp.ViewModels
         public RelayCommand LoginViewCommand { get; set; }
         public RelayCommand HomeViewCommand { get; set; }
         public RelayCommand UpdateCustomerCommand { get; set; }
-        public RelayCommand DeleteCustomerCommand { get; set; }
+        public RelayCommand DeleteCommand { get; set; }
+        public RelayCommand CalendarViewCommand { get; set; }
+        public RelayCommand CustomersViewCommand { get; set; }
+        public RelayCommand CancelCommand { get; set; }
         #endregion
 
         public UpdateCustomerViewModel()
@@ -128,29 +131,13 @@ namespace SchedulingApp.ViewModels
             Debug.WriteLine($"UpdateCustomer VM initialized.");
             _errorsViewModel = new ErrorsViewModel();
             _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
-            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo<LoginViewModel>());
-            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo<HomeViewModel>());
+            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Login));
+            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Home));
+            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Calendar));
+            CustomersViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Customers));
             UpdateCustomerCommand = new RelayCommand(o => Update());
-            DeleteCustomerCommand = new RelayCommand(o => Delete());
-
-        }
-
-        public void Delete()
-        {
-            var result = MessageBox.Show($"Are you sure you want to delete this customer?  This will remove all associated appointments.", $"Delete customer?", MessageBoxButton.YesNo);
-            if(result == MessageBoxResult.No)
-            {
-                return;
-            }
-            var appointments = DataAccess.SelectAppointmentsForCustomer(_customer);
-            appointments.ForEach(x => DataAccess.RemoveAppointment(x.AppointmentId));
-            
-            var rows = DataAccess.RemoveCustomer(_customer);
-            if (rows > 0)
-            {
-                Debug.WriteLine($"Customer deleted");
-                NavigationService.NavigateTo<HomeViewModel>();
-            }
+            CancelCommand = new RelayCommand(o => NavigationService.NavigateTo(NavigationService.PreviousView));
+            DeleteCommand = new RelayCommand(o => _customer.Delete(true));
         }
 
         public void Update()
@@ -166,35 +153,30 @@ namespace SchedulingApp.ViewModels
             if(DataIsUnchanged())
             {
                 Debug.WriteLine($"No changes made.");
-                NavigationService.NavigateTo<HomeViewModel>();
+                NavigationService.NavigateTo(NavigationService.PreviousView);
                 return;
             }
 
-            _customer.Country.CountryName = Country;
-            DataAccess.UpdateCountry(_customer.Country);
-
-            _customer.City.CityName = City;
-            DataAccess.UpdateCity(_customer.City);
-
+            _customer.FirstName = FirstName;
+            _customer.LastName = LastName;
             _customer.Address.Address1 = Address;
             _customer.Address.Address2 = Address2;
             _customer.Address.PostalCode = Postal;
             _customer.Address.Phone = Phone;
-            DataAccess.UpdateAddress(_customer.Address);
-
-            _customer.FirstName = FirstName;
-            _customer.LastName = LastName;
+            _customer.Address.City.Country.CountryName = Country;
+            _customer.Address.City.CityName = City;
+            
             DataAccess.UpdateCustomer(_customer);
 
-            NavigationService.NavigateTo<HomeViewModel>();
+            NavigationService.NavigateTo(NavigationService.PreviousView);
         }
 
         private bool DataIsUnchanged()
         {
             bool customerChanged = _customer.CustomerName != $"{FirstName} {LastName}";
             bool addressChanged = _customer.Address.Address1 != Address || _customer.Address.Address2 != Address2 || _customer.Address.PostalCode != Postal || _customer.Address.Phone != Phone;
-            bool cityChanged = _customer.City.CityName != City;
-            bool countryChanged = _customer.Country.CountryName != Country;
+            bool cityChanged = _customer.Address.City.CityName != City;
+            bool countryChanged = _customer.Address.City.Country.CountryName != Country;
 
             if(!customerChanged && !addressChanged && !cityChanged && !countryChanged)
             {
@@ -206,18 +188,14 @@ namespace SchedulingApp.ViewModels
         public void SetProperties(Customer customer)
         {
             _customer = customer;
-            _customer.Address = DataAccess.SelectAddress(_customer.AddressId);
-            _customer.City = DataAccess.SelectCity(_customer.Address.CityId);
-            _customer.Country = DataAccess.SelectCountry(_customer.City.CountryId);
-
             FirstName = _customer.FirstName;
             LastName = _customer.LastName;
             Address = _customer.Address.Address1;
             Address2 = _customer.Address.Address2;
             Postal = _customer.Address.PostalCode;
             Phone = _customer.Address.Phone;
-            City = _customer.City.CityName;
-            Country = _customer.Country.CountryName;
+            City = _customer.Address.City.CityName;
+            Country = _customer.Address.City.Country.CountryName;
         }
 
         public IEnumerable GetErrors(string propertyName) => _errorsViewModel.GetErrors(propertyName);
