@@ -41,13 +41,13 @@
                              Height="50"
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
-                             Command="{Binding TestViewCommand}"
+                             Command="{Binding CalendarViewCommand}"
                              CommandParameter="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
-                <RadioButton Content="Clients" 
+                <RadioButton Content="Customers" 
                              Height="50"
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
-                             Command="{Binding TestViewCommand}"/>
+                             Command="{Binding CustomersViewCommand}"/>
                 <RadioButton Content="Logout" 
                              Height="50"
                              FontSize="14"
@@ -164,12 +164,12 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center"
                         Margin="0,20,0,0">
+                <Button Content="Cancel"
+                        Style="{StaticResource CancelButtonTheme}"
+                        Command="{Binding CancelCommand}"/>
                 <Button Content="Delete"
-                        Style="{StaticResource CancelButtonTheme}"
-                        Command="{Binding DeleteCustomerCommand}"/>
-                <!--<Button Content="Cancel"
-                        Style="{StaticResource CancelButtonTheme}"
-                        Command="{Binding HomeViewCommand}"/>-->
+                        Style="{StaticResource DeleteButtonTheme}"
+                        Command="{Binding DeleteCommand}"/>
                 <Button Content="Update"
                         Style="{StaticResource EditButtonTheme}"
                         Command="{Binding UpdateCustomerCommand}"/>
