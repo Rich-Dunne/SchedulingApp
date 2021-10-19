@@ -10,6 +10,7 @@ namespace SchedulingApp.ViewModels
 {
     public class HomeViewModel : ObservableObject
     {
+        public bool AlertUpcoming { get; set; } = true;
         #region View Properties
         public string TodayDate { get; } = DateTime.Now.ToString("MMM dd, yyyy");
 
@@ -182,27 +183,25 @@ namespace SchedulingApp.ViewModels
         public RelayCommand CancelUpcomingCommand { get; set; }
         public RelayCommand BookAppointmentCommand { get; set; }
         public RelayCommand UpdateAppointmentCommand { get; set; }
-        public RelayCommand AddClientCommand { get; set; }
+        public RelayCommand CustomersViewCommand { get; set; }
+        public RelayCommand AddCustomerCommand { get; set; }
         public RelayCommand UpdateCustomerCommand { get; set; }
         #endregion
 
         public HomeViewModel()
         {
-            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo<HomeViewModel>());
-            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo<LoginViewModel>());
-            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo<CalendarViewModel>());
+            HomeViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Home));
+            LoginViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Login));
+            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Calendar));
             CancelUpcomingCommand = new RelayCommand(o => CancelUpcomingAppointment());
-            BookAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<BookAppointmentViewModel>());
-            UpdateAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateAppointmentViewModel>(UpcomingAppointment));
-            
-            // To be removed
-            AddClientCommand = new RelayCommand(o => NavigationService.NavigateTo<AddCustomerViewModel>());
-            UpdateCustomerCommand = new RelayCommand(o => NavigationService.NavigateTo<UpdateCustomerViewModel>(1));
+            BookAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo(View.BookAppointment));
+            UpdateAppointmentCommand = new RelayCommand(o => NavigationService.NavigateTo(View.UpdateAppointment, UpcomingAppointment));
+            CustomersViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Customers));
         }
 
         public void UpdateProperties()
         {
-            CurrentUser = NavigationService.MainVM.CurrentUser;
+            CurrentUser = NavigationService.MainViewModel.CurrentUser;
             GetTodaysAppointments();
             NoneTodayVisibility = TodaysAppointments.Count == 0 ? "Visible" : "Collapsed";
             CurrentWeek = GetCurrentWeek();
@@ -221,7 +220,7 @@ namespace SchedulingApp.ViewModels
 
         private void SetUpcomingProperties()
         {
-            UpcomingAppointment = DataAccess.SelectNextAppointment(NavigationService.MainVM.CurrentUser.UserId);
+            UpcomingAppointment = DataAccess.SelectNextAppointment(NavigationService.MainViewModel.CurrentUser.UserId);
             UpcomingDateTime = "";
             if (UpcomingAppointment == null)
             {
@@ -245,7 +244,7 @@ namespace SchedulingApp.ViewModels
 
             UpcomingDateTime += UpcomingAppointment.Start.ToShortTimeString();
 
-            UpcomingCustomer = UpcomingAppointment.CustomerName;
+            UpcomingCustomer = UpcomingAppointment.Customer.CustomerName;
             UpcomingDetails = $"{UpcomingAppointment.Type} with {UpcomingCustomer}";
             HasUpcomingAppointment = true;
         }
@@ -266,7 +265,7 @@ namespace SchedulingApp.ViewModels
 
         private void CancelUpcomingAppointment()
         {
-            var cancelPrompt = MessageBox.Show($"Are you sure you want to cancel your upcoming appointment with {UpcomingAppointment.CustomerName}?", "Cancel appointment?", MessageBoxButton.YesNo);
+            var cancelPrompt = MessageBox.Show($"Are you sure you want to cancel your upcoming appointment with {UpcomingAppointment.Customer.CustomerName}?", "Cancel appointment?", MessageBoxButton.YesNo);
             if(cancelPrompt == MessageBoxResult.Yes)
             {
                 DataAccess.RemoveAppointment(UpcomingAppointment.AppointmentId);
@@ -285,11 +284,13 @@ namespace SchedulingApp.ViewModels
             string appointmentDetails = "";
             foreach(Appointment appointment in appointments)
             {
-                appointmentDetails += $"{appointment.Type} with {appointment.CustomerName} at {appointment.Start.ToShortTimeString()}\n";
+                appointmentDetails += $"{appointment.Type} with {appointment.Customer.CustomerName} at {appointment.Start.ToShortTimeString()}\n";
             }
 
             MessageBox.Show($"The following appointments are coming up soon:\n\n" +
                             $"{appointmentDetails}", "Upcoming Appointment", MessageBoxButton.OK);
+
+            AlertUpcoming = false;
         }
     }
 }
