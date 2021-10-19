@@ -13,6 +13,8 @@ namespace SchedulingApp.Models
         public DateTime LastUpdate { get; set; }
         public string LastUpdateBy { get; set; }
 
+        public Country Country { get; set; }
+
         public City()
         {
 
