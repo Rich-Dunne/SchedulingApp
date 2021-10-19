@@ -15,6 +15,9 @@ namespace SchedulingApp.Models
         public DateTime LastUpdate { get; set; }
         public string LastUpdateBy { get; set; }
 
+        public string FullAddress { get => $"{Address1} {Address2}"; }
+        public City City { get; set; }
+
         public Address()
         {
 
