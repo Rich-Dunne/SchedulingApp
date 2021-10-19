@@ -3,6 +3,7 @@ using SchedulingApp.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 
@@ -68,8 +69,12 @@ namespace SchedulingApp.ViewModels
             {
                 _selectedUser = value;
                 OnPropertyChanged();
+
+                _user = _users.FirstOrDefault(x => x.UserName == SelectedUser);
             }
         }
+
+        private User _user;
 
         private DateTime _selectedDate = DateTime.Today;
         public DateTime SelectedDate
@@ -123,14 +128,20 @@ namespace SchedulingApp.ViewModels
         public RelayCommand LoginViewCommand { get; set; }
         public RelayCommand HomeViewCommand { get; set; }
         public RelayCommand BookAppointmentCommand { get; set; }
+        public RelayCommand CalendarViewCommand { get; set; }
+        public RelayCommand CustomersViewCommand { get; set; }
+        public RelayCommand CancelCommand { get; set; }
         #endregion
 
         public BookAppointmentViewModel()
         {
             Debug.WriteLine($"BookAppointment VM initialized.");
-            LoginViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<LoginViewModel>(); });
-            HomeViewCommand = new RelayCommand(o => { NavigationService.NavigateTo<HomeViewModel>(); });
+            LoginViewCommand = new RelayCommand(o => { NavigationService.NavigateTo(View.Login); });
+            HomeViewCommand = new RelayCommand(o => { NavigationService.NavigateTo(View.Home); });
+            CalendarViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Calendar));
+            CustomersViewCommand = new RelayCommand(o => NavigationService.NavigateTo(View.Customers));
             BookAppointmentCommand = new RelayCommand(o => { BookAppointment(); });
+            CancelCommand = new RelayCommand(o => NavigationService.NavigateTo(NavigationService.PreviousView));
         }
 
         public void BookAppointment()
@@ -141,18 +152,18 @@ namespace SchedulingApp.ViewModels
             var endTime = startTime.AddMinutes(duration);
             Debug.WriteLine($"Start:  {startTime}, End: {endTime}");
 
-            if(endTime.Hour >= 17 && endTime.Minute > 0)
+            if (endTime.Hour >= 17 && endTime.Minute > 0)
             {
                 Debug.WriteLine($"Appointment extends past end of business day.");
                 MessageBox.Show($"Please choose a time and meeting duration that ends before 5:00 PM.", $"Appointment Time Unavailable", MessageBoxButton.OK);
                 return;
             }
 
-            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(NavigationService.MainVM.CurrentUser, startTime, endTime);
+            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(_user, startTime, endTime);
             if(overlappingAppointment)
             {
                 Debug.WriteLine($"Appointment times overlap.");
-                MessageBox.Show($"An appointment is already scheduled during this time.  Please choose another time.", $"Appointment Time Unavailable", MessageBoxButton.OK);
+                MessageBox.Show($"An appointment is already scheduled during this time for {SelectedUser}.  Please choose another time.", $"An appointment is already scheduled during this time for  {SelectedUser} .  Please choose a different time.", MessageBoxButton.OK);
                 return;
             }
 
@@ -173,7 +184,7 @@ namespace SchedulingApp.ViewModels
             DataAccess.InsertAppointment(appointment);
             ResetProperties();
 
-            NavigationService.NavigateTo<HomeViewModel>();
+            NavigationService.NavigateTo(View.Home);
         }
 
         public void ResetProperties()
@@ -181,7 +192,6 @@ namespace SchedulingApp.ViewModels
             UserNames = new List<string>();
             _users.ForEach(x => UserNames.Add(x.UserName));
 
-            _customers = DataAccess.SelectAllCustomers();
             CustomerNames = new List<string>();
             _customers.ForEach(x => CustomerNames.Add(x.CustomerName));
 
