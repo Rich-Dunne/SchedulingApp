@@ -12,7 +12,7 @@ namespace SchedulingApp.ViewModels
 {
     public class CalendarViewModel : ObservableObject
     {
-        private List<User> _users = DataAccess.SelectAllUsers();
+        private List<User> _users { get => DataAccess.SelectAllUsers(); }
 
         #region View Properties
         private List<string> _userNames = new List<string>() { "All" };

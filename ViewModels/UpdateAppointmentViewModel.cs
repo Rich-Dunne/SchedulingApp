@@ -11,8 +11,8 @@ namespace SchedulingApp.ViewModels
 {
     public class UpdateAppointmentViewModel : ObservableObject
     {
-        private List<Customer> _customers = DataAccess.SelectAllCustomers();
-        private List<User> _users = DataAccess.SelectAllUsers();
+        private List<Customer> _customers { get => DataAccess.SelectAllCustomers(); }
+        private List<User> _users { get => DataAccess.SelectAllUsers(); }
         private Appointment _appointment;
 
         #region Form Properties
@@ -199,6 +199,8 @@ namespace SchedulingApp.ViewModels
             _users.ForEach(x => UserNames.Add(x.UserName));
 
             CustomerNames = new List<string>();
+            Debug.WriteLine($"Customers:");
+            _customers.ForEach(x => Debug.WriteLine($"{x.CustomerName}"));
             _customers.ForEach(x => CustomerNames.Add(x.CustomerName));
 
             SelectedUser = _users.First(x => x.UserId == appointment.UserId).UserName;

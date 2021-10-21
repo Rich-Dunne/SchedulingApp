@@ -11,8 +11,8 @@ namespace SchedulingApp.ViewModels
 {
     public class BookAppointmentViewModel : ObservableObject
     {
-        private List<Customer> _customers = DataAccess.SelectAllCustomers();
-        private List<User> _users = DataAccess.SelectAllUsers();
+        private List<Customer> _customers { get => DataAccess.SelectAllCustomers(); }
+        private List<User> _users { get => DataAccess.SelectAllUsers(); }
 
         #region Form Properties
         private List<string> _userNames;
