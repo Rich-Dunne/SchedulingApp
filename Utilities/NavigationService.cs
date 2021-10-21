@@ -96,7 +96,6 @@ namespace SchedulingApp.Utilities
                     if(obj is Customer)
                     {
                         var customer = obj as Customer;
-                        Debug.WriteLine($"City: {customer.Address.City.CityName}");
                         _updateCustomerViewModel.SetProperties((Customer)obj);
                         MainViewModel.CurrentView = _updateCustomerViewModel;
                     }
