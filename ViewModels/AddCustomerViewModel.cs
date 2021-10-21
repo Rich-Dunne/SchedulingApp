@@ -2,7 +2,6 @@
 using SchedulingApp.Utilities;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
@@ -11,9 +10,6 @@ namespace SchedulingApp.ViewModels
 {
     public class AddCustomerViewModel : ObservableObject, INotifyDataErrorInfo
     {
-        private List<Customer> _customers = DataAccess.SelectAllCustomers();
-        private List<User> _users = DataAccess.SelectAllUsers();
-
         #region Form Properties
         private string _firstName = "";
         public string FirstName
