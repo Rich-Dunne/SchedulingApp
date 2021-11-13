@@ -1,4 +1,5 @@
-﻿using SchedulingApp.Models;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Models;
 using SchedulingApp.ViewModels;
 using System;
 using System.Diagnostics;
@@ -101,7 +102,7 @@ namespace SchedulingApp.Utilities
                     }
                     else if (obj is int)
                     {
-                        var customer = DataAccess.SelectCustomer((int)obj);
+                        var customer = new DataAccess().SelectCustomer((int)obj);
                         if (customer is null)
                         {
                             Debug.WriteLine($"customer was null");
