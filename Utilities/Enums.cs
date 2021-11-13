@@ -2,7 +2,6 @@
 {
     public enum AppointmentType
     {
-        Scrum,
         Lunch,
         Sales,
         Presentation
@@ -34,5 +33,11 @@
         UpdateAppointment,
         AddCustomer,
         UpdateCustomer
+    }
+
+    public enum ErrorMessageType
+    {
+        Required,
+        Incorrect
     }
 }
