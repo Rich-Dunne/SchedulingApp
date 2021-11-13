@@ -1,4 +1,5 @@
-﻿using SchedulingApp.Models;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Models;
 using SchedulingApp.Utilities;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace SchedulingApp.ViewModels
 {
     public class BookAppointmentViewModel : ObservableObject
     {
-        private List<Customer> _customers { get => DataAccess.SelectAllCustomers(); }
-        private List<User> _users { get => DataAccess.SelectAllUsers(); }
+        private List<Customer> _customers { get => new DataAccess().SelectAllCustomers(); }
+        private List<User> _users { get => new DataAccess().SelectAllUsers(); }
 
         #region Form Properties
         private List<string> _userNames;
@@ -37,7 +38,7 @@ namespace SchedulingApp.ViewModels
             }
         }
 
-        public List<string> AppointmentTypes { get; } = new List<string>() { AppointmentType.Scrum.ToString(), AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString(), AppointmentType.Presentation.ToString() };
+        public List<string> AppointmentTypes { get; } = new List<string>() { AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString(), AppointmentType.Presentation.ToString() };
 
         private string _selectedCustomer;
         public string SelectedCustomer
@@ -148,9 +149,7 @@ namespace SchedulingApp.ViewModels
         {
             var startTime = SelectedDate.Date.Add(DateTime.Parse(SelectedTime).TimeOfDay);
             var canParse = int.TryParse(Regex.Match(SelectedDuration, @"\d+").Value, out int duration);
-            Debug.WriteLine($"Duration: {duration}");
             var endTime = startTime.AddMinutes(duration);
-            Debug.WriteLine($"Start:  {startTime}, End: {endTime}");
 
             if (endTime.Hour >= 17 && endTime.Minute > 0)
             {
@@ -159,17 +158,19 @@ namespace SchedulingApp.ViewModels
                 return;
             }
 
-            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(_user, startTime, endTime);
-            if(overlappingAppointment)
+            var dataAccess = new DataAccess();
+
+            bool overlappingAppointment = dataAccess.CountOverlappingAppointments(_user, startTime, endTime) > 0;
+            if (overlappingAppointment)
             {
                 Debug.WriteLine($"Appointment times overlap.");
                 MessageBox.Show($"An appointment is already scheduled during this time for {SelectedUser}.  Please choose another time.", $"An appointment is already scheduled during this time for  {SelectedUser} .  Please choose a different time.", MessageBoxButton.OK);
                 return;
             }
 
-            var user = DataAccess.SelectUser(SelectedUser);
+            var user = _users.FirstOrDefault(x => x.UserName == SelectedUser);
             Debug.WriteLine($"User: {user.UserName}");
-            var customer = DataAccess.SelectCustomer(SelectedCustomer);
+            var customer = _customers.FirstOrDefault(x => x.CustomerName == SelectedCustomer);
             Debug.WriteLine($"Customer: {customer.CustomerName}");
 
             var appointment = new Appointment()
@@ -181,7 +182,7 @@ namespace SchedulingApp.ViewModels
                 End = endTime
             };
 
-            DataAccess.InsertAppointment(appointment);
+            dataAccess.Insert(appointment);
             ResetProperties();
 
             NavigationService.NavigateTo(View.Home);

@@ -1,4 +1,5 @@
-﻿using SchedulingApp.Models;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Models;
 using SchedulingApp.Utilities;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace SchedulingApp.ViewModels
 {
     public class CalendarViewModel : ObservableObject
     {
-        private List<User> _users { get => DataAccess.SelectAllUsers(); }
+        private List<User> _users { get => new DataAccess().SelectAllUsers(); }
 
         #region View Properties
         private List<string> _userNames = new List<string>() { "All" };
@@ -76,7 +77,7 @@ namespace SchedulingApp.ViewModels
         public string[] TimeFrames { get => _timeFrames; }
 
 
-        private string[] _appointmentTypes = { "All", AppointmentType.Scrum.ToString(), AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString(), AppointmentType.Presentation.ToString() };
+        private string[] _appointmentTypes = { "All", AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString(), AppointmentType.Presentation.ToString() };
         public string[] AppointmentTypes { get => _appointmentTypes; }
 
         private string _selectedTimeFrame;
@@ -197,7 +198,7 @@ namespace SchedulingApp.ViewModels
             _users.ForEach(x => UserNames.Add(x.UserName));
 
             Appointments.Clear();
-            var allAppointments = DataAccess.SelectAllAppointments();
+            var allAppointments = new DataAccess().SelectAllAppointments();
             allAppointments.ForEach(x => Appointments.Add(x));
             NoAppointmentsFound = Appointments.Count == 0 ? "Visible" : "Collapsed";
             CalendarVisibility = Appointments.Count == 0 ? "Collapsed" : "Visible";

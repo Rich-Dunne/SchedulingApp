@@ -1,4 +1,5 @@
-﻿using SchedulingApp.Models;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Models;
 using SchedulingApp.Utilities;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -102,7 +103,7 @@ namespace SchedulingApp.ViewModels
         public void SetProperties()
         {
             Customers.Clear();
-            var allCustomers = DataAccess.SelectAllCustomers();
+            var allCustomers = new DataAccess().SelectAllCustomers();
             allCustomers.ForEach(x => Customers.Add(x));
             NoCustomersFound = Customers.Count == 0 ? "Visible" : "Collapsed";
             ListViewVisibility = Customers.Count == 0 ? "Collapsed" : "Visible";

@@ -1,5 +1,7 @@
-﻿using SchedulingApp.Models;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Models;
 using SchedulingApp.Utilities;
+using SchedulingApp.Validation;
 using System;
 using System.Collections;
 using System.ComponentModel;
@@ -10,6 +12,7 @@ namespace SchedulingApp.ViewModels
 {
     public class AddCustomerViewModel : ObservableObject, INotifyDataErrorInfo
     {
+
         #region Form Properties
         private string _firstName = "";
         public string FirstName
@@ -142,6 +145,8 @@ namespace SchedulingApp.ViewModels
                 return;
             }
 
+            var dataAccess = new DataAccess();
+
             var country = new Country()
             {
                 CountryName = Country,
@@ -150,7 +155,7 @@ namespace SchedulingApp.ViewModels
                 LastUpdate = DateTime.Now,
                 LastUpdateBy = NavigationService.MainViewModel.CurrentUser.UserName
             };
-            country.CountryId = (int)DataAccess.InsertCountry(country);
+            country.CountryId = dataAccess.Insert(country);
 
             var city = new City()
             {
@@ -161,7 +166,7 @@ namespace SchedulingApp.ViewModels
                 LastUpdate = DateTime.Now,
                 LastUpdateBy = NavigationService.MainViewModel.CurrentUser.UserName
             };
-            city.CityId = (int)DataAccess.InsertCity(city);
+            city.CityId = dataAccess.Insert(city);
 
             var address = new Address()
             {
@@ -175,18 +180,19 @@ namespace SchedulingApp.ViewModels
                 LastUpdate = DateTime.Now,
                 LastUpdateBy = NavigationService.MainViewModel.CurrentUser.UserName
             };
-            address.AddressId = (int)DataAccess.InsertAddress(address);
+            address.AddressId = dataAccess.Insert(address);
 
             var customer = new Customer()
             {
-                CustomerName = $"{FirstName} {LastName}",
+                FirstName = FirstName,
+                LastName = LastName,
                 AddressId = address.AddressId,
                 CreateDate = DateTime.Now,
                 CreatedBy = NavigationService.MainViewModel.CurrentUser.UserName,
                 LastUpdate = DateTime.Now,
                 LastUpdateBy = NavigationService.MainViewModel.CurrentUser.UserName
             };
-            DataAccess.InsertCustomer(customer);
+            dataAccess.Insert(customer);
 
             ResetProperties();
 

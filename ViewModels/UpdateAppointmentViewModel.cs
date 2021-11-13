@@ -1,4 +1,5 @@
-﻿using SchedulingApp.Models;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Models;
 using SchedulingApp.Utilities;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace SchedulingApp.ViewModels
 {
     public class UpdateAppointmentViewModel : ObservableObject
     {
-        private List<Customer> _customers { get => DataAccess.SelectAllCustomers(); }
-        private List<User> _users { get => DataAccess.SelectAllUsers(); }
+        private List<Customer> _customers { get => new DataAccess().SelectAllCustomers(); }
+        private List<User> _users { get => new DataAccess().SelectAllUsers(); }
         private Appointment _appointment;
 
         #region Form Properties
@@ -38,7 +39,7 @@ namespace SchedulingApp.ViewModels
             }
         }
 
-        public List<string> AppointmentTypes { get; } = new List<string>() { AppointmentType.Scrum.ToString(), AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString(), AppointmentType.Presentation.ToString() };
+        public List<string> AppointmentTypes { get; } = new List<string>() { AppointmentType.Sales.ToString(), AppointmentType.Lunch.ToString(), AppointmentType.Presentation.ToString() };
 
         private string _selectedCustomer;
         public string SelectedCustomer
@@ -168,7 +169,9 @@ namespace SchedulingApp.ViewModels
                 return;
             }
 
-            bool overlappingAppointment = DataAccess.FindOverlappingAppointments(_user, startTime, endTime);
+            var dataAccess = new DataAccess();
+
+            bool overlappingAppointment = dataAccess.CountOverlappingAppointments(_user, startTime, endTime) > 0;
             if(overlappingAppointment)
             {
                 Debug.WriteLine($"Appointment times overlap.");
@@ -176,8 +179,8 @@ namespace SchedulingApp.ViewModels
                 return;
             }
 
-            var user = DataAccess.SelectUser(SelectedUser);
-            var customer = DataAccess.SelectCustomer(SelectedCustomer);
+            var user = _users.FirstOrDefault(x => x.UserName == SelectedUser);
+            var customer = _customers.FirstOrDefault(x => x.CustomerName == SelectedCustomer);
 
             _appointment.CustomerId = customer.CustomerId;
             _appointment.UserId = user.UserId;
@@ -185,7 +188,7 @@ namespace SchedulingApp.ViewModels
             _appointment.Start = startTime;
             _appointment.End = endTime;
 
-            DataAccess.UpdateAppointment(_appointment);
+            dataAccess.Update(_appointment);
             Debug.WriteLine($"Appointment updated");
             ResetProperties();
 
@@ -199,11 +202,9 @@ namespace SchedulingApp.ViewModels
             _users.ForEach(x => UserNames.Add(x.UserName));
 
             CustomerNames = new List<string>();
-            Debug.WriteLine($"Customers:");
-            _customers.ForEach(x => Debug.WriteLine($"{x.CustomerName}"));
             _customers.ForEach(x => CustomerNames.Add(x.CustomerName));
 
-            SelectedUser = _users.First(x => x.UserId == appointment.UserId).UserName;
+            SelectedUser = _users.FirstOrDefault(x => x.UserId == appointment.UserId).UserName;
             SelectedAppointmentType = appointment.Type;
             SelectedCustomer = CustomerNames.First(x => x == appointment.Customer.CustomerName);
             SelectedDate = appointment.Start.Date;

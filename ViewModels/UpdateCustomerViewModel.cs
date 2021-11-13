@@ -1,5 +1,7 @@
-﻿using SchedulingApp.Models;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Models;
 using SchedulingApp.Utilities;
+using SchedulingApp.Validation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -165,8 +167,8 @@ namespace SchedulingApp.ViewModels
             _customer.Address.Phone = Phone;
             _customer.Address.City.Country.CountryName = Country;
             _customer.Address.City.CityName = City;
-            
-            DataAccess.UpdateCustomer(_customer);
+
+            new DataAccess().Update(_customer);
 
             NavigationService.NavigateTo(NavigationService.PreviousView);
         }
