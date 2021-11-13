@@ -13,9 +13,10 @@ namespace SchedulingApp.Models
         public DateTime LastUpdate { get; set; }
         public string LastUpdateBy { get; set; }
 
-        public User()
+        public User(string username, string password)
         {
-
+            UserName = username;
+            Password = password;
         }
     }
 }
