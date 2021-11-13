@@ -1,4 +1,5 @@
-﻿using SchedulingApp.Utilities;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Utilities;
 using System;
 using System.Diagnostics;
 using System.Windows;
@@ -23,7 +24,7 @@ namespace SchedulingApp.Models
         public DateTime LastUpdate { get; set; }
         public string LastUpdateBy { get; set; }
 
-        public string Consultant { get => DataAccess.SelectUser(UserId).UserName;  }
+        public string Consultant { get => new DataAccess().SelectUser(UserId).UserName; }
         public string FullDate { get => Start.ToLocalTime().ToString("MMM dd, yyyy"); }
         public string FormattedDate { get => Start.ToLocalTime().ToString("MMM dd"); }
         public string FormattedTime { get => Start.ToLocalTime().ToShortTimeString(); }
@@ -43,10 +44,10 @@ namespace SchedulingApp.Models
 
         public void CancelAppointment(bool navigateBack)
         {
-            var cancelPrompt = MessageBox.Show($"Are you sure you want to cancel this appointment?", "Cancel appointment?", MessageBoxButton.YesNo);
+            var cancelPrompt = MessageBox.Show($"Are you sure you want to cancel your {FormattedTime} appointment with {Customer.CustomerName}?", "Cancel appointment?", MessageBoxButton.YesNo);
             if (cancelPrompt == MessageBoxResult.Yes)
             {
-                DataAccess.RemoveAppointment(AppointmentId);
+                new DataAccess().Delete(this);
                 if(navigateBack)
                 {
                     NavigationService.NavigateTo(NavigationService.PreviousView);
@@ -62,7 +63,7 @@ namespace SchedulingApp.Models
         {
             var timeTo = Start.Subtract(DateTime.Now);
 
-            if (timeTo.Minutes == 1)
+            if (timeTo.Hours == 0 && timeTo.Minutes == 1)
             {
                 return $"In {timeTo.Minutes} minute";
             }
