@@ -1,4 +1,5 @@
-﻿using SchedulingApp.Utilities;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Utilities;
 using System;
 using System.Diagnostics;
 using System.Windows;
@@ -10,7 +11,7 @@ namespace SchedulingApp.Models
         public int CustomerId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string CustomerName { get => $"{FirstName} {LastName}"; set => SplitName(value); }
+        public string CustomerName { get => $"{FirstName} {LastName}"; }
         public int AddressId { get; set; }
         public bool Active { get; } = true;
         public DateTime CreateDate { get; set; }
@@ -32,18 +33,6 @@ namespace SchedulingApp.Models
             EditCommand = new RelayCommand(o => NavigationService.NavigateTo(View.UpdateCustomer, this));
         }
 
-        private string SplitName(string name)
-        {
-            var names = name.Split(' ');
-            FirstName = names[0];
-            for(int i = 1; i< names.Length; i++)
-            {
-                LastName += $"{names[i]} ";
-            }
-            LastName = LastName.Trim(' ');
-            return name;
-        }
-
         public void Delete(bool navigateBack)
         {
             var result = MessageBox.Show($"Are you sure you want to delete {CustomerName}?  This will remove all associated appointments.", $"Delete customer?", MessageBoxButton.YesNo);
@@ -51,10 +40,11 @@ namespace SchedulingApp.Models
             {
                 return;
             }
-            var appointments = DataAccess.SelectAppointmentsForCustomer(this);
-            appointments.ForEach(x => DataAccess.RemoveAppointment(x.AppointmentId));
+            var dataAccess = new DataAccess();
+            var appointments = dataAccess.SelectAllAppointmentsForCustomer(this);
+            appointments.ForEach(x => x.CancelAppointment(navigateBack));
 
-            var rows = DataAccess.RemoveCustomer(this);
+            var rows = dataAccess.Delete(this);
             if (rows > 0)
             {
                 Debug.WriteLine($"Customer deleted");
