@@ -1,5 +1,9 @@
-﻿using SchedulingApp.Models;
+﻿using SchedulingApp.Data;
+using SchedulingApp.Models;
 using SchedulingApp.Utilities;
+using SchedulingApp.Validation;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -29,10 +33,11 @@ namespace SchedulingApp.ViewModels
                 _username = value;
                 OnPropertyChanged();
 
-                HasErrors = !LoginValidator.UsernameIsValid(value, out string usernameErrorMessage);
-                if(!string.IsNullOrWhiteSpace(usernameErrorMessage))
+                var loginError = LoginValidator.ValidateUsername(value);
+                if(loginError is not null)
                 {
-                    UsernameErrorMessage = usernameErrorMessage;
+                    HasErrors = true;
+                    UsernameErrorMessage = loginError.ErrorMessage;
                     UsernameErrorVisibility = "Visible";
                 }
                 else
@@ -49,13 +54,14 @@ namespace SchedulingApp.ViewModels
             get => _password;
             set
             {
-                _password = value;
+                _password = value.ToSHA256();
                 OnPropertyChanged();
 
-                HasErrors = !LoginValidator.PasswordIsValid(value, out string passwordErrorMessage);
-                if (!string.IsNullOrWhiteSpace(passwordErrorMessage))
+                var passwordError = LoginValidator.ValidatePassword(value);
+                if (passwordError is not null)
                 {
-                    PasswordErrorMessage = passwordErrorMessage;
+                    HasErrors = true;
+                    PasswordErrorMessage = passwordError.ErrorMessage;
                     PasswordErrorVisibility = "Visible";
                 }
                 else
@@ -165,7 +171,7 @@ namespace SchedulingApp.ViewModels
         {
             SignInCommand = new RelayCommand(o => { SignIn(); });
             LoginValidator.UseForeignLanguage = UserIsOutsideUSA();
-            if(UserIsOutsideUSA())
+            if(LoginValidator.UseForeignLanguage)
             {
                 UpdateLoginLanguage();
             }
@@ -174,13 +180,7 @@ namespace SchedulingApp.ViewModels
         private bool UserIsOutsideUSA()
         {
             var languageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-            var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
-            var geoID = (string)regKeyGeoId.GetValue("Nation");
-            var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
-            var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == int.Parse(geoID));
-
-
-            return regionInfo.DisplayName != "United States" || languageName == "es";
+            return languageName == "es";
         }
 
         private void UpdateLoginLanguage()
@@ -193,45 +193,57 @@ namespace SchedulingApp.ViewModels
 
         private void SignIn()
         {
-            HasErrors = !LoginValidator.ValidateLogin(Username, Password, out string usernameErrorMessage, out string passwordErrorMessage);
-            if (HasErrors)
+            var newUser = new User(Username, Password);
+            var loginErrors = LoginValidator.ValidateLogin(newUser);
+            if (loginErrors.Count > 0)
             {
-                if(!string.IsNullOrWhiteSpace(usernameErrorMessage))
-                {
-                    UsernameErrorMessage = usernameErrorMessage;
-                    UsernameErrorVisibility = "Visible";
-                }
-
-                if (!string.IsNullOrWhiteSpace(passwordErrorMessage))
-                {
-                    PasswordErrorMessage = passwordErrorMessage;
-                    PasswordErrorVisibility = "Visible";
-                }
                 Debug.WriteLine($"Login information is not valid.");
+                HasErrors = true;
 
-                string errors = "";
-                if(UsernameErrorMessage != "")
-                {
-                    errors += UsernameErrorMessage;
-                }
-                if(errors != "" && PasswordErrorMessage != "")
-                {
-                    errors += $", {PasswordErrorMessage}";
-                }
-                else if (PasswordErrorMessage != "")
-                {
-                    errors += PasswordErrorMessage;
-                }
-                UserLogManager.LogInvalidSignIn(Username, errors);
+                GetErrorMessages(loginErrors);
                 return;
             }
 
-            UserLogManager.LogValidSignIn(Username);
+            newUser = new DataAccess().SelectUser(newUser);
+            UserLogManager.LogValidSignIn(newUser.UserName);
 
-            NavigationService.MainViewModel.CurrentUser = DataAccess.SelectUser(Username);
+            NavigationService.MainViewModel.CurrentUser = newUser;
             ResetProperties();
 
             NavigationService.NavigateTo(View.Home);
+            HasErrors = false;
+        }
+
+        private void GetErrorMessages(List<LoginError> loginErrors)
+        {
+            var usernameError = loginErrors.FirstOrDefault(x => x.GetType() == typeof(UsernameLoginError));
+            if (!string.IsNullOrWhiteSpace(usernameError?.ErrorMessage))
+            {
+                UsernameErrorMessage = usernameError.ErrorMessage;
+                UsernameErrorVisibility = "Visible";
+            }
+
+            var passwordError = loginErrors.FirstOrDefault(x => x.GetType() == typeof(PasswordLoginError));
+            if (!string.IsNullOrWhiteSpace(passwordError?.ErrorMessage))
+            {
+                PasswordErrorMessage = passwordError.ErrorMessage;
+                PasswordErrorVisibility = "Visible";
+            }
+
+            string errors = "";
+            if (UsernameErrorMessage != "")
+            {
+                errors += UsernameErrorMessage;
+            }
+            if (errors != "" && PasswordErrorMessage != "")
+            {
+                errors += $", {PasswordErrorMessage}";
+            }
+            else if (PasswordErrorMessage != "")
+            {
+                errors += PasswordErrorMessage;
+            }
+            UserLogManager.LogInvalidSignIn(Username, errors);
         }
 
         private void ResetProperties()
