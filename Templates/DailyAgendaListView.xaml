@@ -17,7 +17,7 @@
                 </StackPanel>
 
                 <StackPanel Width="150">
-                    <TextBlock Text="{Binding CustomerName}" 
+                    <TextBlock Text="{Binding Customer.CustomerName}" 
                                FontWeight="SemiBold"/>
                     <TextBlock Text="{Binding Type}"
                                FontSize="12"
